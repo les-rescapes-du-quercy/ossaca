@@ -1,0 +1,32 @@
+<link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet" type="text/css" />
+
+{% include 'header.html' %}
+
+<title>Ossaca - chiens</title>
+
+<p>
+  <form action="/dogs/new_dog.html" method="get">
+    <button class="button" type="submit" name="submit_button" value="new_dog">Nouveau chien</button>
+  </form>
+
+  <table id="animals">
+    <tr><th>Nom</th><th>Arrivée</th><th>Genre</th><th>Stérilisé</th><th> État</th><th>OK chats</th><th>Localisation</th></tr>
+    {% for dog in dogs %}
+    <tr class="table-row" data-href="dog">
+      <td style="display:none;">{{ dog.id }}</td>
+      <td>{{ dog.name }}</td>
+      <td>{{ dog.arrival_date }}</td>
+      <td class="emoji"> {% if dog.gender == 2 %} ♂
+	{% elif dog.gender == 1 %} ♀ {% endif %}
+      </td>
+      <td class="emoji">{% if dog.neutered == 1 %} ✅
+	{%  else %} ❌{% endif %}
+      </td>
+      <td>{{ dog.latest_sheet.state }}</td>
+      <td class="emoji">{% if dog.ok_cats %} 🐱 {% else %} ❌{% endif %}
+      </td>
+      <td>{{ dog.latest_sheet.localization }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</p>

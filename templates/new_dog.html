@@ -1,0 +1,38 @@
+{% include 'header.html' %}
+
+<link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='carousel.css') }}" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+<title>Chiens - {{ id }}</title>
+<h1>{{ id }}</h1>
+
+<form action="/dogs" method="post">
+  <div>
+    <label for="name">Nom :</label>
+    <input type="text" id="name" name="user_name">
+  </div>
+  <div>
+    <label for="name">Sexe :</label>
+    <select>
+      <option selected="selected" value="1">Male</option>
+      <option value="2">Femelle</option>
+    </select>
+  </div>
+  <div>
+    <label for="mail">Caractère :</label>
+    <input type="email" id="mail" name="user_mail">
+  </div>
+  <div>
+    <label for="msg">Description :</label>
+    <textarea id="msg" name="user_message"></textarea>
+  </div>
+<!--  <input checked="checked"  name="sex" type="radio"  value="male" /> Male
+  <input name="sex" type="radio" value="female" /> Female-->
+  <div>
+    <label for="coic">Stérilisé :</label>
+    <input name="democheckbox" type="checkbox" value="1" />
+  </div>
+  <button type="submit" value="Submit">Valider</button>
+</form>

@@ -1,0 +1,40 @@
+<script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+
+<link href="{{ url_for('static', filename='common.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='tab.css') }}" rel="stylesheet" type="text/css" />
+
+<header>
+  <div>
+    <img class="logo" src="{{ url_for('images', filename='logo.png')}}" align="center">
+  </div>
+</header>
+
+<div class="navbar">
+  <a href="/dogs">Chiens</a>
+  <a href="/cats">Chats</a>
+  <div class="dropdown">
+    <button class="dropbtn">Administration
+      <i class="fa fa-caret-down"></i>
+      </button>
+    <div class="dropdown-content">
+      <a href="admin-care">Soin</a>
+      <a href="admin-food">Croquettes</a>
+      <a href="admin-eat">Administration</a>
+      <a href="admin-box">Box</a>
+      <a href="admin-state">État</a>
+      <a href="admin-animal">Animal</a>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  $(document).ready(function($) {
+      $(document.body).on("click", "tr[data-href]", function() {
+	  var row = $(this).find('td:first').text();
+	  window.location.href = this.dataset.href+"?id="+row;
+      });
+  });
+
+</script>
