@@ -39,8 +39,8 @@ class State(Type):
     '''
     Class describing an animal state
     '''
-    def __init__(self):
-        Type.__init__(self)
+    def __init__(self, id = -1, label = "", description = ""):
+        Type.__init__(self, id, label, description)
 
 class Animal:
     '''
@@ -92,30 +92,34 @@ class Animal:
     :param history: Text describing the history of the animal
     :type history: str
 
-    :param cares: List of medical cares given to this animal
-    :type cares: List of Care
+    :param caresheets: List of medical cares given to this animal
+    :type caresheets: List of CareSheets
 
     :param food_habits: Indicates how the animal is used to being feed
     :type food_habits: FoodHabit
     '''
-    def __init__(self, name = ""):
-        self.id = -1
+    def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
+                 arrival_sheet = None, latest_sheet = None,
+                 gender = Gender.UNKNOWN, breed = "", character = "",
+                 color = "", pictures = [], sponsors = [], implant = "",
+                 neutered = False, history = "", caresheets = [], food_habits = None):
+        self.id = id
         self.name = name
-        self.birth_date = date.today()
-        self.arrival_date = date.today()
-        self.arrival_sheet = None
-        self.latest_sheet = None
-        self.gender = Gender.UNKNOWN
-        self.breed = ""
-        self.character = ""
-        self.color = ""
-        self.pictures = ""
-        self.sponsors = ""
-        self.implant = ""
-        self.neutered = False
-        self.history = ""
-        self.cares = []
-        self.food_habits = None
+        self.birth_date = birth_date if birth_date is not None else date.today()
+        self.arrival_date = arrival_date if arrival_date is not None else date.today()
+        self.arrival_sheet = arrival_sheet
+        self.latest_sheet = latest_sheet
+        self.gender = gender
+        self.breed = breed
+        self.character = character
+        self.color = color
+        self.pictures = pictures
+        self.sponsors = sponsors
+        self.implant = implant
+        self.neutered = neutered
+        self.history = history
+        self.caresheets = caresheets
+        self.food_habits = food_habits
 
 class Dog(Animal):
     '''
@@ -124,9 +128,17 @@ class Dog(Animal):
     :param ok_cats: Indicated if this dog can live with cats
     :type ok_cats: bool
     '''
-    def __init__(self, name = ""):
-        Animal.__init__(self, name)
-        self.ok_cats = False
+    def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
+                 arrival_sheet = None, latest_sheet = None,
+                 gender = Gender.UNKNOWN, breed = "", character = "",
+                 color = "", pictures = [], sponsors = [], implant = "",
+                 neutered = False, history = "", cares = [], food_habits = None,
+                 ok_cats = False):
+        Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
+                        latest_sheet, gender, breed, character, color, pictures,
+                        sponsors, implant, neutered, history, cares,
+                        food_habits)
+        self.ok_cats = ok_cats
 
 class Cat(Animal):
     '''
@@ -140,7 +152,12 @@ class Cat(Animal):
     Leukimia Virus
     :type has_felv: bool
     '''
-    def __init__(self):
+    def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
+                 arrival_sheet = None, latest_sheet = None,
+                 gender = Gender.UNKNOWN, breed = "", character = "",
+                 color = "", pictures = [], sponsors = [], implant = "",
+                 neutered = False, history = "", cares = [], food_habits = None,
+                 has_fiv = False, has_felv = False):
         Animal.__init__(self, name)
         self.has_fiv = False
         self.has_felv = False
@@ -167,13 +184,14 @@ class Care:
     :param description: Description of the medecine
     :type description: str
     '''
-    def __init__(self):
-        self.id = -1
-        self.type = ""
-        self.dose = ""
-        self.way = ""
-        self.medecine_name = ""
-        self.description = ""
+    def __init__(self, id = -1, type = "", dose = "", way = "",
+                 medecine_name = "", description = ""):
+        self.id = id
+        self.type = type
+        self.dose = dose
+        self.way = way
+        self.medecine_name = medecine_name
+        self.description = description
 
 class CareSheet:
     '''
@@ -206,16 +224,18 @@ class CareSheet:
     :param dosage: Dose admistrated to the animal
     :type dosage: str
     '''
-    def __init__(self):
-        self.id = -1
-        self.animal = None
-        self.care = None
-        self.date = date.today()
-        self.time = time.isoformat("00:00:00")
-        self.frequency = ""
-        self.given_by = None
-        self.prescription_number = ""
-        self.dosage = ""
+    def __init__(self, id = -1, animal = None, care = None, date = None,
+                 time = None, frequency = "", given_by = None,
+                 prescription_number = "", dosage = ""):
+        self.id = id
+        self.animal = animal
+        self.care = care
+        self.date = date if date is not None else date.today()
+        self.time = time if time is not None else time.isoformat("00:00:00")
+        self.frequency = frequency
+        self.given_by = given_by
+        self.prescription_number = prescription_number
+        self.dosage = dosage
 
 class FoodHabit:
     '''
@@ -231,24 +251,24 @@ class FoodHabit:
     :param bowl: The way to give the food, in terms of quantities
     :type bowl: Bowl
     '''
-    def __init__(self):
-        self.id = -1
-        self.food = None
-        self.bowl = None
+    def __init__(self, id = -1, food = None, bowl = None):
+        self.id = id
+        self.food = food
+        self.bowl = bowl
 
 class Bowl(Type):
     '''
     Class representing a way to give food
     '''
-    def __init__(self):
-        Type.__init__(self)
+    def __init__(self, id = -1, lable = "", description = ""):
+        Type.__init__(self, id, label, description)
 
 class Food(Type):
     '''
     A food type to give to an animal
     '''
-    def __init__(self):
-        Type.__init__(self)
+    def __init__(self, id = -1, label = "", description = ""):
+        Type.__init__(self, id, lable, description)
 
 class LocationType(IntEnum):
     '''
@@ -280,11 +300,12 @@ class Location:
     location_type is VET or FOSTER_FAMILY.
     :type person: Person
     '''
-    def __init__(self):
-        self.id = -1
-        self.location_type = LocationType.OTHER
-        self.box = None
-        self.person = None
+    def __init__(self, id = -1, location_type = LocationType.OTHER, box = None,
+                 person = None):
+        self.id = id
+        self.location_type = location_type
+        self.box = box
+        self.person = person
 
 class Sheet:
     '''
@@ -305,12 +326,13 @@ class Sheet:
     :param location: The location of the animal
     :type location: Location
     '''
-    def __init__(self):
-        self.id = -1
-        self.date = datetime.today()
-        self.animal = None
-        self.state = None
-        self.location = None
+    def __init__(self, id = -1, date = None, animal = None, state = None,
+                 location = None):
+        self.id = id
+        self.date = date if date is not None else date.today()
+        self.animal = animal
+        self.state = state
+        self.location = location
 
 class Box:
     '''
@@ -326,10 +348,10 @@ class Box:
     :param surface_area: Surface area of the box, in squared meters
     :type surface_area: int
     '''
-    def __init__(self):
-        self.id = -1
-        self.label = ""
-        self.description = ""
-        self.surface_area = 0
+    def __init__(self, id = -1, label = "", description = "", surface_area = 0):
+        self.id = id
+        self.label = label
+        self.description = description
+        self.surface_area = surface_area
 
 

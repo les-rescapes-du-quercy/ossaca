@@ -163,35 +163,65 @@ class SQLiteStorage:
                 "description" : t.description
         }
 
-    @classmethod
-    def build_state(cls, fields):
-        s = State()
+    def get_all_states(self):
+        query = "SELECT * FROM state"
+        states = []
 
-        s.id = fields[0]
-        s.label = fields[1]
-        s.description = fields[2]
+        cursor = self.con.cursor()
 
-        return s
+        for row in cursor.execute(query):
+            states.append(State(row[0], row[1], row[2]))
 
-    @classmethod
-    def build_bowl(cls, fields):
-        b = Bowl()
+        return states
 
-        b.id = fields[0]
-        b.label = fields[1]
-        b.description = fields[2]
+    def get_state_by_id(self, id):
+        query = "SELECT * FROM state WHERE id = ?"
 
-        return b
+        cursor = self.con.cursor()
 
-    @classmethod
-    def build_food(cls, fields):
-        f = Food()
+        row = cursor.execute(query, [id])
 
-        f.id = fields[0]
-        f.label = fields[1]
-        f.description = fields[2]
+        return State(row[0], row[1], row[2])
 
-        return f
+    def get_all_foods(self):
+        query = "SELECT * FROM food"
+        foods = []
+
+        cursor = self.con.cursor()
+
+        for row in cursor.execute(query):
+            foods.append(Food(row[0], row[1], row[2]))
+
+        return foods
+
+    def get_food_by_id(self, id):
+        query = "SELECT * FROM food WHERE id = ?"
+
+        cursor = self.con.cursor()
+
+        row = cursor.execute(query, [id])
+
+        return Food(row[0], row[1], row[2])
+
+    def get_all_bowls(self):
+        query = "SELECT * FROM bowl"
+        bowls = []
+
+        cursor = self.con.cursor()
+
+        for row in cursor.execute(query):
+            bowls.append(Bowl(row[0], row[1], row[2]))
+
+        return bowls
+
+    def get_bowl_by_id(self, id):
+        query = "SELECT * FROM bowl WHERE id = ?"
+
+        cursor = self.con.cursor()
+
+        row = cursor.execute(query, [id])
+
+        return Bowl(row[0], row[1], row[2])
 
     @classmethod
     def params_dog(cls, dog):
@@ -213,27 +243,60 @@ class SQLiteStorage:
                 "ok_cats" : dog.ok_cats
         }
 
-    @classmethod
-    def build_dog(cls, fields):
-        d = Dog()
+    def get_all_dogs(self):
+        query = "SELECT * FROM dog"
+        dogs = []
 
-        d.id = fields[0]
-        d.name = fields[1]
-        d.arrival_date = date.fromisoformat(fields[2])
-        d.arrival_sheet = None
-        d.latest_sheet = None
-        d.gender = fields[5]
-        d.breed = fields[6]
-        d.character = fields[7]
-        d.color = fields[8]
-        d.pictures = fields[9].split(',')
-        d.implant = fields[10]
-        d.neutered = fields[11]
-        d.history = fields[12]
-        d.food_habit = None
-        d.ok_cats = fields[14]
+        cursor = self.con.cursor()
 
-        return d
+        for row in cursor.execute(query):
+            dogs.append(
+                    Dog(
+                        id = row[0],
+                        name = row[1],
+                        birth_date = date.fromisoformat(row[2]),
+                        arrival_date = date.fromisoformat(row[3]),
+                        arrival_sheet = None,
+                        latest_sheet = None,
+                        gender = row[6],
+                        breed = row[7],
+                        character = row[8],
+                        color = row[9],
+                        pictures = row[10].split(','),
+                        implant = row[11],
+                        neutered = row[12],
+                        history = row[13],
+                        food_habits = None,
+                        ok_cats = row[15]
+                    )
+            )
+
+        return dogs
+
+    def get_dog_by_id(self, id):
+        query = "SELECT * FROM dog WHERE id = ?"
+
+        cursor = self.con.cursor()
+        row = cursor.execute(query, [id])
+
+        return  Dog(
+                id = row[0],
+                name = row[1],
+                birth_date = date.fromisoformat(row[2]),
+                arrival_date = date.fromisoformat(row[3]),
+                arrival_sheet = None,
+                latest_sheet = None,
+                gender = row[6],
+                breed = row[7],
+                character = row[8],
+                color = row[9],
+                pictures = row[10].split(','),
+                implant = row[11],
+                neutered = row[12],
+                history = row[13],
+                food_habits = None,
+                ok_cats = row[15]
+         )
 
     @classmethod
     def params_cat(cls, cat):
@@ -255,28 +318,62 @@ class SQLiteStorage:
                 "ok_cats" : dog.ok_cats
         }
 
-    @classmethod
-    def build_dog(cls, fields):
-        c = Cat()
+    def get_all_cats(self):
+        query = "SELECT * FROM cat"
+        cats = []
 
-        c.id = fields[0]
-        c.name = fields[1]
-        c.arrival_date = date.fromisoformat(fields[2])
-        c.arrival_sheet = None
-        c.latest_sheet = None
-        c.gender = fields[5]
-        c.breed = fields[6]
-        c.character = fields[7]
-        c.color = fields[8]
-        c.pictures = fields[9].split(',')
-        c.implant = fields[10]
-        c.neutered = fields[11]
-        c.history = fields[12]
-        c.food_habit = None
-        c.has_fiv = fields[14]
-        c.has_felv = fields[15]
+        cursor = self.con.cursor()
 
-        return c
+        for row in cursor.execute(query):
+            cats.append(
+                    Cat(
+                        id = row[0],
+                        name = row[1],
+                        birth_date = date.fromisoformat(row[2]),
+                        arrival_date = date.fromisoformat(row[3]),
+                        arrival_sheet = None,
+                        latest_sheet = None,
+                        gender = row[6],
+                        breed = row[7],
+                        character = row[8],
+                        color = row[9],
+                        pictures = row[10].split(','),
+                        implant = row[11],
+                        neutered = row[12],
+                        history = row[13],
+                        food_habits = None,
+                        has_fiv = row[15],
+                        has_felv = row[16]
+                    )
+            )
+
+        return cats
+
+    def get_cat_by_id(self, id):
+        query = "SELECT * FROM cat WHERE id = ?"
+
+        cursor = self.con.cursor()
+        row = cursor.execute(query, [id])
+
+        return  Cat(
+                id = row[0],
+                name = row[1],
+                birth_date = date.fromisoformat(row[2]),
+                arrival_date = date.fromisoformat(row[3]),
+                arrival_sheet = None,
+                latest_sheet = None,
+                gender = row[6],
+                breed = row[7],
+                character = row[8],
+                color = row[9],
+                pictures = row[10].split(','),
+                implant = row[11],
+                neutered = row[12],
+                history = row[13],
+                food_habits = None,
+                has_fiv = row[15],
+                has_felv = row[16]
+         )
 
     @classmethod
     def parms_care(cls, care):
@@ -288,18 +385,11 @@ class SQLiteStorage:
             "description" : care.description
         }
 
-    @classmethod
-    def build_care(cls, fields):
-        c = Care()
+    def get_all_cares(self):
+        return []
 
-        c.id = fields[0]
-        c.type = fields[1]
-        c.dose = fields[2]
-        c.way = fields[3]
-        c.medecine_name = fields[4]
-        c.description = fields[5]
-
-        return c
+    def get_care_by_id(self, id):
+        return None
 
     @classmethod
     def params_caresheet(cls, caresheet):
@@ -314,6 +404,14 @@ class SQLiteStorage:
                 "dosage" : caresheet.dosage
         }
 
+    def get_all_caresheets(self):
+        return []
+
+    def get_caresheet_by_id(self, id):
+        return None
+
+    def get_all_caresheets_by_animal_id(self, animal_id):
+        return []
 
     @classmethod
     def params_foodhabit(cls, foodhabit):
@@ -322,6 +420,11 @@ class SQLiteStorage:
             "bowl_id" : foodhabit.bowl.id if foodhabit.bowl is not None else -1,
         }
 
+    def get_all_foodhabits(self):
+        return []
+
+    def get_foodhabit_by_id(self, id):
+        return None
 
     @classmethod
     def params_location(cls, location):
@@ -330,6 +433,12 @@ class SQLiteStorage:
             "box_id" : location.box.id if location.box is not None else -1,
             "person_id" : location.person.id if location.person is not None else -1
         }
+
+    def get_all_locations(self):
+        return []
+
+    def get_location_by_id(seld, id):
+        return None
 
     @classmethod
     def params_sheet(cls, sheet):
@@ -340,6 +449,15 @@ class SQLiteStorage:
                 "location_id" : sheet.location.id if sheet.location is not None else -1
         }
 
+    def get_all_sheets(self):
+        return []
+
+    def get_sheet_by_id(self, id):
+        return None
+
+    def get_all_sheets_by_animal_id(self, animal_id):
+        return []
+
     @classmethod
     def params_box(cls, box):
         return {
@@ -347,6 +465,12 @@ class SQLiteStorage:
                 "description" : box.description,
                 "surface_area" : box.surface_area
         }
+
+    def get_all_boxes(self):
+        return []
+
+    def get_box_by_id(self, id):
+        return None
 
     @classmethod
     def forge_query_insert(cls, table, params):
@@ -475,9 +599,9 @@ if __name__ == '__main__':
 
     s = SQLiteStorage()
 
-    s.connect("ossaba_db.sqlite")
+    s.connect("ossaca_db.sqlite")
 
-    ichi = Dog("Ichi")
+    ichi = Dog(name = "Ichi")
     ichi.birth_date = date.fromisoformat('2019-02-14')
     ichi.gender = Gender.MALE
     
@@ -493,6 +617,11 @@ if __name__ == '__main__':
 
     ichi.id = 2
     s.delete(ichi)
+
+    dogs = s.get_all_dogs()
+
+    for dog in dogs:
+        print (dog.name)
 
     s.close()
 
