@@ -56,6 +56,7 @@ header {
 .button {
   background-color: #8cd9bf;
   border: none;
+  border-radius: 15px;
   color: black;
   padding: 15px 25px;
   text-align: center;
@@ -64,8 +65,42 @@ header {
   border-radius: 1em;
   margin-bottom: 0.5em;
   margin-left: 0.5em;
+  box-shadow: 0 9px #999;
 }
 
 .button:hover {
-  background-color: ;
+    background-color: #5d9b9b;
 }
+
+.button:active {
+  background-color: #5d9b9b;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.submit {
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    color: black;
+    background-color: #8cd9bf;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    position:relative;
+    top:45%;
+    left:45%;
+}
+
+.submit:hover {
+    background-color: #5d9b9b;
+}
+
+.submit:active {
+  background-color: #5d9b9b;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+

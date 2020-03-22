@@ -2,6 +2,7 @@ form {
   margin: 0 auto;
   margin-top: 1em;
   width: 80%;
+  max-width: 700px;
   padding: 1em;
   border: 1px solid #CCC;
   border-radius: 1em;
