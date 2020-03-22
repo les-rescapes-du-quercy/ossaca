@@ -5,34 +5,59 @@
 <script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 
-<title>Chiens - {{ id }}</title>
-<h1>{{ id }}</h1>
+<title>Nouveau chien</title>
+<h1>Creation d'un nouveau chien</h1>
 
 <form action="/dogs" method="post">
   <div>
     <label for="name">Nom :</label>
-    <input type="text" id="name" name="user_name">
+    <input type="text" name="name" required>
+  </div>
+  <div>
+    <label for="arrival_date">Date d'arrivée :</label>
+    <input type="date" name="arrival_date" required>
+    <span class="validity"></span>
+  </div>
+  <div>
+    <label for="birth_date">Date de naissance :</label>
+    <input type="date" name="birth_date">
+    <span class="validity"></span>
   </div>
   <div>
     <label for="name">Sexe :</label>
-    <select>
-      <option selected="selected" value="1">Male</option>
-      <option value="2">Femelle</option>
+    <select name="gender">
+      <option selected="selected" value="1">Femelle</option>
+      <option value="2">Male</option>
+      <option value="0">Non connu</option>
     </select>
   </div>
   <div>
-    <label for="mail">Caractère :</label>
-    <input type="email" id="mail" name="user_mail">
+    <label for="implant">Nº ICAD :</label>
+    <input type="text" name="implant">
   </div>
   <div>
-    <label for="msg">Description :</label>
-    <textarea id="msg" name="user_message"></textarea>
+    <label for="breed">Race/Croissement :</label>
+    <input type="text" name="breed">
   </div>
-<!--  <input checked="checked"  name="sex" type="radio"  value="male" /> Male
-  <input name="sex" type="radio" value="female" /> Female-->
   <div>
-    <label for="coic">Stérilisé :</label>
-    <input name="democheckbox" type="checkbox" value="1" />
+    <label for="color">Couleur :</label>
+    <input type="text" name="color">
   </div>
-  <button type="submit" value="Submit">Valider</button>
+  <div>
+    <label for="neutered">Stérilisé :</label>
+    <input name="neutered" type="checkbox" value="1"/>
+  </div>
+  <div>
+    <label for="ok_cats">OK Chats :</label>
+    <input name="ok_cats" type="checkbox" value="1"/>
+  </div>
+  <div>
+    <label for="character">Caractère :</label>
+    <textarea name="character"></textarea>
+  </div>
+  <div>
+    <label for="history">Historique :</label>
+    <textarea name="history"></textarea>
+  </div>
+  <button class="submit" type="submit" value="submit">Valider</button>
 </form>

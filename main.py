@@ -17,13 +17,13 @@ images = Images(app)
 @app.route('/dogs', methods=['GET', 'POST'])
 def dogs():
     if request.method == 'POST':
-        add_new_dog()
+        add_new_dog(request.form)
     dlist = get_dogs()
     return render_template('dogs.html', dogs = dlist)
 
 @app.route('/dogs/new_dog.html', methods=['GET', 'POST'])
 def new_dog():
-    return render_template('new_dog.html')
+        return render_template('new_dog.html')
 
 @app.route('/cats')
 def cats():
@@ -36,7 +36,7 @@ def admin():
 @app.route('/dog', methods=['GET'])
 def dog(name=None):
     id = request.args.get('id', '')
-    name = getdb().get_dog_by_id(id)
+    name = getdb().get_dog_by_id(id).name
     return render_template('dog.html', name=name)
 
 if __name__ == '__main__':
