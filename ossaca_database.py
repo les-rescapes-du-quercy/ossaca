@@ -223,6 +223,14 @@ class SQLiteStorage:
 
         return Bowl(row[0], row[1], row[2])
 
+    # TODO
+    def get_all_animals(self):
+        return []
+
+    # TODO FIXME
+    def get_animal_by_id(self, id):
+        return get_dog_by_id(self, id)
+
     @classmethod
     def params_dog(cls, dog):
         return {
@@ -256,8 +264,8 @@ class SQLiteStorage:
                         name = row[1],
                         birth_date = date.fromisoformat(row[2]),
                         arrival_date = date.fromisoformat(row[3]),
-                        arrival_sheet = None,
-                        latest_sheet = None,
+                        arrival_sheet = get_sheet_by_id(self, row[4]) if row[4] > 0 else None,
+                        latest_sheet = get_sheet_by_id(self, row[5]) if row[5] > 0 else None,
                         gender = row[6],
                         breed = row[7],
                         character = row[8],
@@ -266,10 +274,12 @@ class SQLiteStorage:
                         implant = row[11],
                         neutered = row[12],
                         history = row[13],
-                        food_habits = None,
-                        ok_cats = row[15]
+                        food_habits = get_foodhabit_by_id(self, row[14]) if row[14] > 0 else None,
+                        ok_cats = row[15],
                     )
             )
+
+            # Todo : Build care list
 
         return dogs
 
@@ -277,15 +287,16 @@ class SQLiteStorage:
         query = "SELECT * FROM dog WHERE id = ?"
 
         cursor = self.con.cursor()
-        row = cursor.execute(query, [id])
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
 
         return  Dog(
                 id = row[0],
                 name = row[1],
                 birth_date = date.fromisoformat(row[2]),
                 arrival_date = date.fromisoformat(row[3]),
-                arrival_sheet = None,
-                latest_sheet = None,
+                arrival_sheet = get_sheet_by_id(self, row[4]) if row[4] > 0 else None,
+                latest_sheet = get_sheet_by_id(self, row[5]) if row[5] > 0 else None,
                 gender = row[6],
                 breed = row[7],
                 character = row[8],
@@ -294,7 +305,7 @@ class SQLiteStorage:
                 implant = row[11],
                 neutered = row[12],
                 history = row[13],
-                food_habits = None,
+                food_habits = get_foodhabit_by_id(self, row[14]) if row[14] > 0 else None,
                 ok_cats = row[15]
          )
 
@@ -331,8 +342,8 @@ class SQLiteStorage:
                         name = row[1],
                         birth_date = date.fromisoformat(row[2]),
                         arrival_date = date.fromisoformat(row[3]),
-                        arrival_sheet = None,
-                        latest_sheet = None,
+                        arrival_sheet = get_sheet_by_id(self, row[4]) if row[4] > 0 else None,
+                        latest_sheet = get_sheet_by_id(self, row[5]) if row[5] > 0 else None,
                         gender = row[6],
                         breed = row[7],
                         character = row[8],
@@ -341,7 +352,7 @@ class SQLiteStorage:
                         implant = row[11],
                         neutered = row[12],
                         history = row[13],
-                        food_habits = None,
+                        food_habits = get_foodhabit_by_id(self, row[14]) if raw[14] > 0 else None,
                         has_fiv = row[15],
                         has_felv = row[16]
                     )
@@ -353,15 +364,16 @@ class SQLiteStorage:
         query = "SELECT * FROM cat WHERE id = ?"
 
         cursor = self.con.cursor()
-        row = cursor.execute(query, [id])
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
 
         return  Cat(
                 id = row[0],
                 name = row[1],
                 birth_date = date.fromisoformat(row[2]),
                 arrival_date = date.fromisoformat(row[3]),
-                arrival_sheet = None,
-                latest_sheet = None,
+                arrival_sheet = get_sheet_by_id(self, row[4]) if row[4] > 0 else None,
+                latest_sheet = get_sheet_by_id(self, row[5]) if row[5] > 0 else None,
                 gender = row[6],
                 breed = row[7],
                 character = row[8],
@@ -370,7 +382,7 @@ class SQLiteStorage:
                 implant = row[11],
                 neutered = row[12],
                 history = row[13],
-                food_habits = None,
+                food_habits = get_foodhabit_by_id(self, row[14]) if raw[14] > 0 else None,
                 has_fiv = row[15],
                 has_felv = row[16]
          )
@@ -386,10 +398,40 @@ class SQLiteStorage:
         }
 
     def get_all_cares(self):
-        return []
+        query = "SELECT * FROM care"
+        cares = []
+
+        cursor = self.con.cursor()
+
+        for row in cursor.execute(query):
+            care.append(
+                    Care(
+                        id = row[0],
+                        type = row[1],
+                        dose = row[2],
+                        way = row[3],
+                        medecine_name = row[4],
+                        description = row[5]
+                    )
+            )
+
+        return cares
 
     def get_care_by_id(self, id):
-        return None
+        query = "SELECT * FROM care WHERE id = ?"
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
+
+        return Care(
+            id = row[0],
+            type = row[1],
+            dose = row[2],
+            way = row[3],
+            medecine_name = row[4],
+            description = row[5]
+        )
 
     @classmethod
     def params_caresheet(cls, caresheet):
@@ -405,13 +447,69 @@ class SQLiteStorage:
         }
 
     def get_all_caresheets(self):
-        return []
+        query = "SELECT * FROM caresheet"
+        caresheets = []
+
+        cursor = self.con.cursor()
+
+        for row in cursor.execute(query):
+            caresheets.append(
+                    CareSheet(
+                        id = row[0],
+                        animal = get_animal_by_id(self, row[1]) if row[1] > 0 else None,
+                        care = get_care_by_id(self, row[2]) if row[2] > 0 else None,
+                        date = date.fromisoformat(row[3]),
+                        time = time.fromisoformat(row[4]),
+                        frequency = row[5],
+                        given_by = None, #TODO
+                        prescription_number = row[7],
+                        dosage = row[8]
+                    )
+            )
+
+        return caresheets
 
     def get_caresheet_by_id(self, id):
-        return None
+        query = "SELECT * FROM caresheet WHERE id = ?"
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
+
+        return CareSheet(
+            id = row[0],
+            animal = get_animal_by_id(self, row[1]) if row[1] > 0 else None,
+            care = get_care_by_id(self, row[2]) if row[2] > 0 else None,
+            date = date.fromisoformat(row[3]),
+            time = time.fromisoformat(row[4]),
+            frequency = row[5],
+            given_by = None, #TODO
+            prescription_number = row[7],
+            dosage = row[8]
+        )
 
     def get_all_caresheets_by_animal_id(self, animal_id):
-        return []
+        query = "SELECT * FROM caresheet WHERE animal_id = ?"
+        caresheets = []
+
+        cursor = self.con.cursor()
+
+        for row in cursor.execute(query, [animal_id]):
+            caresheets.append(
+                    CareSheet(
+                        id = row[0],
+                        animal = get_animal_by_id(self, row[1]) if row[1] > 0 else None,
+                        care = get_care_by_id(self, row[2]) if row[2] > 0 else None,
+                        date = date.fromisoformat(row[3]),
+                        time = time.fromisoformat(row[4]),
+                        frequency = row[5],
+                        given_by = None, #TODO
+                        prescription_number = row[7],
+                        dosage = row[8]
+                    )
+            )
+
+        return caresheets
 
     @classmethod
     def params_foodhabit(cls, foodhabit):
@@ -421,6 +519,28 @@ class SQLiteStorage:
         }
 
     def get_all_foodhabits(self):
+        query = "SELECT * FROM foodhabits"
+        caresheets = []
+
+        cursor = self.con.cursor()
+
+        for row in cursor.execute(query):
+            caresheets.append(
+                    CareSheet(
+                        id = row[0],
+                        animal = get_animal_by_id(self, row[1]) if row[1] > 0 else None,
+                        care = get_care_by_id(self, row[2]) if row[2] > 0 else None,
+                        date = date.fromisoformat(row[3]),
+                        time = time.fromisoformat(row[4]),
+                        frequency = row[5],
+                        given_by = None, #TODO
+                        prescription_number = row[7],
+                        dosage = row[8]
+                    )
+            )
+
+        return caresheets
+
         return []
 
     def get_foodhabit_by_id(self, id):
@@ -622,6 +742,9 @@ if __name__ == '__main__':
 
     for dog in dogs:
         print (dog.name)
+
+    dog = s.get_dog_by_id(1)
+    print (dog.name)
 
     s.close()
 
