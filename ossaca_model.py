@@ -132,11 +132,11 @@ class Dog(Animal):
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
-                 neutered = False, history = "", cares = [], food_habits = None,
+                 neutered = False, history = "", caresheets = [], food_habits = None,
                  ok_cats = False):
         Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
                         latest_sheet, gender, breed, character, color, pictures,
-                        sponsors, implant, neutered, history, cares,
+                        sponsors, implant, neutered, history, caresheets,
                         food_habits)
         self.ok_cats = ok_cats
 
@@ -156,9 +156,12 @@ class Cat(Animal):
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
-                 neutered = False, history = "", cares = [], food_habits = None,
+                 neutered = False, history = "", caresheets = [], food_habits = None,
                  has_fiv = False, has_felv = False):
-        Animal.__init__(self, name)
+        Animal.__init__(self, name, birth_date, arrival_date, arrival_sheet,
+                        latest_sheet, gender, breed, character, color, pictures,
+                        sponsors, implant, neutered, history, caresheets,
+                        food_habits)
         self.has_fiv = False
         self.has_felv = False
 
