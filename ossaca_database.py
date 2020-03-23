@@ -247,7 +247,7 @@ class SQLiteStorage:
                 "implant" : dog.implant,
                 "neutered" : dog.neutered,
                 "history" : dog.history,
-                "food_habit_id" : dog.food_habit.id if dog.food_habits is not None else -1,
+                "food_habit_id" : dog.food_habits.id if dog.food_habits is not None else -1,
                 "ok_cats" : dog.ok_cats
         }
 
@@ -327,7 +327,7 @@ class SQLiteStorage:
                 "implant" : cat.implant,
                 "neutered" : cat.neutered,
                 "history" : cat.history,
-                "food_habit_id" : cat.food_habit.id if cat.food_habits is not None else -1,
+                "food_habit_id" : cat.food_habits.id if cat.food_habits is not None else -1,
                 "has_fiv" : cat.has_fiv,
                 "has_felv" : cat.has_felv
         }
