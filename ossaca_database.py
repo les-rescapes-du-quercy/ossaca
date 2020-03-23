@@ -109,7 +109,7 @@ class SQLiteStorage:
                    date text,
                    time text,
                    frequency text,
-                   given_by text,
+                   given_by integer,
                    prescription_number text,
                    dosage text
                    )''')

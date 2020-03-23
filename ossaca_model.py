@@ -164,8 +164,8 @@ class Cat(Animal):
                         latest_sheet, gender, breed, character, color, pictures,
                         sponsors, implant, neutered, history, caresheets,
                         food_habits)
-        self.has_fiv = False
-        self.has_felv = False
+        self.has_fiv = has_fiv
+        self.has_felv = has_felv
 
 class Care:
     '''
