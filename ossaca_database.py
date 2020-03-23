@@ -25,6 +25,7 @@ class SQLiteStorage:
             Sheet : "sheet",
             Box : "box"
         }
+        self.con = None
 
     def create(self, db_path):
         # doing so will create the database file.
@@ -147,7 +148,6 @@ class SQLiteStorage:
     def connect(self, db_path):
 
         if not os.path.isfile(db_path):
-            print ("File", db_path, "doesn't exist, creating a new database")
             self.create(db_path)
 
         self.con = sqlite3.connect(db_path)
