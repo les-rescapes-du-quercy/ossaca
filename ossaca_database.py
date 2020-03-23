@@ -748,7 +748,7 @@ class SQLiteStorage:
 
         if isinstance(obj, Type):
             params = SQLiteStorage.params_type(obj)
-        if isinstance(obj, Dog):
+        elif isinstance(obj, Dog):
             params = SQLiteStorage.params_dog(obj)
         elif isinstance(obj, Cat):
             params = SQLiteStorage.params_cat(obj)
@@ -766,7 +766,6 @@ class SQLiteStorage:
             params = SQLiteStorage.params_box(obj)
         else:
             raise ValueError("Can get parameters for type %s" % type(obj).__name__)
-            print("Unknown type", type(animal))
             params = {}
 
         return params
