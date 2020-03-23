@@ -328,7 +328,8 @@ class SQLiteStorage:
                 "neutered" : cat.neutered,
                 "history" : cat.history,
                 "food_habit_id" : cat.food_habit.id if cat.food_habits is not None else -1,
-                "ok_cats" : dog.ok_cats
+                "has_fiv" : cat.has_fiv,
+                "has_felv" : cat.has_felv
         }
 
     def get_all_cats(self):
@@ -392,7 +393,7 @@ class SQLiteStorage:
          )
 
     @classmethod
-    def parms_care(cls, care):
+    def params_care(cls, care):
         return {
             "type" : care.type,
             "dose" : care.dose,

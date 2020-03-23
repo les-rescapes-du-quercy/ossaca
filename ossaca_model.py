@@ -5,7 +5,9 @@
 Module for the OSSACA data model.
 '''
 
+import datetime
 from datetime import date
+from datetime import time
 from enum import IntEnum
 
 class Gender(IntEnum):
@@ -158,7 +160,7 @@ class Cat(Animal):
                  color = "", pictures = [], sponsors = [], implant = "",
                  neutered = False, history = "", caresheets = [], food_habits = None,
                  has_fiv = False, has_felv = False):
-        Animal.__init__(self, name, birth_date, arrival_date, arrival_sheet,
+        Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
                         latest_sheet, gender, breed, character, color, pictures,
                         sponsors, implant, neutered, history, caresheets,
                         food_habits)
@@ -233,8 +235,8 @@ class CareSheet:
         self.id = id
         self.animal = animal
         self.care = care
-        self.date = date if date is not None else date.today()
-        self.time = time if time is not None else time.isoformat("00:00:00")
+        self.date = date if date is not None else datetime.date.today()
+        self.time = time if time is not None else datetime.time.fromisoformat("00:00:00")
         self.frequency = frequency
         self.given_by = given_by
         self.prescription_number = prescription_number
@@ -263,7 +265,7 @@ class Bowl(Type):
     '''
     Class representing a way to give food
     '''
-    def __init__(self, id = -1, lable = "", description = ""):
+    def __init__(self, id = -1, label = "", description = ""):
         Type.__init__(self, id, label, description)
 
 class Food(Type):
@@ -271,7 +273,7 @@ class Food(Type):
     A food type to give to an animal
     '''
     def __init__(self, id = -1, label = "", description = ""):
-        Type.__init__(self, id, lable, description)
+        Type.__init__(self, id, label, description)
 
 class LocationType(IntEnum):
     '''
@@ -332,7 +334,7 @@ class Sheet:
     def __init__(self, id = -1, date = None, animal = None, state = None,
                  location = None):
         self.id = id
-        self.date = date if date is not None else date.today()
+        self.date = date if date is not None else datetime.date.today()
         self.animal = animal
         self.state = state
         self.location = location
