@@ -124,6 +124,31 @@ class TestDBAdd(unittest.TestCase):
                  "verte", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  -1, 1])
 
+    def test_add_dog_full(self):
+        self.insertion_and_check_test("dog",
+                Dog(
+                name = "Louloute",
+                birth_date = date.fromisoformat("2004-12-25"),
+                arrival_date = date.fromisoformat("2016-06-17"),
+                arrival_sheet = Sheet(id = 2),
+                latest_sheet = Sheet(id = 4),
+                gender = Gender.FEMALE,
+                breed = "Malinois croisé sharpei",
+                character = "gentille avec du poil au nez",
+                color = "verte",
+                pictures = [],
+                sponsors = [],
+                implant = "1223446035OJCOJSDC",
+                neutered = False,
+                history = "Née au refuge",
+                caresheets = [],
+                food_habits = FoodHabit(id = 6),
+                ok_cats = True),
+                [1, "Louloute", "2004-12-25", "2016-06-17", 2, 4, 1,
+                 "Malinois croisé sharpei", "gentille avec du poil au nez",
+                 "verte", "", "1223446035OJCOJSDC", 0, "Née au refuge",
+                 6, 1])
+
     def test_add_empty_cat(self):
         self.insertion_test(Cat(), "cat")
 
@@ -159,6 +184,32 @@ class TestDBAdd(unittest.TestCase):
                  "Angora a poil ras", "gentille avec du poil au nez",
                  "violette", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  -1, 1, 1])
+
+    def test_add_cat_full(self):
+        self.insertion_and_check_test("cat",
+                Cat(
+                name = "Minette",
+                birth_date = date.fromisoformat("2004-12-25"),
+                arrival_date = date.fromisoformat("2016-06-17"),
+                arrival_sheet = Sheet(3),
+                latest_sheet = Sheet(5),
+                gender = Gender.FEMALE,
+                breed = "Angora a poil ras",
+                character = "gentille avec du poil au nez",
+                color = "violette",
+                pictures = [],
+                sponsors = [],
+                implant = "1223446035OJCOJSDC",
+                neutered = False,
+                history = "Née au refuge",
+                caresheets = [],
+                food_habits = FoodHabit(7),
+                has_fiv = True,
+                has_felv = True),
+                [1, "Minette", "2004-12-25", "2016-06-17", 3, 5, 1,
+                 "Angora a poil ras", "gentille avec du poil au nez",
+                 "violette", "", "1223446035OJCOJSDC", 0, "Née au refuge",
+                 7, 1, 1])
 
     def test_add_empty_care(self):
         self.insertion_test(Care(), "care")
@@ -198,6 +249,20 @@ class TestDBAdd(unittest.TestCase):
                     [1, -1, -1, "2019-08-09", "12:04:34", "3 fois par jour",
                      -1, "P1234", "2 gelules"])
 
+    def test_add_caresheet_full(self):
+        self.insertion_and_check_test("caresheet",
+                    CareSheet(
+                        animal = Dog(id = 4),
+                        care = Care(id = 7),
+                        date = date.fromisoformat("2019-08-09"),
+                        time = time.fromisoformat("12:04:34"),
+                        frequency = "3 fois par jour",
+                        given_by = None,
+                        prescription_number = "P1234",
+                        dosage = "2 gelules"),
+                    [1, 4, 7, "2019-08-09", "12:04:34", "3 fois par jour",
+                     -1, "P1234", "2 gelules"])
+
     def test_add_empty_foodhabit(self):
         self.insertion_test(FoodHabit(), "foodhabit")
 
@@ -205,6 +270,11 @@ class TestDBAdd(unittest.TestCase):
          self.insertion_and_check_test("foodhabit",
                 FoodHabit(),
                 [1, -1, -1])
+
+    def test_add_foodhabit_full(self):
+         self.insertion_and_check_test("foodhabit",
+                FoodHabit(food = Food(id = 6), bowl = Bowl(id = 7)),
+                [1, 6, 7])
 
     def test_add_empty_bowl(self):
         self.insertion_test(Bowl(), "bowl")
@@ -247,41 +317,46 @@ class TestDBAdd(unittest.TestCase):
                 Location(location_type = LocationType.BOX, box = None, person = None),
                 [1, LocationType.BOX, -1, -1])
 
+    def test_add_location_full(self):
+        self.insertion_and_check_test("location",
+                Location(location_type = LocationType.BOX,
+                         box = Box(id = 3),
+                         person = None),
+                [1, LocationType.BOX, 3, -1])
+
     def test_add_empty_sheet(self):
         self.insertion_test(Sheet(), "sheet")
 
     def test_add_default_sheet(self):
-        self.insertion_test(Sheet(), "sheet")
+        self.insertion_and_check_test("sheet",
+                Sheet(),
+                [1, date.today().isoformat(), -1, -1, -1])
 
     def test_add_sheet(self):
-        self.insertion_test(Sheet(), "sheet")
+        self.insertion_and_check_test("sheet",
+                Sheet(date = date.fromisoformat("2017-11-11"),
+                      animal = None, state = None, location = None),
+                [1, "2017-11-11", -1, -1, -1])
+
+    def test_add_sheet_full(self):
+        self.insertion_and_check_test("sheet",
+                Sheet(date = date.fromisoformat("2017-11-11"),
+                      animal = Cat(id = 9),
+                      state = State(id = 2),
+                      location = Location(id = 8)),
+                [1, "2017-11-11", 9, 2, 8])
 
     def test_add_empty_box(self):
         self.insertion_test(Box(), "box")
 
     def test_add_default_box(self):
-        self.insertion_test(Box(), "box")
+        self.insertion_and_check_test("box", Box(), [1, "", "", 0])
 
     def test_add_box(self):
-        self.insertion_test(Box(), "box")
-
-    def test_location_full(self):
-        return
-
-    def test_foodhabit_full(self):
-        return
-
-    def test_sheet_full(self):
-        return
-
-    def test_care_full(self):
-        return
-
-    def test_dog_full(self):
-        return
-
-    def test_cat_full(self):
-        return
+        self.insertion_and_check_test("box",
+                Box(label = "Box 1", description = "Box 1 de l'allée centrale",
+                    surface_area = 2),
+                    [1, "Box 1", "Box 1 de l'allée centrale", 2])
 
 ############################## Update ##########################################
 
