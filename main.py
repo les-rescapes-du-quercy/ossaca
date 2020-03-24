@@ -34,10 +34,10 @@ def admin():
     return render_template('admin-care.html')
 
 @app.route('/dog', methods=['GET'])
-def dog(name=None):
+def dog(species='dog', name=None):
     id = request.args.get('id', '')
     name = getdb().get_dog_by_id(id).name
-    return render_template('dog.html', name=name)
+    return render_template('animal.html', species=species, name=name)
 
 if __name__ == '__main__':
     app.run(debug=True)
