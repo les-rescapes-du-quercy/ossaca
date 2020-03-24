@@ -154,6 +154,14 @@ class SQLiteStorage:
         self.con.commit()
         self.con.close()
 
+    def get_last_inserted_id(self, table):
+            cursor = self.con.cursor()
+            query = "SELECT seq FROM sqlite_sequence WHERE name = ?"
+            cursor.execute(query, [table])
+            row = cursor.fetchone()
+
+            return row[0]
+
     @classmethod
     def params_type(cls, t):
         return {
@@ -728,12 +736,7 @@ class SQLiteStorage:
 
         # If we have some species-specific info, insert them
         if table is not None:
-
-            query = "SELECT seq FROM sqlite_sequence WHERE name = ?"
-            cursor.execute(query, ["animal"])
-            row = cursor.fetchone()
-
-            animal_id = row[0]
+            animal_id = self.get_last_inserted_id("animal")
 
             species_params = SQLiteStorage.get_query_params(animal)
             species_params['animal_id'] = animal_id
@@ -741,6 +744,8 @@ class SQLiteStorage:
 
             cursor.execute(query, values)
             self.con.commit()
+
+        animal.id = self.get_last_inserted_id("animal")
 
     def update_animal(self, animal):
         # First insert the generic animal info
@@ -837,6 +842,8 @@ class SQLiteStorage:
         cursor.execute(query, values)
 
         self.con.commit()
+
+        obj.id = self.get_last_inserted_id(table)
 
     def update(self, obj):
 
