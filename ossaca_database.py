@@ -303,6 +303,9 @@ class SQLiteStorage:
         cursor.execute(query, [id])
         row = cursor.fetchone()
 
+        if row is None:
+            return None
+
         return  Dog(
                 ok_cats = row[2],
                 category = row[3],
@@ -373,6 +376,9 @@ class SQLiteStorage:
         cursor = self.con.cursor()
         cursor.execute(query, [id])
         row = cursor.fetchone()
+
+        if row is None:
+            return None
 
         return  Cat(
                 has_fiv = row[2],
