@@ -4,6 +4,7 @@
 import sqlite3
 from ossaca_model import *
 import os.path
+from enum import IntEnum
 
 class SQLiteStorage:
     '''
@@ -11,20 +12,22 @@ class SQLiteStorage:
     SQLite
     '''
 
+    tables = {
+        State : "state",
+        Dog : "dog",
+        Cat : "cat",
+        Care : "care",
+        CareSheet : "caresheet",
+        FoodHabit : "foodhabit",
+        Bowl : "bowl",
+        Food : "food",
+        Location : "location",
+        Sheet : "sheet",
+        Box : "box"
+    }
+
     def __init__(self):
-        self.tables = {
-            State : "state",
-            Dog : "dog",
-            Cat : "cat",
-            Care : "care",
-            CareSheet : "caresheet",
-            FoodHabit : "foodhabit",
-            Bowl : "bowl",
-            Food : "food",
-            Location : "location",
-            Sheet : "sheet",
-            Box : "box"
-        }
+
         self.con = None
 
     def create(self, db_path):
@@ -36,8 +39,8 @@ class SQLiteStorage:
         # Create tables for all the model entities
 
         # Create Animal tables
-        c.execute('''CREATE TABLE dog (
-                   id integer NOT NULL PRIMARY KEY,
+        c.execute('''CREATE TABLE animal (
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    name text,
                    birth_date text,
                    arrival_date text,
@@ -51,50 +54,45 @@ class SQLiteStorage:
                    implant text,
                    neutered integer,
                    history text,
-                   food_habit_id integer,
-                   ok_cats integer
+                   food_habit_id integer
+                   )''')
+
+        c.execute('''CREATE TABLE dog (
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+                   animal_id integer,
+                   ok_cats integer,
+                   category integer,
+                   FOREIGN KEY(animal_id) REFERENCES animal(id)
                    )''')
 
         c.execute('''CREATE TABLE cat (
-                   id integer NOT NULL PRIMARY KEY,
-                   name text,
-                   birth_date text,
-                   arrival_date text,
-                   arrival_sheet_id integer,
-                   latest_sheet_id integer,
-                   gender integer,
-                   breed text,
-                   character text,
-                   color text,
-                   pictures text,
-                   implant text,
-                   neutered integer,
-                   history text,
-                   food_habit_id integer,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+                   animal_id integer,
                    has_fiv integer,
-                   has_felv integer
+                   has_felv integer,
+                   FOREIGN KEY(animal_id) REFERENCES animal(id)
                    )''')
 
         c.execute('''CREATE TABLE state(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    label text,
                    description text
                    )''')
 
         c.execute('''CREATE TABLE bowl(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    label text,
                    description text
                    )''')
 
         c.execute('''CREATE TABLE food(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    label text,
                    description text
                    )''')
 
         c.execute('''CREATE TABLE care(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    type text,
                    dose text,
                    way text,
@@ -103,7 +101,7 @@ class SQLiteStorage:
                    )''')
 
         c.execute('''CREATE TABLE caresheet(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    animal_id integer,
                    care_id integer,
                    date text,
@@ -115,20 +113,20 @@ class SQLiteStorage:
                    )''')
 
         c.execute('''CREATE TABLE foodhabit(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    food_id integer,
                    bowl_id integer
                    )''')
 
         c.execute('''CREATE TABLE location(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    location_type integer,
                    box_id integer,
                    person_id integer
                    )''')
 
         c.execute('''CREATE TABLE sheet(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    date text,
                    animal_id integer,
                    state_id integer,
@@ -136,7 +134,7 @@ class SQLiteStorage:
                    )''')
 
         c.execute('''CREATE TABLE box(
-                   id integer NOT NULL PRIMARY KEY,
+                   id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    label text,
                    description text,
                    surface_area integer
@@ -223,36 +221,39 @@ class SQLiteStorage:
 
         return Bowl(row[0], row[1], row[2])
 
-    # TODO
-    def get_all_animals(self):
-        return []
-
-    # TODO FIXME
     def get_animal_by_id(self, id):
-        return get_dog_by_id(self, id)
+        return None
+
+    @classmethod
+    def params_animal(cls, animal):
+        return {
+                "name" : animal.name,
+                "birth_date" : animal.birth_date.isoformat() if animal.birth_date is not None else "",
+                "arrival_date" : animal.arrival_date.isoformat() if animal.arrival_date is not None else "",
+                "arrival_sheet_id" : animal.arrival_sheet.id if animal.arrival_sheet is not None else -1,
+                "latest_sheet_id" : animal.latest_sheet.id if animal.latest_sheet is not None else -1,
+                "gender" : animal.gender,
+                "breed" : animal.breed,
+                "character" : animal.character,
+                "color" : animal.color,
+                "pictures" : ','.join(animal.pictures),
+                "implant" : animal.implant,
+                "neutered" : animal.neutered,
+                "history" : animal.history,
+                "food_habit_id" : animal.food_habits.id if animal.food_habits is not None else -1,
+        }
 
     @classmethod
     def params_dog(cls, dog):
         return {
-                "name" : dog.name,
-                "birth_date" : dog.birth_date.isoformat() if dog.birth_date is not None else "",
-                "arrival_date" : dog.arrival_date.isoformat() if dog.arrival_date is not None else "",
-                "arrival_sheet_id" : dog.arrival_sheet.id if dog.arrival_sheet is not None else -1,
-                "latest_sheet_id" : dog.latest_sheet.id if dog.latest_sheet is not None else -1,
-                "gender" : dog.gender,
-                "breed" : dog.breed,
-                "character" : dog.character,
-                "color" : dog.color, 
-                "pictures" : ','.join(dog.pictures),
-                "implant" : dog.implant,
-                "neutered" : dog.neutered,
-                "history" : dog.history,
-                "food_habit_id" : dog.food_habits.id if dog.food_habits is not None else -1,
-                "ok_cats" : dog.ok_cats
+                "ok_cats" : dog.ok_cats,
+                "category" : dog.category
         }
 
     def get_all_dogs(self):
-        query = "SELECT * FROM dog"
+        query = ''' SELECT * FROM dog
+                    LEFT JOIN animal ON dog.animal_id = animal.id
+                    '''
         dogs = []
 
         cursor = self.con.cursor()
@@ -260,23 +261,24 @@ class SQLiteStorage:
         for row in cursor.execute(query):
             dogs.append(
                     Dog(
-                        id = row[0],
-                        name = row[1],
-                        birth_date = date.fromisoformat(row[2]),
-                        arrival_date = date.fromisoformat(row[3]),
-                        arrival_sheet = self.get_sheet_by_id(row[4]) if row[4] > 0 else None,
-                        latest_sheet = self.get_sheet_by_id(row[5]) if row[5] > 0 else None,
-                        gender = row[6],
-                        breed = row[7],
-                        character = row[8],
-                        color = row[9],
-                        pictures = row[10].split(','),
-                        implant = row[11],
-                        neutered = row[12],
-                        history = row[13],
-                        food_habits = self.get_foodhabit_by_id(row[14]) if row[14] > 0 else None,
-                        ok_cats = row[15],
-                        caresheets = self.get_all_caresheets_by_animal_id(row[0])
+                        ok_cats = row[2],
+                        category = row[3],
+                        id = row[4],
+                        name = row[5],
+                        birth_date = date.fromisoformat(row[6]),
+                        arrival_date = date.fromisoformat(row[7]),
+                        arrival_sheet = self.get_sheet_by_id(row[8]) if row[8] > 0 else None,
+                        latest_sheet = self.get_sheet_by_id(row[9]) if row[9] > 0 else None,
+                        gender = row[10],
+                        breed = row[11],
+                        character = row[12],
+                        color = row[13],
+                        pictures = row[14].split(','),
+                        implant = row[15],
+                        neutered = row[16],
+                        history = row[17],
+                        food_habits = self.get_foodhabit_by_id(row[18]) if row[18] > 0 else None,
+                        caresheets = self.get_all_caresheets_by_animal_id(row[4])
                     )
             )
 
@@ -285,55 +287,46 @@ class SQLiteStorage:
         return dogs
 
     def get_dog_by_id(self, id):
-        query = "SELECT * FROM dog WHERE id = ?"
+        query = ''' SELECT * FROM dog
+                    LEFT JOIN animal ON dog.animal_id = animal.id
+                    WHERE animal.id = ?'''
 
         cursor = self.con.cursor()
         cursor.execute(query, [id])
         row = cursor.fetchone()
 
         return  Dog(
-                id = row[0],
-                name = row[1],
-                birth_date = date.fromisoformat(row[2]),
-                arrival_date = date.fromisoformat(row[3]),
-                arrival_sheet = self.get_sheet_by_id(row[4]) if row[4] > 0 else None,
-                latest_sheet = self.get_sheet_by_id(row[5]) if row[5] > 0 else None,
-                gender = row[6],
-                breed = row[7],
-                character = row[8],
-                color = row[9],
-                pictures = row[10].split(','),
-                implant = row[11],
-                neutered = row[12],
-                history = row[13],
-                food_habits = self.get_foodhabit_by_id(row[14]) if row[14] > 0 else None,
-                ok_cats = row[15],
-                caresheets = self.get_all_caresheets_by_animal_id(row[0])
+                ok_cats = row[2],
+                category = row[3],
+                id = row[4],
+                name = row[5],
+                birth_date = date.fromisoformat(row[6]),
+                arrival_date = date.fromisoformat(row[7]),
+                arrival_sheet = self.get_sheet_by_id(row[8]) if row[8] > 0 else None,
+                latest_sheet = self.get_sheet_by_id(row[9]) if row[9] > 0 else None,
+                gender = row[10],
+                breed = row[11],
+                character = row[12],
+                color = row[13],
+                pictures = row[14].split(','),
+                implant = row[15],
+                neutered = row[16],
+                history = row[17],
+                food_habits = self.get_foodhabit_by_id(row[18]) if row[18] > 0 else None,
+                caresheets = self.get_all_caresheets_by_animal_id(row[4])
          )
 
     @classmethod
     def params_cat(cls, cat):
         return {
-                "name" : cat.name,
-                "birth_date" : cat.birth_date.isoformat(),
-                "arrival_date" : cat.arrival_date.isoformat(),
-                "arrival_sheet_id" : cat.arrival_sheet.id if cat.arrival_sheet is not None else -1,
-                "latest_sheet_id" : cat.latest_sheet.id if cat.latest_sheet is not None else -1,
-                "gender" : cat.gender,
-                "breed" : cat.breed,
-                "character" : cat.character,
-                "color" : cat.color, 
-                "pictures" : ','.join(cat.pictures),
-                "implant" : cat.implant,
-                "neutered" : cat.neutered,
-                "history" : cat.history,
-                "food_habit_id" : cat.food_habits.id if cat.food_habits is not None else -1,
                 "has_fiv" : cat.has_fiv,
                 "has_felv" : cat.has_felv
         }
 
     def get_all_cats(self):
-        query = "SELECT * FROM cat"
+        query = ''' SELECT * FROM cat
+                    LEFT JOIN animal ON cat.animal_id = animal.id
+                '''
         cats = []
 
         cursor = self.con.cursor()
@@ -341,56 +334,58 @@ class SQLiteStorage:
         for row in cursor.execute(query):
             cats.append(
                     Cat(
-                        id = row[0],
-                        name = row[1],
-                        birth_date = date.fromisoformat(row[2]),
-                        arrival_date = date.fromisoformat(row[3]),
-                        arrival_sheet = self.get_sheet_by_id(row[4]) if row[4] > 0 else None,
-                        latest_sheet = self.get_sheet_by_id(row[5]) if row[5] > 0 else None,
-                        gender = row[6],
-                        breed = row[7],
-                        character = row[8],
-                        color = row[9],
-                        pictures = row[10].split(','),
-                        implant = row[11],
-                        neutered = row[12],
-                        history = row[13],
-                        food_habits = self.get_foodhabit_by_id(row[14]) if raw[14] > 0 else None,
-                        has_fiv = row[15],
-                        has_felv = row[16],
-                        caresheets = self.get_all_caresheets_by_animal_id(row[0])
+                        has_fiv = row[2],
+                        has_felv = row[3],
+                        id = row[4],
+                        name = row[5],
+                        birth_date = date.fromisoformat(row[6]),
+                        arrival_date = date.fromisoformat(row[7]),
+                        arrival_sheet = self.get_sheet_by_id(row[8]) if row[8] > 0 else None,
+                        latest_sheet = self.get_sheet_by_id(row[9]) if row[9] > 0 else None,
+                        gender = row[10],
+                        breed = row[11],
+                        character = row[12],
+                        color = row[13],
+                        pictures = row[14].split(','),
+                        implant = row[15],
+                        neutered = row[16],
+                        history = row[17],
+                        food_habits = self.get_foodhabit_by_id(row[18]) if row[18] > 0 else None,
+                        caresheets = self.get_all_caresheets_by_animal_id(row[4])
                     )
             )
 
         return cats
 
     def get_cat_by_id(self, id):
-        query = "SELECT * FROM cat WHERE id = ?"
+        query = ''' SELECT * FROM cat
+                    LEFT JOIN animal ON cat.animal_id = animal.id
+                    WHERE animal.id = ?'''
 
         cursor = self.con.cursor()
         cursor.execute(query, [id])
         row = cursor.fetchone()
 
         return  Cat(
-                id = row[0],
-                name = row[1],
-                birth_date = date.fromisoformat(row[2]),
-                arrival_date = date.fromisoformat(row[3]),
-                arrival_sheet = self.get_sheet_by_id(row[4]) if row[4] > 0 else None,
-                latest_sheet = self.get_sheet_by_id(row[5]) if row[5] > 0 else None,
-                gender = row[6],
-                breed = row[7],
-                character = row[8],
-                color = row[9],
-                pictures = row[10].split(','),
-                implant = row[11],
-                neutered = row[12],
-                history = row[13],
-                food_habits = self.get_foodhabit_by_id(row[14]) if raw[14] > 0 else None,
-                has_fiv = row[15],
-                has_felv = row[16],
-                caresheets = self.get_all_caresheets_by_animal_id(row[0])
-         )
+                has_fiv = row[2],
+                has_felv = row[3],
+                id = row[4],
+                name = row[5],
+                birth_date = date.fromisoformat(row[6]),
+                arrival_date = date.fromisoformat(row[7]),
+                arrival_sheet = self.get_sheet_by_id(row[8]) if row[8] > 0 else None,
+                latest_sheet = self.get_sheet_by_id(row[9]) if row[9] > 0 else None,
+                gender = row[10],
+                breed = row[11],
+                character = row[12],
+                color = row[13],
+                pictures = row[14].split(','),
+                implant = row[15],
+                neutered = row[16],
+                history = row[17],
+                food_habits = self.get_foodhabit_by_id(row[18]) if row[18] > 0 else None,
+                caresheets = self.get_all_caresheets_by_animal_id(row[4])
+        )
 
     @classmethod
     def params_care(cls, care):
@@ -712,15 +707,65 @@ class SQLiteStorage:
         # The field validation and escaping will be done by the execute() method
         # from sqlite3
         query = " ".join([
-                "INSERT INTO", table, 
+                "INSERT INTO", table,
                 "(", ", ".join(fields), ")",
                 "VALUES (", ', '.join(placeholders), ")"
                 ])
 
         return [query, values]
 
+    def add_animal(self, animal):
+        # First insert the generic animal info
+        cursor = self.con.cursor()
+
+        animal_params = SQLiteStorage.params_animal(animal)
+        [query, values] = SQLiteStorage.forge_query_insert("animal", animal_params)
+
+        cursor.execute(query, values)
+        self.con.commit()
+
+        table = SQLiteStorage.tables[type(animal)] if type(animal) in SQLiteStorage.tables else None
+
+        # If we have some species-specific info, insert them
+        if table is not None:
+
+            query = "SELECT seq FROM sqlite_sequence WHERE name = ?"
+            cursor.execute(query, ["animal"])
+            row = cursor.fetchone()
+
+            animal_id = row[0]
+
+            species_params = SQLiteStorage.get_query_params(animal)
+            species_params['animal_id'] = animal_id
+            [query, values] = SQLiteStorage.forge_query_insert(table, species_params)
+
+            cursor.execute(query, values)
+            self.con.commit()
+
+    def update_animal(self, animal):
+        # First insert the generic animal info
+        cursor = self.con.cursor()
+
+        animal_params = SQLiteStorage.params_animal(animal)
+        [query, values] = SQLiteStorage.forge_query_update("animal", animal_params, animal.id)
+
+        cursor.execute(query, values)
+
+        table = SQLiteStorage.tables[type(animal)] if type(animal) in SQLiteStorage.tables else None
+
+        # If we have some species-specific info, insert them
+        if table is not None:
+
+            species_params = SQLiteStorage.get_query_params(animal)
+            [query, values] = SQLiteStorage.forge_query_update_with_field(table,
+                                species_params, animal.id, "animal_id")
+
+            cursor.execute(query, values)
+
+        self.con.commit()
+
     @classmethod
-    def forge_query_update(cls, table, params, id):
+    def forge_query_update_with_field(cls, table, params, id, field):
         placeholders = []
         values = []
         fields = []
@@ -739,32 +784,36 @@ class SQLiteStorage:
         query = " ".join([
                 "UPDATE", table,
                 "SET", ", ".join(fields),
-                "WHERE id = ?"
+                "WHERE " + field + " = ?"
                 ])
 
         return [query, values]
 
     @classmethod
+    def forge_query_update(cls, table, params, id):
+        return SQLiteStorage.forge_query_update_with_field(table, params, id, "id")
+
+    @classmethod
     def get_query_params(cls, obj):
 
         if isinstance(obj, Type):
-            params = SQLiteStorage.params_type(obj)
+            params = cls.params_type(obj)
         elif isinstance(obj, Dog):
-            params = SQLiteStorage.params_dog(obj)
+            params = cls.params_dog(obj)
         elif isinstance(obj, Cat):
-            params = SQLiteStorage.params_cat(obj)
+            params = cls.params_cat(obj)
         elif isinstance(obj, Care):
-            params = SQLiteStorage.params_care(obj)
+            params = cls.params_care(obj)
         elif isinstance(obj, CareSheet):
-            params = SQLiteStorage.params_caresheet(obj)
+            params = cls.params_caresheet(obj)
         elif isinstance(obj, FoodHabit):
-            params = SQLiteStorage.params_foodhabit(obj)
+            params = cls.params_foodhabit(obj)
         elif isinstance(obj, Location):
-            params = SQLiteStorage.params_location(obj)
+            params = cls.params_location(obj)
         elif isinstance(obj, Sheet):
-            params = SQLiteStorage.params_sheet(obj)
+            params = cls.params_sheet(obj)
         elif isinstance(obj, Box):
-            params = SQLiteStorage.params_box(obj)
+            params = cls.params_box(obj)
         else:
             raise ValueError("Can get parameters for type %s" % type(obj).__name__)
             params = {}
@@ -772,7 +821,11 @@ class SQLiteStorage:
         return params
 
     def add(self, obj):
-    
+
+        if isinstance(obj, Animal):
+            self.add_animal(obj)
+            return
+
         params = SQLiteStorage.get_query_params(obj)
         table = self.tables[type(obj)]
 
@@ -790,6 +843,10 @@ class SQLiteStorage:
         if obj.id < 1:
             raise ValueError("Can't update an object with id %d" % id)
 
+        if isinstance(obj, Animal):
+            self.update_animal(obj)
+            return
+
         params = SQLiteStorage.get_query_params(obj)
         table = self.tables[type(obj)]
 
@@ -802,12 +859,29 @@ class SQLiteStorage:
 
         self.con.commit()
 
+    def __delete_animal(self, animal):
+        table = SQLiteStorage.tables[type(animal)] if type(animal) in SQLiteStorage.tables else None
+
+        if table is not None:
+            cursor = self.con.cursor()
+            cursor.execute("SELECT id FROM " + table + " WHERE animal_id = ?", [animal.id])
+            row = cursor.fetchone()
+
+            cursor.execute("DELETE FROM " + table + " WHERE id = ?", [row[0]])
+
+        cursor.execute("DELETE FROM animal WHERE id = ?", [animal.id])
+        self.con.commit()
+
     def delete(self, obj):
-        
+
         if obj.id < 1:
             raise ValueError("Can't delete an object with id %d", id)
 
-        table = self.tables[type(obj)]
+        if isinstance(obj, Animal):
+            self.__delete_animal(obj)
+            return
+
+        table = SQLiteStorage.tables[type(obj)]
         query = "DELETE FROM " + table + " WHERE id = ?"
         params = [obj.id]
 
@@ -826,15 +900,20 @@ if __name__ == '__main__':
     ichi = Dog(name = "Ichi")
     ichi.birth_date = date.fromisoformat('2019-02-14')
     ichi.gender = Gender.MALE
-    
+
     s.add(ichi)
     ichi.name = "Ichie"
     ichi.gender = Gender.FEMALE
     s.add(ichi)
 
+    su_yeon = Cat(name = "Su Yeon")
+    su_yeon.gender = Gender.FEMALE
+    s.add(su_yeon)
+
     ichi.id = 1
 
     ichi.name = "Gros Loulou"
+    ichi.ok_cats = True
     s.update(ichi)
 
     ichi.id = 2
@@ -845,8 +924,13 @@ if __name__ == '__main__':
     for dog in dogs:
         print (dog.name)
 
-    dog = s.get_dog_by_id(1)
-    print (dog.name)
+    cats = s.get_all_cats()
+
+    for cat in cats:
+        print (cat.name)
+
+#    dog = s.get_dog_by_id(1)
+#    print (dog.name)
 
     s.close()
 

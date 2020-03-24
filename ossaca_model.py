@@ -135,12 +135,13 @@ class Dog(Animal):
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
                  neutered = False, history = "", caresheets = [], food_habits = None,
-                 ok_cats = False):
+                 ok_cats = False, category = 0):
         Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
                         latest_sheet, gender, breed, character, color, pictures,
                         sponsors, implant, neutered, history, caresheets,
                         food_habits)
         self.ok_cats = ok_cats
+        self.category = category
 
 class Cat(Animal):
     '''
