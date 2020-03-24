@@ -301,7 +301,7 @@ class SQLiteStorage:
                 id = row[4],
                 name = row[5],
                 birth_date = date.fromisoformat(row[6]) if row[6] is not '' else None,
-                arrival_date = date.fromisoformat(row[7]) if row[6] is not '' else None,
+                arrival_date = date.fromisoformat(row[7]) if row[7] is not '' else None,
                 arrival_sheet = self.get_sheet_by_id(row[8]) if row[8] > 0 else None,
                 latest_sheet = self.get_sheet_by_id(row[9]) if row[9] > 0 else None,
                 gender = row[10],
@@ -339,7 +339,7 @@ class SQLiteStorage:
                         id = row[4],
                         name = row[5],
                         birth_date = date.fromisoformat(row[6]) if row[6] is not '' else None,
-                        arrival_date = date.fromisoformat(row[7]) if row[6] is not '' else None,
+                        arrival_date = date.fromisoformat(row[7]) if row[7] is not '' else None,
                         arrival_sheet = self.get_sheet_by_id(row[8]) if row[8] > 0 else None,
                         latest_sheet = self.get_sheet_by_id(row[9]) if row[9] > 0 else None,
                         gender = row[10],
@@ -372,7 +372,7 @@ class SQLiteStorage:
                 id = row[4],
                 name = row[5],
                 birth_date = date.fromisoformat(row[6]) if row[6] is not '' else None,
-                arrival_date = date.fromisoformat(row[7]) if row[6] is not '' else None,
+                arrival_date = date.fromisoformat(row[7]) if row[7] is not '' else None,
                 arrival_sheet = self.get_sheet_by_id(row[8]) if row[8] > 0 else None,
                 latest_sheet = self.get_sheet_by_id(row[9]) if row[9] > 0 else None,
                 gender = row[10],
@@ -458,8 +458,8 @@ class SQLiteStorage:
                         id = row[0],
                         animal = self.get_animal_by_id(row[1]) if row[1] > 0 else None,
                         care = self.get_care_by_id(row[2]) if row[2] > 0 else None,
-                        date = date.fromisoformat(row[3]),
-                        time = time.fromisoformat(row[4]),
+                        date = date.fromisoformat(row[3]) if row[3] is not '' else None,
+                        time = time.fromisoformat(row[4]) if row[4] is not '' else None,
                         frequency = row[5],
                         given_by = None, #TODO
                         prescription_number = row[7],
@@ -480,8 +480,8 @@ class SQLiteStorage:
             id = row[0],
             animal = self.get_animal_by_id(row[1]) if row[1] > 0 else None,
             care = self.get_care_by_id(row[2]) if row[2] > 0 else None,
-            date = date.fromisoformat(row[3]),
-            time = time.fromisoformat(row[4]),
+            date = date.fromisoformat(row[3]) if row[3] is not '' else None,
+            time = time.fromisoformat(row[4]) if row[4] is not '' else None,
             frequency = row[5],
             given_by = None, #TODO
             prescription_number = row[7],
@@ -500,8 +500,8 @@ class SQLiteStorage:
                         id = row[0],
                         animal = self.get_animal_by_id(row[1]) if row[1] > 0 else None,
                         care = self.get_care_by_id(row[2]) if row[2] > 0 else None,
-                        date = date.fromisoformat(row[3]),
-                        time = time.fromisoformat(row[4]),
+                        date = date.fromisoformat(row[3]) if row[3] is not '' else None,
+                        time = time.fromisoformat(row[4]) if row[4] is not '' else None,
                         frequency = row[5],
                         given_by = None, #TODO
                         prescription_number = row[7],
@@ -607,7 +607,7 @@ class SQLiteStorage:
             sheets.append(
                 Sheet(
                     id = row[0],
-                    date = date.fromisoformat(row[1]),
+                    date = date.fromisoformat(row[1]) if row[1] is not '' else None,
                     animal = self.get_animal_by_id(row[2]) if row[2] > 0 else None,
                     state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
                     location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
@@ -625,7 +625,7 @@ class SQLiteStorage:
 
         return Sheet(
             id = row[0],
-            date = date.fromisoformat(row[1]),
+            date = date.fromisoformat(row[1]) if row[1] is not '' else None,
             animal = self.get_animal_by_id(row[2]) if row[2] > 0 else None,
             state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
             location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
@@ -641,7 +641,7 @@ class SQLiteStorage:
             sheets.append(
                 Sheet(
                     id = row[0],
-                    date = date.fromisoformat(row[1]),
+                    date = date.fromisoformat(row[1]) if row[1] is not '' else None,
                     animal = self.get_animal_by_id(row[2]) if row[2] > 0 else None,
                     state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
                     location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
@@ -915,9 +915,6 @@ if __name__ == '__main__':
     ichi.name = "Gros Loulou"
     ichi.ok_cats = True
     s.update(ichi)
-
-    ichi.id = 2
-    s.delete(ichi)
 
     dogs = s.get_all_dogs()
 
