@@ -229,9 +229,6 @@ class SQLiteStorage:
 
         return Bowl(row[0], row[1], row[2])
 
-    def get_animal_by_id(self, id):
-        return None
-
     @classmethod
     def params_animal(cls, animal):
         return {
@@ -250,6 +247,46 @@ class SQLiteStorage:
                 "history" : animal.history,
                 "food_habit_id" : animal.food_habits.id if animal.food_habits is not None else -1,
         }
+
+    def get_animal_by_id(self, id):
+        # Try to get a dog
+        animal = self.get_dog_by_id(id)
+        if animal is not None:
+            return animal
+
+        # Try to get a cat
+        animal = self.get_cat_by_id(id)
+        if animal is not None:
+            return animal
+
+        # This is not a dog nor a cat, so build a generic animal
+        query = "SELECT * FROM animal id = ?"
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return  Animal(
+                id = row[0],
+                name = row[1],
+                birth_date = date.fromisoformat(row[2]) if row[2] is not '' else None,
+                arrival_date = date.fromisoformat(row[3]) if row[3] is not '' else None,
+                arrival_sheet = self.get_sheet_by_id(row[4]) if row[4] > 0 else None,
+                latest_sheet = self.get_sheet_by_id(row[5]) if row[5] > 0 else None,
+                gender = row[6],
+                breed = row[7],
+                character = row[8],
+                color = row[9],
+                pictures = row[10].split(','),
+                implant = row[11],
+                neutered = row[12],
+                history = row[13],
+                food_habits = self.get_foodhabit_by_id(row[14]) if row[14] > 0 else None,
+                caresheets = self.get_all_caresheets_by_animal_id(row[15])
+         )
 
     @classmethod
     def params_dog(cls, dog):
