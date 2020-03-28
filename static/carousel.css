@@ -152,10 +152,9 @@
 }
 
 .carousel-inner img {
-    width: 100%;
-    height: auto;
+    width: auto;
+    height: 300px;
     border-radius: 2em;
-    max-width:30%;
     display: block;
     margin: auto;
 }
