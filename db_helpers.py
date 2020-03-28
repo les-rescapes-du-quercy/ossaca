@@ -27,14 +27,30 @@ def add_new_dog(form):
     db = getdb()
     dog = Dog()
     dog.name = form['name']
-    dog.birth_date = date.fromisoformat(form['birth_date']) if form['birth_date'] is not '' else None
-    dog.arrival_date = date.fromisoformat(form['arrival_date'])
+    dog.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
+    dog.arrival_date = date.fromisoformat(form['adate'])
     dog.gender = form['gender']
     dog.breed = form['breed']
     dog.color = form['color']
     dog.implant = form['implant']
     dog.neutered = form['neutered'] if 'neutered' in form else 0
     dog.ok_cats = form['ok_cats'] if 'ok_cats' in form else 0
-    dog.character = form['character']
+    dog.character = form['char']
     dog.history = form['history']
     db.add(dog)
+
+def update_dog(form):
+    db = getdb()
+    dog = db.get_dog_by_id(form['id'])
+    dog.name = form['name']
+    dog.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
+    dog.arrival_date = date.fromisoformat(form['adate'])
+    dog.gender = form['gender']
+    dog.breed = form['breed']
+    dog.color = form['color']
+    dog.implant = form['implant']
+    dog.neutered = form['neutered'] if 'neutered' in form else 0
+    dog.ok_cats = form['ok_cats'] if 'ok_cats' in form else 0
+    dog.character = form['char']
+    dog.history = form['history']
+    db.update(dog)
