@@ -17,7 +17,11 @@ images = Images(app)
 @app.route('/dogs', methods=['GET', 'POST'])
 def dogs():
     if request.method == 'POST':
-        add_new_dog(request.form)
+        if 'id' in request.form:
+            update_dog(request.form)
+        else:
+            add_new_dog(request.form)
+
     dlist = get_dogs()
     return render_template('dogs.html', dogs = dlist)
 
