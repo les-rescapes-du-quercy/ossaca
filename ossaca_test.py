@@ -53,11 +53,19 @@ class TestOssacaDB(unittest.TestCase):
 
         s.close()
 
-    def insertion_test(self, obj, table):
+    def __insert(self, obj):
         s = SQLiteStorage()
         s.connect("test.db")
 
         s.add(obj)
+        s.close()
+
+    def insertion_test(self, obj, table):
+
+        self.__insert(obj)
+
+        s = SQLiteStorage()
+        s.connect("test.db")
 
         self.check_number_of_rows(table, 1)
 
@@ -84,7 +92,6 @@ class TestOssacaDB(unittest.TestCase):
         s.close()
 
     def insertion_and_check_test(self, table, obj, values):
-        self.setUp()
         s = SQLiteStorage()
         s.connect("test.db")
         s.add(obj)
@@ -133,7 +140,6 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "1223446035OJCOJSDC",
                 neutered = False,
                 history = "Née au refuge",
-                caresheets = [],
                 food_habits = None,
                 ok_cats = True,
                 category = 1),
@@ -161,7 +167,6 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "1223446035OJCOJSDC",
                 neutered = False,
                 history = "Née au refuge",
-                caresheets = [],
                 food_habits = FoodHabit(id = 6),
                 ok_cats = True,
                 category = 2),
@@ -201,7 +206,6 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "1223446035OJCOJSDC",
                 neutered = False,
                 history = "Née au refuge",
-                caresheets = [],
                 food_habits = None,
                 has_fiv = True,
                 has_felv = True),
@@ -229,7 +233,6 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "1223446035OJCOJSDC",
                 neutered = False,
                 history = "Née au refuge",
-                caresheets = [],
                 food_habits = FoodHabit(7),
                 has_fiv = True,
                 has_felv = False),
@@ -368,12 +371,29 @@ class TestOssacaDB(unittest.TestCase):
                 [1, "2017-11-11", -1, -1, -1])
 
     def test_add_sheet_full(self):
+        cat = Cat()
+        self.insertion_test(cat, "cat")
+
+        self.assertEqual(cat.id, 1)
+        self.assertIsNone(cat.arrival_sheet)
+        self.assertIsNone(cat.latest_sheet)
+
         self.insertion_and_check_test("sheet",
                 Sheet(date = date.fromisoformat("2017-11-11"),
-                      animal = Cat(id = 9),
+                      animal = cat,
                       state = State(id = 2),
                       location = Location(id = 8)),
-                [1, "2017-11-11", 9, 2, 8])
+                [1, "2017-11-11", 1, 2, 8])
+
+        self.check_table_row("animal", 1,
+        [1, "", date.today().isoformat(), date.today().isoformat(), 1, 1, 0,
+         "", "", "", "", "", 0, "", -1])
+
+        self.__insert(Sheet(animal = cat))
+
+        self.check_table_row("animal", 1,
+        [1, "", date.today().isoformat(), date.today().isoformat(), 1, 2, 0,
+         "", "", "", "", "", 0, "", -1])
 
     def test_add_empty_box(self):
         self.insertion_test(Box(), "box")
@@ -408,7 +428,7 @@ class TestOssacaDB(unittest.TestCase):
                                          label = "Adopté",
                                          description = "L'animal est adopté"),
                                    [1, "Adopté", "L'animal est adopté"]
-        )   
+        )
 
     def test_update_dog(self):
         self.check_update("animal", Dog(),
@@ -428,7 +448,6 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "1223446035OJCOJSDC",
                 neutered = False,
                 history = "Née au refuge",
-                caresheets = [],
                 food_habits = FoodHabit(id = 6),
                 ok_cats = True,
                 category = 2),
@@ -458,7 +477,6 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "1223446035OJCOJSDC",
                 neutered = False,
                 history = "Née au refuge",
-                caresheets = [],
                 food_habits = FoodHabit(7),
                 has_fiv = True,
                 has_felv = False),
@@ -593,6 +611,374 @@ class TestOssacaDB(unittest.TestCase):
         self.check_delete(Box(id = 1), "box")
 
 ############################### Read ###########################################
+
+    def populate_database(self):
+
+        s = SQLiteStorage()
+        s.connect("test.db")
+
+        # Build care list
+        care1 = Care(type = "traitement", dose = "25mg", way = "orale",
+                     medecine_name = "Clavubactin",
+                     description = "Traitement des infections provoquées par les bactéries sensibles à l'amoxicilline en association avec l'acide clavulanique")
+
+        care2 = Care(type = "traitement", dose = "50mg", way = "orale",
+                     medecine_name = "Clavubactin", description = "Traitement des infections provoquées par les bactéries sensibles à l'amoxicilline en association avec l'acide clavulanique" )
+
+        care3 = Care(type = "vaccin", dose = "10ml", way = "sous-cutanée",
+                     medecine_name = "vaccinator",
+                     description = "Vaccin contre le gros ventre" )
+
+        care4 = Care(type = "operation", dose = "", way = "",
+                     medecine_name = "",
+                     description = "Operation de la molaire gauche" )
+
+        care5 = Care(type = "checkup", dose = "", way = "",
+                     medecine_name = "", description = "Checkup vétérinaire")
+
+        care6 = Care(type = "traitement", dose = "", way = "Oreilles",
+                     medecine_name = "",
+                     description = "Nettoyage des oreilles avec compresse eet antiseptique" )
+
+        s.add(care1)
+        s.add(care2)
+        s.add(care3)
+        s.add(care4)
+        s.add(care5)
+        s.add(care6)
+
+        # build state list
+        state1 = State(label = "Arrivé",
+                       description = "L'ainmal est arrivé au refuge, en attente de voir son comportement")
+        state2 = State(label = "A l'essai",
+                       description = "L'animal est placé en famille, pour essai de compatibilité en vue d'adoption")
+        state3 = State(label = "A l'adoption",
+                       description = "L'animal est disponible à l'adoption")
+        state4 = State(label = "Quarantaine", description = "L'animal est placé en quarantaine")
+        state5 = State(label = "Vétérinaire", description = "L'animal est chez le vétérinaire")
+        state6 = State(label = "Adopté", description = "L'animal est adopté")
+
+        s.add(state1)
+        s.add(state2)
+        s.add(state3)
+        s.add(state4)
+        s.add(state5)
+        s.add(state6)
+
+        # build food list
+        food1 = Food(label = "Croquettes chien adulte", description = "Croquettes pour chien adulte")
+        food2 = Food(label = "Croquettes chat stérilisé", description = "Croquettes pour chat stérilisé")
+        food3 = Food(label = "Croquettes chat gastro", description = "Croquettes gastro ou hypo pour chat")
+        food4 = Food(label = "Paté chien bio sans boeuf", description = "Bonne patée bio miam miam")
+        food5 = Food(label = "Paté chat", description = "Paté pour chat qui sent bon")
+        food6 = Food(label = "Croquettes chiot", description = "Croquettes pour chiots")
+
+        s.add(food1)
+        s.add(food2)
+        s.add(food3)
+        s.add(food4)
+        s.add(food5)
+        s.add(food6)
+
+        # build bowl list
+        bowl1 = Bowl(label = "petite gamelle", description = "une petite gamelle")
+        bowl2 = Bowl(label = "gamelle normale", description = "une gamelle de taille normale")
+        bowl3 = Bowl(label = "grosse gamelle", description = "une bonne grosse gamelle")
+        bowl4 = Bowl(label = "gamelle détrempée", description = "une gamelle normale bien ramolie")
+        bowl5 = Bowl(label = "a volonté", description = "Nourriture en accès libre à volonté")
+
+        s.add(bowl1)
+        s.add(bowl2)
+        s.add(bowl3)
+        s.add(bowl4)
+        s.add(bowl5)
+
+        # build box list
+        box1 = Box(label = "Box 1", description = "Box 1, allée 1, ensoleillé", surface_area = 3)
+        box2 = Box(label = "Box 2", description = "Box 2, allée 1, ombragé", surface_area = 3)
+        box3 = Box(label = "Box 3", description = "Box 3, allée 2, porte abimée", surface_area = 3)
+        box4 = Box(label = "Box 4", description = "Box 4, allée 2, ensoleillé", surface_area = 4)
+        box5 = Box(label = "Chatterie", description = "Chatterie", surface_area = 20)
+        box6 = Box(label = "Pouponnière", description = "La ou on met les chiots", surface_area = 5)
+
+        s.add(box1)
+        s.add(box2)
+        s.add(box3)
+        s.add(box4)
+        s.add(box5)
+        s.add(box6)
+
+        # Build location list
+        location1 = Location(location_type = LocationType.BOX, box = box1)
+        location2 = Location(location_type = LocationType.BOX, box = box2)
+        location3 = Location(location_type = LocationType.BOX, box = box5)
+        location4 = Location(location_type = LocationType.FOSTER_FAMILY)
+        location5 = Location(location_type = LocationType.VET)
+
+        s.add(location1)
+        s.add(location2)
+        s.add(location3)
+        s.add(location4)
+        s.add(location5)
+
+        # Build food habits
+        foodhabit1 = FoodHabit(food = food1, bowl = bowl3)
+        foodhabit2 = FoodHabit(food = food3, bowl = bowl1)
+        foodhabit3 = FoodHabit(food = food4, bowl = bowl2)
+        foodhabit4 = FoodHabit(food = food4, bowl = None)
+        foodhabit5 = FoodHabit(food = food2, bowl = bowl4)
+        foodhabit6 = FoodHabit(food = None, bowl = bowl5)
+
+        s.add(foodhabit1)
+        s.add(foodhabit2)
+        s.add(foodhabit3)
+        s.add(foodhabit4)
+        s.add(foodhabit5)
+        s.add(foodhabit6)
+
+        # Create Dogs
+        dog1 = Dog(
+                name = "Ichi",
+                birth_date = date.fromisoformat("2019-04-21"),
+                arrival_date = date.fromisoformat("2019-05-22"),
+                gender = Gender.MALE,
+                breed = "Malinois",
+                character = "Gentil tout plein",
+                color = "Brinje",
+                pictures = ["http://loulou.com/picture.jpg", "http://prout.fr"],
+                implant = "AZE123",
+                neutered = True,
+                history = "Maltraité dans une cage pendant l'enfance",
+                food_habits = foodhabit2,
+                ok_cats = False,
+                category = 0
+                )
+
+        dog2 = Dog(
+                name = "Louloute",
+                birth_date = date.fromisoformat("2017-12-12"),
+                arrival_date = date.fromisoformat("2018-01-01"),
+                gender = Gender.FEMALE,
+                breed = "Staff x Caniche",
+                character = "Super agressive avec tout le monde",
+                color = "Blanc",
+                pictures = ["/images/murder.jpg"],
+                implant = "AIRO3991",
+                neutered = True,
+                history = "A tué ses parents",
+                food_habits = foodhabit4,
+                ok_cats = False,
+                category = 2
+                )
+
+        dog3 = Dog(
+                name = "Pato",
+                birth_date = date.fromisoformat("2015-04-04"),
+                arrival_date = date.fromisoformat("2019-05-29"),
+                gender = Gender.MALE,
+                breed = "Griffon",
+                character = "Gentil et mou",
+                color = "Beige",
+                pictures = [],
+                neutered = False,
+                history = "Abandonné dans un fossé",
+                food_habits = None,
+                ok_cats = True,
+                category = 1
+                )
+
+        dog4 = Dog(
+                name = "Roger",
+                birth_date = date.fromisoformat("2010-02-14"),
+                arrival_date = date.fromisoformat("2014-08-10"),
+                gender = Gender.MALE,
+                breed = "Chihuahua",
+                character = "Mord les molets",
+                color = "Marron",
+                pictures = [],
+                implant = "RORO009",
+                neutered = True,
+                history = "Propriétaire décédé",
+                food_habits = foodhabit5,
+                ok_cats = True,
+                category = 0
+                )
+
+        s.add(dog1)
+        s.add(dog2)
+        s.add(dog3)
+        s.add(dog4)
+
+        # Create Cats
+        cat1 = Cat(
+                name = "Happy",
+                birth_date = date.fromisoformat("2011-11-11"),
+                arrival_date = date.fromisoformat("2017-03-30"),
+                gender = Gender.MALE,
+                breed = "Chat européen",
+                character = "Mange beaucoup",
+                color = "Noir médaillon blanc",
+                pictures = [],
+                implant = "O182248",
+                neutered = True,
+                history = "Trouvé dans un abri de jardin",
+                food_habits = foodhabit6,
+                has_fiv = False,
+                has_felv = False
+            )
+
+        cat2 = Cat(
+                name = "Joy",
+                birth_date = date.fromisoformat("2016-10-10"),
+                arrival_date = date.fromisoformat("2018-08-10"),
+                gender = Gender.FEMALE,
+                breed = "Chat européen",
+                character = "Miaule grave",
+                color = "Gris tigré",
+                pictures = [],
+                implant = "JJ55",
+                neutered = True,
+                history = "Abandonnée",
+                food_habits = foodhabit1,
+                has_fiv = False,
+                has_felv = False
+            )
+
+        cat3 = Cat(
+                name = "Minou",
+                birth_date = None,
+                arrival_date = date.fromisoformat("2019-09-09"),
+                gender = Gender.MALE,
+                breed = "Angora",
+                character = "Grumpy",
+                color = "Blanc tigré roux",
+                pictures = ["/cat/grumpy.jpg", "/cat/super_grimpy.jpg"],
+                neutered = False,
+                history = "A erré jusqu'au refuge. N'a qu'un oeil et 3 pattes",
+                food_habits = foodhabit3,
+                has_fiv = True,
+                has_felv = True
+            )
+
+        s.add(cat1)
+        s.add(cat2)
+        s.add(cat3)
+
+        # Create sheets
+        sheet1 = Sheet(animal = dog1, state = state1, location = location1)
+        sheet2 = Sheet(animal = dog1, state = state2, location = location2)
+        sheet3 = Sheet(animal = dog1, state = state3, location = location1)
+        sheet4 = Sheet(animal = dog2, state = state1, location = location3)
+        sheet5 = Sheet(animal = dog3, state = state4, location = location2)
+        sheet6 = Sheet(animal = dog4, state = state2, location = location4)
+        sheet7 = Sheet(animal = cat1, state = state5, location = location5)
+        sheet8 = Sheet(animal = cat2, state = state2, location = location5)
+        sheet9 = Sheet(animal = cat3, state = state1, location = location2)
+
+        s.add(sheet1)
+        s.add(sheet2)
+        s.add(sheet3)
+        s.add(sheet4)
+        s.add(sheet5)
+        s.add(sheet6)
+        s.add(sheet7)
+        s.add(sheet8)
+        s.add(sheet9)
+
+        # Create caresheets
+        caresheet1 = CareSheet(
+                        animal = dog1,
+                        care = care1,
+                        date = date.fromisoformat("2020-02-01"),
+                        time = time.fromisoformat("10:10:10"),
+                        frequency = "1 fois par semaine",
+                        prescription_number = "Doc_02.pdf",
+                        dosage = "2 comprimés"
+                )
+
+        caresheet2 = CareSheet(
+                        animal = dog2,
+                        care = care2,
+                        date = date.fromisoformat("2020-02-02"),
+                        time = time.fromisoformat("11:11:11"),
+                        frequency = "2 fois par jour",
+                        prescription_number = "ordonnance.pdf",
+                        dosage = "3 cachetons"
+                )
+
+        caresheet3 = CareSheet(
+                        animal = dog2,
+                        care = care4,
+                        date = None,
+                        time = None,
+                        frequency = "oneshot",
+                        prescription_number = "",
+                        dosage = ""
+                )
+
+        caresheet4 = CareSheet(
+                        animal = cat2,
+                        care = care6,
+                        date = date.fromisoformat("2020-02-02"),
+                        time = time.fromisoformat("11:11:11"),
+                        frequency = "5 fois par heures",
+                        prescription_number = "prout.jpg",
+                        dosage = "6 cachets"
+                )
+
+        caresheet5 = CareSheet(
+                        animal = cat3,
+                        care = care1,
+                        date = date.fromisoformat("2020-02-02"),
+                        time = time.fromisoformat("11:11:11"),
+                        prescription_number = "3",
+                        dosage = ""
+                )
+
+        caresheet6 = CareSheet(
+                        animal = dog4,
+                        care = care1,
+                        date = date.fromisoformat("2020-02-02"),
+                        time = time.fromisoformat("11:11:18"),
+                        frequency = "4 fois par mois",
+                )
+
+        caresheet7 = CareSheet(
+                        animal = dog4,
+                        care = care5,
+                        date = date.fromisoformat("2020-03-02"),
+                        frequency = "2 fois par minute",
+                        dosage = "4 piqures"
+                )
+
+        caresheet8 = CareSheet(
+                        animal = dog1,
+                        care = care4,
+                        date = date.fromisoformat("2020-04-02"),
+                        time = time.fromisoformat("11:11:12"),
+                        frequency = "one shot",
+                        prescription_number = "1.jpg",
+                )
+
+        caresheet9 = CareSheet(
+                        animal = dog4,
+                        care = care5,
+                        date = date.fromisoformat("2020-01-02"),
+                        time = time.fromisoformat("11:11:12"),
+                )
+
+        s.add(caresheet1)
+        s.add(caresheet2)
+        s.add(caresheet3)
+        s.add(caresheet4)
+        s.add(caresheet5)
+        s.add(caresheet6)
+        s.add(caresheet7)
+        s.add(caresheet8)
+        s.add(caresheet9)
+
+    def test_populate_database(self):
+        self.populate_database()
 
 #get_all_states()
 #get_state_by_id(id)
