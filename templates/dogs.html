@@ -16,14 +16,21 @@
       <td style="display:none;">{{ dog.id }}</td>
       <td>{{ dog.name }}</td>
       <td>{{ dog.arrival_date }}</td>
-      <td class="emoji"> {% if dog.gender == 2 %} ♂
-	{% elif dog.gender == 1 %} ♀ {% endif %}
+      <td class="emoji">
+	{% if dog.gender == 2 %} <i class="fa fa-mars" aria-hidden="true"></i>
+	{% elif dog.gender == 1 %} <i class="fa fa-venus" aria-hidden="true"></i>
+	{% endif %}
       </td>
-      <td class="emoji">{% if dog.neutered == 1 %} ✅
-	{%  else %} ❌{% endif %}
+      <td class="emoji">
+	{% if dog.neutered == 1 %} <i class="fa fa-check-square-o" aria-hidden="true"></i>
+	{% else %} <i class="fa fa-times" aria-hidden="true"></i>
+	{% endif %}
       </td>
       <td>{{ dog.latest_sheet.state }}</td>
-      <td class="emoji">{% if dog.ok_cats %} 🐱 {% else %} ❌{% endif %}
+      <td class="emoji">
+	{% if dog.ok_cats %} <i class="fa fa-paw" aria-hidden="true"></i>
+	{% else %} <i class="fa fa-times" aria-hidden="true"></i>
+	{% endif %}
       </td>
       <td>{{ dog.latest_sheet.localization }}</td>
     </tr>
