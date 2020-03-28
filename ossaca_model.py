@@ -94,9 +94,6 @@ class Animal:
     :param history: Text describing the history of the animal
     :type history: str
 
-    :param caresheets: List of medical cares given to this animal
-    :type caresheets: List of CareSheets
-
     :param food_habits: Indicates how the animal is used to being feed
     :type food_habits: FoodHabit
     '''
@@ -104,7 +101,7 @@ class Animal:
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
-                 neutered = False, history = "", caresheets = [], food_habits = None):
+                 neutered = False, history = "", food_habits = None):
         self.id = id
         self.name = name
         self.birth_date = birth_date if birth_date is not None else date.today()
@@ -120,7 +117,6 @@ class Animal:
         self.implant = implant
         self.neutered = neutered
         self.history = history
-        self.caresheets = caresheets
         self.food_habits = food_habits
 
 class Dog(Animal):
@@ -134,12 +130,11 @@ class Dog(Animal):
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
-                 neutered = False, history = "", caresheets = [], food_habits = None,
+                 neutered = False, history = "", food_habits = None,
                  ok_cats = False, category = 0):
         Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
                         latest_sheet, gender, breed, character, color, pictures,
-                        sponsors, implant, neutered, history, caresheets,
-                        food_habits)
+                        sponsors, implant, neutered, history, food_habits)
         self.ok_cats = ok_cats
         self.category = category
 
@@ -154,17 +149,17 @@ class Cat(Animal):
     :param has felv: Indicates if the cat has been diagnosed with the Feline
     Leukimia Virus
     :type has_felv: bool
+
     '''
     def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
-                 neutered = False, history = "", caresheets = [], food_habits = None,
+                 neutered = False, history = "", food_habits = None,
                  has_fiv = False, has_felv = False):
         Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
                         latest_sheet, gender, breed, character, color, pictures,
-                        sponsors, implant, neutered, history, caresheets,
-                        food_habits)
+                        sponsors, implant, neutered, history, food_habits)
         self.has_fiv = has_fiv
         self.has_felv = has_felv
 
