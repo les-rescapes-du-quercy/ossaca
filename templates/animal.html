@@ -8,7 +8,7 @@
 <title>{{ species }} - {{ dog.name }}</title>
 <h1>{{ dog.name }}</h1>
 
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
   <ol class="carousel-indicators">
     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -41,31 +41,47 @@
 
 </script>
 
-<form action="/ma-page-de-traitement" method="post">
-  <div>
-    <label for="name">Nom :</label>
-    <input type="text" id="name" name="user_name">
-  </div>
-  <div>
-    <label for="name">Sexe :</label>
-    <select>
-      <option selected="selected" value="1">Male</option>
-      <option value="2">Femelle</option>
-    </select>
-  </div>
-  <div>
-    <label for="mail">Caractère :</label>
-    <input type="email" id="mail" name="user_mail">
-  </div>
-  <div>
-    <label for="msg">Description :</label>
-    <textarea id="msg" name="user_message"></textarea>
-  </div>
-<!--  <input checked="checked"  name="sex" type="radio"  value="male" /> Male
-  <input name="sex" type="radio" value="female" /> Female-->
-  <div>
-    <label for="coic">Stérilisé :</label>
-    <input name="democheckbox" type="checkbox" value="1" />
-  </div>
-  <button class="submit" type="submit" value="submit">Valider</button>
+<form class="form-style" action="/dogs" method="post">
+
+  <fieldset>
+    <input name="id" type="hidden" value={{ dog.id }}>
+    <legend>Identité</legend>
+    <label for="name">Nom</label>
+    <input name="name" type="text" value={{ dog.name }}>
+    <label for="bdate">Date de naissance</label>
+    <input name="bdate" type="date" value={{ dog.birth_date.isoformat() }}></br>
+    <label for="adate">Date d'arrivée</label>
+    <input name="adate" type="date" value={{ dog.arrival_date.isoformat() }}></br>
+    <label for="gender">Sexe</label>
+    <select name="gender">
+      <option value="1" {% if dog.gender == 1 %} selected {% endif %}>Femelle</option>
+      <option value="2" {% if dog.gender == 2 %} selected {% endif %}>Male</option>
+      <option value="0" {% if dog.gender == 0 %} selected {% endif %}>Non connu</option>
+    </select></br>
+    <label for="implant">Nº ICAD</label>
+    <input type="text" name="implant" value={{ dog.implant }}>
+  </fieldset>
+  <fieldset>
+    <legend>Caractéristiques</legend>
+    <label for="breed">Race</label>
+    <input type="text" name="breed" value={{ dog.breed }}><br>
+    <label for="color">Couleur</label>
+    <input type="text" name="color" value={{ dog.color }}><br>
+    <label for="ok_cats">OK Chats</label>
+    <input name="ok_cats" type="checkbox" value="1"
+	   {% if dog.ok_cats == 1 %} checked {% endif %}/><br>
+    <label for="char">Caractère</label>
+    <textarea name="char">{{ dog.character }}</textarea><br>
+    <label for="history">Historique</label>
+    <textarea name="history">{{ dog.history }}</textarea><br>
+  </fieldset>
+  <fieldset>
+    <legend>Santé</legend>
+    <label for="neutered">Stérilisé</label>
+    <input name="neutered" type="checkbox" value="1"
+	   {% if dog.neutered == 1 %} checked {% endif %}/><br>
+  </fieldset>
+
+  <input class="submit" type="submit" value="Valider"><br>
+
 </form>

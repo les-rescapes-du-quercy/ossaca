@@ -1,63 +1,54 @@
 {% include 'header.html' %}
 
 <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ url_for('static', filename='carousel.css') }}" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 
-<title>Nouveau chien</title>
-<h1>Creation d'un nouveau chien</h1>
+<style>
+  input[type=text],
+  input[type=date],
+  input[type=checkbox],
+  textarea,
+  select
+  {
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+  }
+</style>
 
-<form action="/dogs" method="post">
-  <div>
-    <label for="name">Nom :</label>
+<title>Nouveau chien</title>
+
+<form class="form-style" action="/dogs" method="post">
+
+  <fieldset>
+    <legend>Nouveau chien</legend>
+    <label for="adate">Date d'arrivée</label>
+    <input type="date" name="adate" required>
+    <label for="name">Nom</label>
     <input type="text" name="name" required>
-  </div>
-  <div>
-    <label for="arrival_date">Date d'arrivée :</label>
-    <input type="date" name="arrival_date" required>
+    <label for="bdate">Date de naissance</label>
+    <input type="date" name="bdate">
     <span class="validity"></span>
-  </div>
-  <div>
-    <label for="birth_date">Date de naissance :</label>
-    <input type="date" name="birth_date">
-    <span class="validity"></span>
-  </div>
-  <div>
-    <label for="name">Sexe :</label>
+    <label for="name">Sexe</label>
     <select name="gender">
-      <option selected="selected" value="1">Femelle</option>
+      <option value="" disabled selected>Choix du sexe</option>
+      <option value="1">Femelle</option>
       <option value="2">Male</option>
       <option value="0">Non connu</option>
     </select>
-  </div>
-  <div>
-    <label for="implant">Nº ICAD :</label>
+    <label for="implant">Nº ICAD</label>
     <input type="text" name="implant">
-  </div>
-  <div>
-    <label for="breed">Race/Croissement :</label>
+    <label for="breed">Race</label>
     <input type="text" name="breed">
-  </div>
-  <div>
-    <label for="color">Couleur :</label>
+    <label for="color">Couleur</label>
     <input type="text" name="color">
-  </div>
-  <div>
-    <label for="neutered">Stérilisé :</label>
+    <label for="neutered">Stérilisé</label>
     <input name="neutered" type="checkbox" value="1"/>
-  </div>
-  <div>
-    <label for="ok_cats">OK Chats :</label>
+    <label for="ok_cats">OK Chats</label>
     <input name="ok_cats" type="checkbox" value="1"/>
-  </div>
-  <div>
-    <label for="character">Caractère :</label>
-    <textarea name="character"></textarea>
-  </div>
-  <div>
-    <label for="history">Historique :</label>
+    <label for="char">Caractère</label>
+    <textarea name="char"></textarea>
+    <label for="history">Historique</label>
     <textarea name="history"></textarea>
-  </div>
   <button class="submit" type="submit" value="submit">Valider</button>
 </form>

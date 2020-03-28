@@ -36,8 +36,8 @@ def admin():
 @app.route('/dog', methods=['GET'])
 def dog(species='dog', name=None):
     id = request.args.get('id', '')
-    name = getdb().get_dog_by_id(id).name
-    return render_template('animal.html', species=species, name=name)
+    dog = getdb().get_dog_by_id(id)
+    return render_template('animal.html', species=species, dog=dog)
 
 if __name__ == '__main__':
     app.run(debug=True)
