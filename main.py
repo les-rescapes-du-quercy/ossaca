@@ -25,7 +25,7 @@ def dogs():
     dlist = get_dogs()
     return render_template('dogs.html', dogs = dlist)
 
-@app.route('/dogs/new_dog.html', methods=['GET', 'POST'])
+@app.route('/dogs/new_dog', methods=['GET', 'POST'])
 def new_dog():
         return render_template('new_dog.html')
 

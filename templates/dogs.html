@@ -5,12 +5,13 @@
 <title>Liste chiens</title>
 
 <p>
-  <form action="/dogs/new_dog.html" method="get">
+  <form action="/dogs/new_dog" method="get">
     <button class="button" type="submit">Nouveau chien</button>
   </form>
 
   <table id="animals">
     <tr><th>Nom</th><th>Arrivée</th><th>Genre</th><th>Stérilisé</th><th> État</th><th>OK chats</th><th>Localisation</th></tr>
+
     {% for dog in dogs %}
     <tr class="table-row" data-href="dog">
       <td style="display:none;">{{ dog.id }}</td>
@@ -35,5 +36,6 @@
       <td>{{ dog.latest_sheet.localization }}</td>
     </tr>
     {% endfor %}
+
   </table>
 </p>
