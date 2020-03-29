@@ -1,0 +1,33 @@
+{% include 'header.html' %}
+
+<link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+<style>
+  input[type=text],
+  input[type=date],
+  input[type=checkbox],
+  textarea,
+  select
+  {
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+  }
+</style>
+
+<title>Nouveau chat</title>
+
+<form class="form-style" action="/cats" method="post">
+
+  <fieldset>
+    <legend>Nouveau chat</legend>
+    {% include 'new.html' %}
+    <label for="felv">FelV</label>
+    <input name="felv" type="checkbox" value="1"/>
+    <label for="fiv">FiV</label>
+    <input name="fiv" type="checkbox" value="1"/>
+
+    <button class="submit" type="submit" value="submit">Valider</button>
+  </fieldset>
+</form>

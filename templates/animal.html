@@ -83,6 +83,15 @@
     <label for="neutered">Stérilisé</label>
     <input name="neutered" type="checkbox" value="1"
 	   {% if animal.neutered == 1 %} checked {% endif %}/><br>
+    {% if species == "cat" %}
+    <label for="fiv">FiV</label>
+    <input name="fiv" type="checkbox" value="1"
+	   {% if animal.has_fiv == 1 %} checked {% endif %}/><br>
+    <label for="felv">FelV</label>
+    <input name="felv" type="checkbox" value="1"
+	   {% if animal.has_felv == 1 %} checked {% endif %}/><br>
+    {% endif %}
+
   </fieldset>
 
   <input class="submit" type="submit" value="Valider"><br>

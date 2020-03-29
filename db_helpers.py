@@ -54,3 +54,40 @@ def update_dog(form):
     dog.character = form['char']
     dog.history = form['history']
     db.update(dog)
+
+def get_cats():
+    cats = getdb().get_all_cats()
+    return cats
+
+def add_new_cat(form):
+    db = getdb()
+    cat = Cat()
+    cat.name = form['name']
+    cat.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
+    cat.arrival_date = date.fromisoformat(form['adate'])
+    cat.gender = form['gender']
+    cat.breed = form['breed']
+    cat.color = form['color']
+    cat.implant = form['implant']
+    cat.neutered = form['neutered'] if 'neutered' in form else 0
+    cat.has_fiv = form['fiv'] if 'fiv' in form else 0
+    cat.has_felv = form['felv'] if 'felv' in form else 0
+    cat.history = form['history']
+    db.add(cat)
+
+def update_cat(form):
+    db = getdb()
+    cat = db.get_cat_by_id(form['id'])
+    cat.name = form['name']
+    cat.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
+    cat.arrival_date = date.fromisoformat(form['adate'])
+    cat.gender = form['gender']
+    cat.breed = form['breed']
+    cat.color = form['color']
+    cat.implant = form['implant']
+    cat.neutered = form['neutered'] if 'neutered' in form else 0
+    cat.has_fiv = form['fiv'] if 'fiv' in form else 0
+    cat.has_felv = form['felv'] if 'felv' in form else 0
+    cat.character = form['char']
+    cat.history = form['history']
+    db.update(cat)

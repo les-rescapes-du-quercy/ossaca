@@ -29,19 +29,36 @@ def dogs():
 def new_dog():
         return render_template('new_dog.html')
 
-@app.route('/cats')
-def cats():
-    return render_template('cats.html')
-
-@app.route('/admin-care')
-def admin():
-    return render_template('admin-care.html')
-
 @app.route('/dog', methods=['GET'])
 def dog(species='dog', name=None):
     id = request.args.get('id', '')
     dog = getdb().get_dog_by_id(id)
     return render_template('animal.html', species=species, animal=dog)
+
+@app.route('/cats', methods=['GET', 'POST'])
+def cats():
+    if request.method == 'POST':
+        if 'id' in request.form:
+            update_cat(request.form)
+        else:
+            add_new_cat(request.form)
+
+    clist = get_cats()
+    return render_template('cats.html', cats = clist)
+
+@app.route('/cats/new_cat', methods=['GET', 'POST'])
+def new_cat():
+    return render_template('new_cat.html')
+
+@app.route('/cat', methods=['GET'])
+def cat(species='cat', name=None):
+    id = request.args.get('id', '')
+    cat = getdb().get_cat_by_id(id)
+    return render_template('animal.html', species=species, animal=cat)
+
+@app.route('/admin-care')
+def admin():
+    return render_template('admin-care.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

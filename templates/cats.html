@@ -4,36 +4,43 @@
 <title>Liste chats</title>
 
 <p>
-  <form action="/cats/new_cat.html" method="get">
+  <form action="/cats/new_cat" method="get">
     <button class="button" type="submit">Nouveau chat</button>
   </form>
 
   <table id="animals">
     <tr><th>Nom</th><th>Arrivée</th><th>Genre</th><th>Stérilisé</th>
       <th> État</th><th>FelV</th><th>FiV</th><th>Localisation</th></tr>
-    {% for dog in dogs %}
+
+    {% for cat in cats %}
     <tr class="table-row" data-href="cat">
       <td style="display:none;">{{ cat.id }}</td>
       <td>{{ cat.name }}</td>
       <td>{{ cat.arrival_date }}</td>
       <td class="emoji">
-	{% if dog.gender == 2 %} <i class="fa fa-mars" aria-hidden="true"></i>
-	{% elif dog.gender == 1 %} <i class="fa fa-venus" aria-hidden="true"></i>
+	{% if cat.gender == 2 %} <i class="fa fa-mars" aria-hidden="true"></i>
+	{% elif cat.gender == 1 %} <i class="fa fa-venus" aria-hidden="true"></i>
 	{% endif %}
       </td>
       <td class="emoji">
-	{% if dog.neutered == 1 %} <i class="fa fa-check-square-o" aria-hidden="true"></i>
+	{% if cat.neutered == 1 %} <i class="fa fa-check-square-o" aria-hidden="true"></i>
 	{% else %} <i class="fa fa-times" aria-hidden="true"></i>
 	{% endif %}
       </td>
-      <td>{{ dog.latest_sheet.state }}</td>
+      <td>{{ cat.latest_sheet.state }}</td>
       <td class="emoji">
-	{% if dog.ok_cats %} <i class="fa fa-paw" aria-hidden="true"></i>
-	{% else %} <i class="fa fa-times" aria-hidden="true"></i>
+	{% if cat.has_fiv %} <i class="fa fa-medkit" aria-hidden="true"></i>
+	{% else %} <i class="fa fa-thumbs-up" aria-hidden="true"></i>
 	{% endif %}
       </td>
-      <td>{{ dog.latest_sheet.localization }}</td>
+      <td class="emoji">
+	{% if cat.has_felv %} <i class="fa fa-medkit" aria-hidden="true"></i>
+	{% else %} <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+	{% endif %}
+      </td>
+      <td>{{ cat.latest_sheet.localization }}</td>
     </tr>
     {% endfor %}
+
   </table>
 </p>
