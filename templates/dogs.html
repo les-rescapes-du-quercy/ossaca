@@ -4,13 +4,12 @@
 
 <title>Liste chiens</title>
 
-<p>
-  <form action="/dogs/new_dog" method="get">
-    <button class="button" type="submit">Nouveau chien</button>
-  </form>
+<h1>Liste des chiens</h1>
 
+<p>
   <table id="animals">
-    <tr><th>Nom</th><th>Arrivée</th><th>Genre</th><th>Stérilisé</th><th> État</th><th>OK chats</th><th>Localisation</th></tr>
+    <tr><th>Nom</th><th>Arrivée</th><th>Genre</th><th>Stérilisé</th>
+      <th> État</th><th>OK chats</th><th>Localisation</th></tr>
 
     {% for dog in dogs %}
     <tr class="table-row" data-href="dog">
@@ -38,4 +37,9 @@
     {% endfor %}
 
   </table>
+
+  <form action="/dogs/new_dog" method="get">
+    <button class="button" type="submit">Nouveau chien</button>
+  </form>
+
 </p>

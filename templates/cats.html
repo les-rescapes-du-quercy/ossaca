@@ -3,11 +3,9 @@
 
 <title>Liste chats</title>
 
-<p>
-  <form action="/cats/new_cat" method="get">
-    <button class="button" type="submit">Nouveau chat</button>
-  </form>
+<h1>Liste des chats</h1>
 
+<p>
   <table id="animals">
     <tr><th>Nom</th><th>Arrivée</th><th>Genre</th><th>Stérilisé</th>
       <th> État</th><th>FelV</th><th>FiV</th><th>Localisation</th></tr>
@@ -20,6 +18,8 @@
       <td class="emoji">
 	{% if cat.gender == 2 %} <i class="fa fa-mars" aria-hidden="true"></i>
 	{% elif cat.gender == 1 %} <i class="fa fa-venus" aria-hidden="true"></i>
+	{% else %}
+	<i class="fa fa-genderless" aria-hidden="true"></i>
 	{% endif %}
       </td>
       <td class="emoji">
@@ -43,4 +43,9 @@
     {% endfor %}
 
   </table>
+
+  <form action="/cats/new_cat" method="get">
+    <button class="button" type="submit">Nouveau chat</button>
+  </form>
+
 </p>
