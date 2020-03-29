@@ -41,16 +41,16 @@
 
 </script>
 
-<form class="form-style" action={{species}}+"s" method="post">
+<form class="form-style" action={{species}}s method="post">
   <fieldset>
-    <input name="id" type="hidden" value={{ animal.id }}>
+    <input name="id" type="hidden" value="{{ animal.id }}">
     <legend>Identité</legend>
     <label for="name">Nom</label>
-    <input name="name" type="text" value={{ animal.name }}>
+    <input name="name" type="text" value="{{ animal.name }}">
     <label for="bdate">Date de naissance</label>
-    <input name="bdate" type="date" value={{ animal.birth_date.isoformat() }}></br>
+    <input name="bdate" type="date" value="{{ animal.birth_date.isoformat() }}"></br>
     <label for="adate">Date d'arrivée</label>
-    <input name="adate" type="date" value={{ animal.arrival_date.isoformat() }}></br>
+    <input name="adate" type="date" value="{{ animal.arrival_date.isoformat() }}"></br>
     <label for="gender">Sexe</label>
     <select name="gender">
       <option value="1" {% if animal.gender == 1 %} selected {% endif %}>Femelle</option>
@@ -58,14 +58,14 @@
       <option value="0" {% if animal.gender == 0 %} selected {% endif %}>Non connu</option>
     </select></br>
     <label for="implant">Nº ICAD</label>
-    <input type="text" name="implant" value={{ animal.implant }}>
+    <input type="text" name="implant" value="{{ animal.implant }}">
   </fieldset>
   <fieldset>
     <legend>Caractéristiques</legend>
     <label for="breed">Race</label>
-    <input type="text" name="breed" value={{ animal.breed }}><br>
+    <input type="text" name="breed" value="{{ animal.breed }}"><br>
     <label for="color">Couleur</label>
-    <input type="text" name="color" value={{ animal.color }}><br>
+    <input type="text" name="color" value="{{ animal.color }}"><br>
 
     {% if species == "dog" %}
     <label for="ok_cats">OK Chats</label>
