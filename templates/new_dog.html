@@ -22,33 +22,10 @@
 
   <fieldset>
     <legend>Nouveau chien</legend>
-    <label for="adate">Date d'arrivée</label>
-    <input type="date" name="adate" required>
-    <label for="name">Nom</label>
-    <input type="text" name="name" required>
-    <label for="bdate">Date de naissance</label>
-    <input type="date" name="bdate">
-    <span class="validity"></span>
-    <label for="name">Sexe</label>
-    <select name="gender">
-      <option value="" disabled selected>Choix du sexe</option>
-      <option value="1">Femelle</option>
-      <option value="2">Male</option>
-      <option value="0">Non connu</option>
-    </select>
-    <label for="implant">Nº ICAD</label>
-    <input type="text" name="implant">
-    <label for="breed">Race</label>
-    <input type="text" name="breed">
-    <label for="color">Couleur</label>
-    <input type="text" name="color">
-    <label for="neutered">Stérilisé</label>
-    <input name="neutered" type="checkbox" value="1"/>
+    {% include 'new.html' %}
     <label for="ok_cats">OK Chats</label>
     <input name="ok_cats" type="checkbox" value="1"/>
-    <label for="char">Caractère</label>
-    <textarea name="char"></textarea>
-    <label for="history">Historique</label>
-    <textarea name="history"></textarea>
-  <button class="submit" type="submit" value="submit">Valider</button>
+
+    <button class="submit" type="submit" value="submit">Valider</button>
+  </fieldset>
 </form>
