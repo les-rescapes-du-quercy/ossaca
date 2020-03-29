@@ -27,7 +27,7 @@
 	{% else %} <i class="fa fa-times" aria-hidden="true"></i>
 	{% endif %}
       </td>
-      <td>{{ cat.latest_sheet.state }}</td>
+      <td>{{ cat.latest_sheet.state.label }}</td>
       <td class="emoji">
 	{% if cat.has_fiv %} <i class="fa fa-medkit" aria-hidden="true"></i>
 	{% else %} <i class="fa fa-thumbs-up" aria-hidden="true"></i>
@@ -38,7 +38,12 @@
 	{% else %} <i class="fa fa-thumbs-up" aria-hidden="true"></i>
 	{% endif %}
       </td>
-      <td>{{ cat.latest_sheet.localization }}</td>
+      <td>{% if cat.latest_sheet.location.location_type == 0 %}
+	{{cat.latest_sheet.location.box.label}}
+	{% elif cat.latest_sheet.location.location_type == 1 %} Vétérinaire
+	{% elif cat.latest_sheet.location.location_type == 2 %} FA
+	{% elif cat.latest_sheet.location.location_type == 3 %} Autre
+	{% endif %}
     </tr>
     {% endfor %}
 
