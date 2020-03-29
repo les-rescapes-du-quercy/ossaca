@@ -612,132 +612,233 @@ class TestOssacaDB(unittest.TestCase):
 
 ############################### Read ###########################################
 
-    def populate_database(self):
+class TestOssacaDBAPI(unittest.TestCase):
+
+    cares = []
+    states = []
+    foods = []
+    bowls = []
+    boxes = []
+    locations = []
+    foodhabits = []
+    dogs = []
+    cats = []
+    sheets = []
+    caresheets = []
+
+    def populate_database(self, path):
+
+        if os.path.exists(path):
+            return
 
         s = SQLiteStorage()
-        s.connect("test.db")
+        s.connect(path)
+
+        TestOssacaDBAPI.cares = []
 
         # Build care list
-        care1 = Care(type = "traitement", dose = "25mg", way = "orale",
+        TestOssacaDBAPI.cares.append(
+                    Care(type = "traitement", dose = "25mg", way = "orale",
                      medecine_name = "Clavubactin",
                      description = "Traitement des infections provoquées par les bactéries sensibles à l'amoxicilline en association avec l'acide clavulanique")
+                    )
 
-        care2 = Care(type = "traitement", dose = "50mg", way = "orale",
+        TestOssacaDBAPI.cares.append(
+                    Care(type = "traitement", dose = "50mg", way = "orale",
                      medecine_name = "Clavubactin", description = "Traitement des infections provoquées par les bactéries sensibles à l'amoxicilline en association avec l'acide clavulanique" )
+                    )
 
-        care3 = Care(type = "vaccin", dose = "10ml", way = "sous-cutanée",
+        TestOssacaDBAPI.cares.append(
+                    Care(type = "vaccin", dose = "10ml", way = "sous-cutanée",
                      medecine_name = "vaccinator",
                      description = "Vaccin contre le gros ventre" )
+                    )
 
-        care4 = Care(type = "operation", dose = "", way = "",
+        TestOssacaDBAPI.cares.append(
+                    Care(type = "operation", dose = "", way = "",
                      medecine_name = "",
                      description = "Operation de la molaire gauche" )
+                    )
 
-        care5 = Care(type = "checkup", dose = "", way = "",
+        TestOssacaDBAPI.cares.append(
+                    Care(type = "checkup", dose = "", way = "",
                      medecine_name = "", description = "Checkup vétérinaire")
+                    )
 
-        care6 = Care(type = "traitement", dose = "", way = "Oreilles",
+        TestOssacaDBAPI.cares.append(
+                    Care(type = "traitement", dose = "", way = "Oreilles",
                      medecine_name = "",
                      description = "Nettoyage des oreilles avec compresse eet antiseptique" )
+                    )
+                    
+        for care in TestOssacaDBAPI.cares:
+            s.add(care)
 
-        s.add(care1)
-        s.add(care2)
-        s.add(care3)
-        s.add(care4)
-        s.add(care5)
-        s.add(care6)
+        TestOssacaDBAPI.states = []
 
         # build state list
-        state1 = State(label = "Arrivé",
-                       description = "L'ainmal est arrivé au refuge, en attente de voir son comportement")
-        state2 = State(label = "A l'essai",
-                       description = "L'animal est placé en famille, pour essai de compatibilité en vue d'adoption")
-        state3 = State(label = "A l'adoption",
-                       description = "L'animal est disponible à l'adoption")
-        state4 = State(label = "Quarantaine", description = "L'animal est placé en quarantaine")
-        state5 = State(label = "Vétérinaire", description = "L'animal est chez le vétérinaire")
-        state6 = State(label = "Adopté", description = "L'animal est adopté")
+        TestOssacaDBAPI.states.append(
+                        State(label = "Arrivé",
+                        description = "L'ainmal est arrivé au refuge, en attente de voir son comportement")
+                       )
 
-        s.add(state1)
-        s.add(state2)
-        s.add(state3)
-        s.add(state4)
-        s.add(state5)
-        s.add(state6)
+        TestOssacaDBAPI.states.append(
+                        State(label = "A l'essai",
+                        description = "L'animal est placé en famille, pour essai de compatibilité en vue d'adoption")
+                        )
+
+        TestOssacaDBAPI.states.append(
+                        State(label = "A l'adoption",
+                        description = "L'animal est disponible à l'adoption")
+                        )
+
+        TestOssacaDBAPI.states.append(
+                        State(label = "Quarantaine", description = "L'animal est placé en quarantaine")
+                        )
+
+        TestOssacaDBAPI.states.append(
+                        State(label = "Vétérinaire", description = "L'animal est chez le vétérinaire")
+                        )
+
+        TestOssacaDBAPI.states.append(
+                        State(label = "Adopté", description = "L'animal est adopté")
+                        )
+
+        for state in TestOssacaDBAPI.states:
+            s.add(state)
 
         # build food list
-        food1 = Food(label = "Croquettes chien adulte", description = "Croquettes pour chien adulte")
-        food2 = Food(label = "Croquettes chat stérilisé", description = "Croquettes pour chat stérilisé")
-        food3 = Food(label = "Croquettes chat gastro", description = "Croquettes gastro ou hypo pour chat")
-        food4 = Food(label = "Paté chien bio sans boeuf", description = "Bonne patée bio miam miam")
-        food5 = Food(label = "Paté chat", description = "Paté pour chat qui sent bon")
-        food6 = Food(label = "Croquettes chiot", description = "Croquettes pour chiots")
 
-        s.add(food1)
-        s.add(food2)
-        s.add(food3)
-        s.add(food4)
-        s.add(food5)
-        s.add(food6)
+        TestOssacaDBAPI.foods = []
+
+        TestOssacaDBAPI.foods.append(
+                        Food(label = "Croquettes chien adulte", description = "Croquettes pour chien adulte")
+                        )
+
+        TestOssacaDBAPI.foods.append(
+                        Food(label = "Croquettes chat stérilisé", description = "Croquettes pour chat stérilisé")
+                        )
+
+        TestOssacaDBAPI.foods.append(
+                        Food(label = "Croquettes chat gastro", description = "Croquettes gastro ou hypo pour chat")
+                        )
+
+        TestOssacaDBAPI.foods.append(
+                        Food(label = "Paté chien bio sans boeuf", description = "Bonne patée bio miam miam")
+                        )
+
+        TestOssacaDBAPI.foods.append(
+                        Food(label = "Paté chat", description = "Paté pour chat qui sent bon")
+                        )
+
+        TestOssacaDBAPI.foods.append(
+                        Food(label = "Croquettes chiot", description = "Croquettes pour chiots")
+                        )
+
+        for food in TestOssacaDBAPI.states:
+            s.add(food)
 
         # build bowl list
-        bowl1 = Bowl(label = "petite gamelle", description = "une petite gamelle")
-        bowl2 = Bowl(label = "gamelle normale", description = "une gamelle de taille normale")
-        bowl3 = Bowl(label = "grosse gamelle", description = "une bonne grosse gamelle")
-        bowl4 = Bowl(label = "gamelle détrempée", description = "une gamelle normale bien ramolie")
-        bowl5 = Bowl(label = "a volonté", description = "Nourriture en accès libre à volonté")
+        TestOssacaDBAPI.bowls = []
 
-        s.add(bowl1)
-        s.add(bowl2)
-        s.add(bowl3)
-        s.add(bowl4)
-        s.add(bowl5)
+        TestOssacaDBAPI.bowls.append(
+                        Bowl(label = "petite gamelle", description = "une petite gamelle")
+                        )
+
+        TestOssacaDBAPI.bowls.append(
+                        Bowl(label = "gamelle normale", description = "une gamelle de taille normale")
+                        )
+
+        TestOssacaDBAPI.bowls.append(
+                        Bowl(label = "grosse gamelle", description = "une bonne grosse gamelle")
+                        )
+
+        TestOssacaDBAPI.bowls.append(
+                        Bowl(label = "gamelle détrempée", description = "une gamelle normale bien ramolie")
+                        )
+
+        TestOssacaDBAPI.bowls.append(
+                        Bowl(label = "a volonté", description = "Nourriture en accès libre à volonté")
+                        )
+
+        for bowl in TestOssacaDBAPI.bowls:
+            s.add(bowl)
 
         # build box list
-        box1 = Box(label = "Box 1", description = "Box 1, allée 1, ensoleillé", surface_area = 3)
-        box2 = Box(label = "Box 2", description = "Box 2, allée 1, ombragé", surface_area = 3)
-        box3 = Box(label = "Box 3", description = "Box 3, allée 2, porte abimée", surface_area = 3)
-        box4 = Box(label = "Box 4", description = "Box 4, allée 2, ensoleillé", surface_area = 4)
-        box5 = Box(label = "Chatterie", description = "Chatterie", surface_area = 20)
-        box6 = Box(label = "Pouponnière", description = "La ou on met les chiots", surface_area = 5)
+        TestOssacaDBAPI.boxes = []
 
-        s.add(box1)
-        s.add(box2)
-        s.add(box3)
-        s.add(box4)
-        s.add(box5)
-        s.add(box6)
+        TestOssacaDBAPI.boxes.append(
+                        Box(label = "Box 1", description = "Box 1, allée 1, ensoleillé", surface_area = 3)
+                        )
+
+        TestOssacaDBAPI.boxes.append(
+                        Box(label = "Box 2", description = "Box 2, allée 1, ombragé", surface_area = 3)
+                        )
+
+        TestOssacaDBAPI.boxes.append(
+                        Box(label = "Box 3", description = "Box 3, allée 2, porte abimée", surface_area = 3)
+                        )
+
+        TestOssacaDBAPI.boxes.append(
+                        Box(label = "Box 4", description = "Box 4, allée 2, ensoleillé", surface_area = 4)
+                        )
+
+        TestOssacaDBAPI.boxes.append(
+                        Box(label = "Chatterie", description = "Chatterie", surface_area = 20)
+                        )
+
+        TestOssacaDBAPI.boxes.append(
+                        Box(label = "Pouponnière", description = "La ou on met les chiots", surface_area = 5)
+                        )
+
+        for box in TestOssacaDBAPI.boxes:
+            s.add(box)
 
         # Build location list
-        location1 = Location(location_type = LocationType.BOX, box = box1)
-        location2 = Location(location_type = LocationType.BOX, box = box2)
-        location3 = Location(location_type = LocationType.BOX, box = box5)
-        location4 = Location(location_type = LocationType.FOSTER_FAMILY)
-        location5 = Location(location_type = LocationType.VET)
+        TestOssacaDBAPI.locations = []
 
-        s.add(location1)
-        s.add(location2)
-        s.add(location3)
-        s.add(location4)
-        s.add(location5)
+        TestOssacaDBAPI.locations.append(
+                            Location(location_type = LocationType.BOX, box = TestOssacaDBAPI.boxes[0])
+                            )
+
+        TestOssacaDBAPI.locations.append(
+                            Location(location_type = LocationType.BOX, box = TestOssacaDBAPI.boxes[1])
+                            )
+
+        TestOssacaDBAPI.locations.append(
+                            Location(location_type = LocationType.BOX, box = TestOssacaDBAPI.boxes[4])
+                            )
+
+        TestOssacaDBAPI.locations.append(
+                            Location(location_type = LocationType.FOSTER_FAMILY)
+                            )
+
+        TestOssacaDBAPI.locations.append(
+                            Location(location_type = LocationType.VET)
+                            )
+
+        for location in TestOssacaDBAPI.locations:
+            s.add(location)
 
         # Build food habits
-        foodhabit1 = FoodHabit(food = food1, bowl = bowl3)
-        foodhabit2 = FoodHabit(food = food3, bowl = bowl1)
-        foodhabit3 = FoodHabit(food = food4, bowl = bowl2)
-        foodhabit4 = FoodHabit(food = food4, bowl = None)
-        foodhabit5 = FoodHabit(food = food2, bowl = bowl4)
-        foodhabit6 = FoodHabit(food = None, bowl = bowl5)
+        TestOssacaDBAPI.foodhabits = []
 
-        s.add(foodhabit1)
-        s.add(foodhabit2)
-        s.add(foodhabit3)
-        s.add(foodhabit4)
-        s.add(foodhabit5)
-        s.add(foodhabit6)
+        self.foodhabits.append(FoodHabit(food = TestOssacaDBAPI.foods[0], bowl = TestOssacaDBAPI.bowls[2]))
+        self.foodhabits.append(FoodHabit(food = TestOssacaDBAPI.foods[2], bowl = TestOssacaDBAPI.bowls[0]))
+        self.foodhabits.append(FoodHabit(food = TestOssacaDBAPI.foods[3], bowl = TestOssacaDBAPI.bowls[1]))
+        self.foodhabits.append(FoodHabit(food = TestOssacaDBAPI.foods[3], bowl = None))
+        self.foodhabits.append(FoodHabit(food = TestOssacaDBAPI.foods[1], bowl = TestOssacaDBAPI.bowls[3]))
+        self.foodhabits.append(FoodHabit(food = None, bowl = TestOssacaDBAPI.bowls[4]))
+
+        for foodhabit in TestOssacaDBAPI.foodhabits:
+            s.add(foodhabit)
+
 
         # Create Dogs
-        dog1 = Dog(
+        TestOssacaDBAPI.dogs = []
+
+        TestOssacaDBAPI.dogs.append(
+                Dog(
                 name = "Ichi",
                 birth_date = date.fromisoformat("2019-04-21"),
                 arrival_date = date.fromisoformat("2019-05-22"),
@@ -749,12 +850,13 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "AZE123",
                 neutered = True,
                 history = "Maltraité dans une cage pendant l'enfance",
-                food_habits = foodhabit2,
+                food_habits = TestOssacaDBAPI.foodhabits[1],
                 ok_cats = False,
                 category = 0
-                )
+                ))
 
-        dog2 = Dog(
+        TestOssacaDBAPI.dogs.append(
+                Dog(
                 name = "Louloute",
                 birth_date = date.fromisoformat("2017-12-12"),
                 arrival_date = date.fromisoformat("2018-01-01"),
@@ -766,12 +868,13 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "AIRO3991",
                 neutered = True,
                 history = "A tué ses parents",
-                food_habits = foodhabit4,
+                food_habits = TestOssacaDBAPI.foodhabits[3],
                 ok_cats = False,
                 category = 2
-                )
+                ))
 
-        dog3 = Dog(
+        TestOssacaDBAPI.dogs.append(
+                Dog(
                 name = "Pato",
                 birth_date = date.fromisoformat("2015-04-04"),
                 arrival_date = date.fromisoformat("2019-05-29"),
@@ -785,9 +888,10 @@ class TestOssacaDB(unittest.TestCase):
                 food_habits = None,
                 ok_cats = True,
                 category = 1
-                )
+                ))
 
-        dog4 = Dog(
+        TestOssacaDBAPI.dogs.append(
+                Dog(
                 name = "Roger",
                 birth_date = date.fromisoformat("2010-02-14"),
                 arrival_date = date.fromisoformat("2014-08-10"),
@@ -799,18 +903,19 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "RORO009",
                 neutered = True,
                 history = "Propriétaire décédé",
-                food_habits = foodhabit5,
+                food_habits = TestOssacaDBAPI.foodhabits[4],
                 ok_cats = True,
                 category = 0
-                )
+                ))
 
-        s.add(dog1)
-        s.add(dog2)
-        s.add(dog3)
-        s.add(dog4)
+        for dog in TestOssacaDBAPI.dogs:
+            s.add(dog)
 
         # Create Cats
-        cat1 = Cat(
+        TestOssacaDBAPI.cats = []
+
+        TestOssacaDBAPI.cats.append(
+                Cat(
                 name = "Happy",
                 birth_date = date.fromisoformat("2011-11-11"),
                 arrival_date = date.fromisoformat("2017-03-30"),
@@ -822,12 +927,13 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "O182248",
                 neutered = True,
                 history = "Trouvé dans un abri de jardin",
-                food_habits = foodhabit6,
+                food_habits = TestOssacaDBAPI.foodhabits[5],
                 has_fiv = False,
                 has_felv = False
-            )
+            ))
 
-        cat2 = Cat(
+        TestOssacaDBAPI.cats.append(
+                Cat(
                 name = "Joy",
                 birth_date = date.fromisoformat("2016-10-10"),
                 arrival_date = date.fromisoformat("2018-08-10"),
@@ -839,12 +945,13 @@ class TestOssacaDB(unittest.TestCase):
                 implant = "JJ55",
                 neutered = True,
                 history = "Abandonnée",
-                food_habits = foodhabit1,
+                food_habits = TestOssacaDBAPI.foodhabits[0],
                 has_fiv = False,
                 has_felv = False
-            )
+            ))
 
-        cat3 = Cat(
+        TestOssacaDBAPI.cats.append(
+                Cat(
                 name = "Minou",
                 birth_date = None,
                 arrival_date = date.fromisoformat("2019-09-09"),
@@ -855,158 +962,270 @@ class TestOssacaDB(unittest.TestCase):
                 pictures = ["/cat/grumpy.jpg", "/cat/super_grimpy.jpg"],
                 neutered = False,
                 history = "A erré jusqu'au refuge. N'a qu'un oeil et 3 pattes",
-                food_habits = foodhabit3,
+                food_habits = TestOssacaDBAPI.foodhabits[2],
                 has_fiv = True,
                 has_felv = True
-            )
+                ))
 
-        s.add(cat1)
-        s.add(cat2)
-        s.add(cat3)
+        for cat in TestOssacaDBAPI.cats:
+            s.add(cat)
 
         # Create sheets
-        sheet1 = Sheet(animal = dog1, state = state1, location = location1)
-        sheet2 = Sheet(animal = dog1, state = state2, location = location2)
-        sheet3 = Sheet(animal = dog1, state = state3, location = location1)
-        sheet4 = Sheet(animal = dog2, state = state1, location = location3)
-        sheet5 = Sheet(animal = dog3, state = state4, location = location2)
-        sheet6 = Sheet(animal = dog4, state = state2, location = location4)
-        sheet7 = Sheet(animal = cat1, state = state5, location = location5)
-        sheet8 = Sheet(animal = cat2, state = state2, location = location5)
-        sheet9 = Sheet(animal = cat3, state = state1, location = location2)
+        TestOssacaDBAPI.sheets = []
 
-        s.add(sheet1)
-        s.add(sheet2)
-        s.add(sheet3)
-        s.add(sheet4)
-        s.add(sheet5)
-        s.add(sheet6)
-        s.add(sheet7)
-        s.add(sheet8)
-        s.add(sheet9)
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.dogs[0],
+                      state = TestOssacaDBAPI.states[0],
+                      location = TestOssacaDBAPI.locations[0]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.dogs[0],
+                      state = TestOssacaDBAPI.states[1],
+                      location = TestOssacaDBAPI.locations[1]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.dogs[0],
+                      state = TestOssacaDBAPI.states[2],
+                      location = TestOssacaDBAPI.locations[0]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.dogs[1],
+                      state = TestOssacaDBAPI.states[0],
+                      location = TestOssacaDBAPI.locations[2]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.dogs[2],
+                      state = TestOssacaDBAPI.states[3],
+                      location = TestOssacaDBAPI.locations[1]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.dogs[3],
+                      state = TestOssacaDBAPI.states[1],
+                      location = TestOssacaDBAPI.locations[3]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.cats[0],
+                      state = TestOssacaDBAPI.states[4],
+                      location = TestOssacaDBAPI.locations[4]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.cats[1],
+                      state = TestOssacaDBAPI.states[1],
+                      location = TestOssacaDBAPI.locations[4]))
+
+        TestOssacaDBAPI.sheets.append(
+                Sheet(animal = TestOssacaDBAPI.cats[2],
+                      state = TestOssacaDBAPI.states[0],
+                      location = TestOssacaDBAPI.locations[1]))
+
+        for sheet in TestOssacaDBAPI.sheets:
+            s.add(sheet)
 
         # Create caresheets
-        caresheet1 = CareSheet(
-                        animal = dog1,
-                        care = care1,
+        TestOssacaDBAPI.caresheets = []
+
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.dogs[0],
+                        care = TestOssacaDBAPI.cares[0],
                         date = date.fromisoformat("2020-02-01"),
                         time = time.fromisoformat("10:10:10"),
                         frequency = "1 fois par semaine",
                         prescription_number = "Doc_02.pdf",
                         dosage = "2 comprimés"
-                )
+                ))
 
-        caresheet2 = CareSheet(
-                        animal = dog2,
-                        care = care2,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.dogs[1],
+                        care = TestOssacaDBAPI.cares[1],
                         date = date.fromisoformat("2020-02-02"),
                         time = time.fromisoformat("11:11:11"),
                         frequency = "2 fois par jour",
                         prescription_number = "ordonnance.pdf",
                         dosage = "3 cachetons"
-                )
+                ))
 
-        caresheet3 = CareSheet(
-                        animal = dog2,
-                        care = care4,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.dogs[1],
+                        care = TestOssacaDBAPI.cares[3],
                         date = None,
                         time = None,
                         frequency = "oneshot",
                         prescription_number = "",
                         dosage = ""
-                )
+                ))
 
-        caresheet4 = CareSheet(
-                        animal = cat2,
-                        care = care6,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.cats[1],
+                        care = TestOssacaDBAPI.cares[5],
                         date = date.fromisoformat("2020-02-02"),
                         time = time.fromisoformat("11:11:11"),
                         frequency = "5 fois par heures",
                         prescription_number = "prout.jpg",
                         dosage = "6 cachets"
-                )
+                ))
 
-        caresheet5 = CareSheet(
-                        animal = cat3,
-                        care = care1,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.cats[2],
+                        care = TestOssacaDBAPI.cares[0],
                         date = date.fromisoformat("2020-02-02"),
                         time = time.fromisoformat("11:11:11"),
                         prescription_number = "3",
                         dosage = ""
-                )
+                ))
 
-        caresheet6 = CareSheet(
-                        animal = dog4,
-                        care = care1,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.dogs[3],
+                        care = TestOssacaDBAPI.cares[0],
                         date = date.fromisoformat("2020-02-02"),
                         time = time.fromisoformat("11:11:18"),
                         frequency = "4 fois par mois",
-                )
+                ))
 
-        caresheet7 = CareSheet(
-                        animal = dog4,
-                        care = care5,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.dogs[3],
+                        care = TestOssacaDBAPI.cares[4],
                         date = date.fromisoformat("2020-03-02"),
                         frequency = "2 fois par minute",
                         dosage = "4 piqures"
-                )
+                ))
 
-        caresheet8 = CareSheet(
-                        animal = dog1,
-                        care = care4,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.dogs[0],
+                        care = TestOssacaDBAPI.cares[3],
                         date = date.fromisoformat("2020-04-02"),
                         time = time.fromisoformat("11:11:12"),
                         frequency = "one shot",
                         prescription_number = "1.jpg",
-                )
+                ))
 
-        caresheet9 = CareSheet(
-                        animal = dog4,
-                        care = care5,
+        TestOssacaDBAPI.caresheets.append(
+                        CareSheet(
+                        animal = TestOssacaDBAPI.dogs[3],
+                        care = TestOssacaDBAPI.cares[4],
                         date = date.fromisoformat("2020-01-02"),
                         time = time.fromisoformat("11:11:12"),
-                )
+                ))
 
-        s.add(caresheet1)
-        s.add(caresheet2)
-        s.add(caresheet3)
-        s.add(caresheet4)
-        s.add(caresheet5)
-        s.add(caresheet6)
-        s.add(caresheet7)
-        s.add(caresheet8)
-        s.add(caresheet9)
+        for caresheet in TestOssacaDBAPI.caresheets:
+             s.add(caresheet)
+
+    def compare_type(self, type_a, type_b):
+        self.assertEqual(type_a.label, type_b.label)
+        self.assertEqual(type_a.description, type_b.description)
+
+    @classmethod
+    def setUpClass(cls):
+        if os.path.exists("example.db"):
+            os.remove("example.db")
+
+    def setUp(self):
+        self.populate_database("example.db")
 
     def test_populate_database(self):
-        self.populate_database()
 
-#get_all_states()
-#get_state_by_id(id)
-#get_all_foods()
-#get_food_by_id(id)
-#get_all_bowls()
-#get_bowl_by_id(id)
-#get_all_animals()
-#get_animal_by_id(id)
-#get_all_dogs()
-#get_dog_by_id(id)
-#get_all_cats()
-#get_cat_by_id(id)
-#get_all_cares()
-#get_care_by_id(id)
-#get_all_caresheets()
-#get_caresheet_by_id(id)
-#get_all_caresheets_by_animal_id(animal_id)
-#get_all_foodhabits()
-#get_foodhabit_by_id(id)
-#get_all_locations()
-#get_location_by_id(seldid)
-#get_all_sheets()
-#get_sheet_by_id(id)
-#get_all_sheets_by_animal_id(animal_id)
-#get_all_boxes()
-#get_box_by_id(id)
+        if os.path.exists("example.db"):
+            os.remove("example.db")
 
+        self.populate_database("example.db")
+
+        #os.remove("example.db")
+
+    def test_get_all_states(self):
+        s = SQLiteStorage()
+        s.connect("example.db")
+
+        states = s.get_all_states()
+        self.assertEqual(len(states), len(self.states))
+
+        for i in range(len(states)) :
+            with self.subTest(i = i):
+                self.compare_type(state[i], self.states[i])
+
+        s.close()
+        return
+
+    def test_get_state_by_id(self):
+        return
+
+    def test_get_all_foods(self):
+        return
+
+    def test_get_food_by_id(self):
+        return
+
+    def test_get_all_bowls(self):
+        return
+
+    def test_get_bowl_by_id(self):
+        return
+
+    def test_get_all_animals(self):
+        return
+
+    def test_get_animal_by_id(self):
+        return
+
+    def test_get_all_dogs(self):
+        return
+
+    def test_get_dog_by_id(self):
+        return
+
+    def test_get_all_cats(self):
+        return
+
+    def test_get_cat_by_id(self):
+        return
+
+    def test_get_all_cares(self):
+        return
+
+    def test_get_care_by_id(self):
+        return
+
+    def test_get_all_caresheets(self):
+        return
+
+    def test_get_caresheet_by_id(self):
+        return
+
+    def test_get_all_caresheets_by_animal_id(self):
+        return
+
+    def test_get_all_foodhabits(self):
+        return
+
+    def test_get_foodhabit_by_id(self):
+        return
+
+    def test_get_all_locations(self):
+        return
+
+    def test_get_location_by_id(self):
+        return
+
+    def test_get_all_sheets(self):
+        return
+
+    def test_get_sheet_by_id(self):
+        return
+
+    def test_get_all_sheets_by_animal_id(self):
+        return
+
+    def test_get_all_boxes(self):
+        return
+
+    def test_get_box_by_id(self):
+        return
 
 if __name__ == '__main__':
     unittest.main()
