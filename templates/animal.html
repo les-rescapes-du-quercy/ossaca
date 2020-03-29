@@ -71,6 +71,12 @@
     <label for="ok_cats">OK Chats</label>
     <input name="ok_cats" type="checkbox" value="1"
 	   {% if animal.ok_cats == 1 %} checked {% endif %}/><br>
+    <label for="category">Catégorie</label>
+    <select name="category">
+      <option value="0" {% if animal.category == 0 %} selected {% endif %}>Non catégorisé</option>
+      <option value="1" {% if animal.category == 1 %} selected {% endif %}>Catégorie nº1</option>
+      <option value="2" {% if animal.category == 2 %} selected {% endif %}>Catégorie nº2</option>
+    </select><br>
     {% endif %}
 
     <label for="char">Caractère</label>

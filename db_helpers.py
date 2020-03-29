@@ -51,6 +51,7 @@ def update_dog(form):
     dog.implant = form['implant']
     dog.neutered = form['neutered'] if 'neutered' in form else 0
     dog.ok_cats = form['ok_cats'] if 'ok_cats' in form else 0
+    dog.category = form['category']
     dog.character = form['char']
     dog.history = form['history']
     db.update(dog)
