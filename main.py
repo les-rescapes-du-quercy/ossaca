@@ -56,9 +56,10 @@ def cat(species='cat', name=None):
     cat = getdb().get_cat_by_id(id)
     return render_template('animal.html', species=species, animal=cat)
 
-@app.route('/admin-care')
-def admin():
-    return render_template('admin-care.html')
+@app.route('/cares', methods=['GET', 'POST'])
+def cares(cares=None):
+    cares = get_cares()
+    return render_template('admin-cares.html', cares=cares)
 
 if __name__ == '__main__':
     app.run(debug=True)
