@@ -92,3 +92,7 @@ def update_cat(form):
     cat.character = form['char']
     cat.history = form['history']
     db.update(cat)
+
+def get_cares():
+    cares = getdb().get_all_cares()
+    return cares
