@@ -2,13 +2,13 @@
 cursor:pointer;
 }
 
-#animals {
+table {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
 }
 
-#animals th {
+table th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
@@ -16,14 +16,14 @@ cursor:pointer;
   color: black;
 }
 
-#animals td, #animals th {
+table td, table th {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
 }
 
-#animals tr:nth-child(even){background-color: #f2f2f2;}
-#animals tr:hover {background-color: #ddd;}
+table tr:nth-child(even){background-color: #f2f2f2;}
+table tr:hover {background-color: #ddd;}
 
 .emoji {
     font-size: 25px
