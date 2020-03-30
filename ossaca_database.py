@@ -518,7 +518,7 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query):
-            care.append(
+            cares.append(
                     Care(
                         id = row[0],
                         type = row[1],
