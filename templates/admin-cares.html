@@ -1,0 +1,34 @@
+<link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet" type="text/css" />
+
+{% include 'header.html' %}
+
+<title>Soins</title>
+
+<h1>Liste des soins</h1>
+
+<p>
+  <table>
+
+    <tr><th>Type</th><th>Dose</th><th>Administration</th>
+      <th>Nom du médicament</th><th>Description</th></tr>
+
+    {% for care in cares %}
+    <tr>
+      <td style="display:none;">{{ care.id }}</td>
+      <td contenteditable="true">{{ care.type }}</td>
+      <td contenteditable="true">{{ care.dose }}</td>
+      <td contenteditable="true">{{ care.way }}</td>
+      <td contenteditable="true">{{ care.medecine_name }}</td>
+      <td contenteditable="true">{{ care.description }}</td>
+      <form action="/cares" method="get">
+	<td> <button id="del_care" class="admin-btn" type="submit">
+	    <i class="fa fa-trash" aria-hidden="true"></i>
+	  </button>
+	</td>
+      </form>
+    </tr>
+    {% endfor %}
+  </table>
+
+</p>
+
