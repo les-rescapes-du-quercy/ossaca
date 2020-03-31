@@ -208,7 +208,11 @@ class SQLiteStorage:
 
         cursor = self.con.cursor()
 
-        row = cursor.execute(query, [id])
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
 
         return Food(row[0], row[1], row[2])
 
@@ -228,7 +232,11 @@ class SQLiteStorage:
 
         cursor = self.con.cursor()
 
-        row = cursor.execute(query, [id])
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
 
         return Bowl(row[0], row[1], row[2])
 
@@ -538,6 +546,9 @@ class SQLiteStorage:
         cursor.execute(query, [id])
         row = cursor.fetchone()
 
+        if row is None:
+            return None
+
         return Care(
             id = row[0],
             type = row[1],
@@ -589,6 +600,9 @@ class SQLiteStorage:
         cursor = self.con.cursor()
         cursor.execute(query, [id])
         row = cursor.fetchone()
+
+        if row is None:
+            return None
 
         return CareSheet(
             id = row[0],
@@ -752,6 +766,9 @@ class SQLiteStorage:
         cursor.execute(query, [id])
         row = cursor.fetchone()
 
+        if row is None:
+            return None
+
         return Sheet(
             id = row[0],
             date = date.fromisoformat(row[1]) if row[1] is not '' else None,
@@ -815,6 +832,9 @@ class SQLiteStorage:
         cursor = self.con.cursor()
         cursor.execute(query, [id])
         row = cursor.fetchone()
+
+        if row is None:
+            return None
 
         return Box(
             id = row[0],
