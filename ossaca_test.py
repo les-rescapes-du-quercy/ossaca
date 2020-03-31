@@ -735,7 +735,7 @@ class TestOssacaDBAPI(unittest.TestCase):
                         Food(label = "Croquettes chiot", description = "Croquettes pour chiots")
                         )
 
-        for food in TestOssacaDBAPI.states:
+        for food in TestOssacaDBAPI.foods:
             s.add(food)
 
         # build bowl list
@@ -1117,6 +1117,36 @@ class TestOssacaDBAPI(unittest.TestCase):
         for caresheet in TestOssacaDBAPI.caresheets:
              s.add(caresheet)
 
+        s.close()
+
+    def compare_care(self, care_a, care_b):
+        self.assertEqual(care_a.type, care_b.type)
+        self.assertEqual(care_a.dose, care_b.dose)
+        self.assertEqual(care_a.way, care_b.way)
+        self.assertEqual(care_a.medecine_name, care_b.medecine_name)
+        self.assertEqual(care_a.description, care_b.description)
+
+    def compare_box(self, box_a, box_b):
+        return
+
+    def compare_location(self, location_a, location_b):
+        return
+
+    def compare_caresheet(self, caresheet_a, caresheet_b):
+        return
+
+    def compare_sheet(self, sheet_a, sheet_b):
+        return
+
+    def compare_animal(self, animal_a, sheet_b):
+        return
+
+    def compare_dog(self, dog_a, dog_b):
+        return
+
+    def compare_cat(self, cat_a, cat_b):
+        return
+
     def compare_type(self, type_a, type_b):
         self.assertEqual(type_a.label, type_b.label)
         self.assertEqual(type_a.description, type_b.description)
@@ -1136,36 +1166,59 @@ class TestOssacaDBAPI(unittest.TestCase):
 
         self.populate_database("example.db")
 
-        #os.remove("example.db")
+        os.remove("example.db")
 
-    def test_get_all_states(self):
+    def check_get_all_items(self, known_items, query_func, compare_func):
         s = SQLiteStorage()
         s.connect("example.db")
 
-        states = s.get_all_states()
-        self.assertEqual(len(states), len(self.states))
+        query = getattr(s, query_func)
+        cmp = getattr(self, compare_func)
 
-        for i in range(len(states)) :
+        items = query()
+        self.assertEqual(len(items), len(known_items))
+
+        for i in range(len(items)) :
             with self.subTest(i = i):
-                self.compare_type(state[i], self.states[i])
+                cmp(items[i], known_items[i])
 
         s.close()
-        return
 
-    def test_get_state_by_id(self):
-        return
+    def check_get_all_items_by_id(self, known_items, query_func, compare_func):
+        s = SQLiteStorage()
+        s.connect("example.db")
+
+        query = getattr(s, query_func)
+        cmp = getattr(self, compare_func)
+
+        for i in range(len(known_items)) :
+            with self.subTest(i = i):
+                item = query(i + 1)
+                self.assertIsNotNone(item)
+                cmp(item, known_items[i])
+
+        invalid_item = query(len(known_items) + 2)
+        self.assertIsNone(invalid_item)
+
+        s.close()
+
+    def test_get_all_states(self):
+        self.check_get_all_items(self.states, "get_all_states", "compare_type")
+
+    def test_get_all_states_by_id(self):
+        self.check_get_all_items_by_id(self.states, "get_state_by_id", "compare_type")
 
     def test_get_all_foods(self):
-        return
+        self.check_get_all_items(self.foods, "get_all_foods", "compare_type")
 
     def test_get_food_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.foods, "get_food_by_id", "compare_type")
 
     def test_get_all_bowls(self):
-        return
+        self.check_get_all_items(self.bowls, "get_all_bowls", "compare_type")
 
     def test_get_bowl_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.bowls, "get_bowl_by_id", "compare_type")
 
     def test_get_all_animals(self):
         return
@@ -1186,9 +1239,11 @@ class TestOssacaDBAPI(unittest.TestCase):
         return
 
     def test_get_all_cares(self):
+        self.check_get_all_items(self.cares, "get_all_cares", "compare_care")
         return
 
     def test_get_care_by_id(self):
+        self.check_get_all_items_by_id(self.cares, "get_care_by_id", "compare_care")
         return
 
     def test_get_all_caresheets(self):
