@@ -6,6 +6,7 @@ import os
 import os.path
 from ossaca_model import *
 from ossaca_database import *
+from unittest.mock import patch
 
 ########################### DB handling ########################################
 
@@ -858,7 +859,7 @@ class TestOssacaDBAPI(unittest.TestCase):
         TestOssacaDBAPI.dogs.append(
                 Dog(
                 name = "Louloute",
-                birth_date = date.fromisoformat("2017-12-12"),
+                birth_date = date.fromisoformat("2020-04-03"),
                 arrival_date = date.fromisoformat("2018-01-01"),
                 gender = Gender.FEMALE,
                 breed = "Staff x Caniche",
@@ -935,7 +936,7 @@ class TestOssacaDBAPI(unittest.TestCase):
         TestOssacaDBAPI.cats.append(
                 Cat(
                 name = "Joy",
-                birth_date = date.fromisoformat("2016-10-10"),
+                birth_date = date.fromisoformat("2016-02-29"),
                 arrival_date = date.fromisoformat("2018-08-10"),
                 gender = Gender.FEMALE,
                 breed = "Chat européen",
@@ -1411,6 +1412,20 @@ class TestOssacaDBAPI(unittest.TestCase):
 
     def test_get_box_by_id(self):
         self.check_get_all_items_by_id(self.boxes, "get_box_by_id", "compare_box")
+
+    def test_animal_age(self):
+        # Mock today() so that the tests are reproducible
+        with patch('ossaca_model.date') as mock_date:
+            mock_date.today.return_value = date(2020, 7, 9)
+            mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
+
+            self.assertEqual(self.dogs[0].age(), 1) # 2019-04-21
+            self.assertEqual(self.dogs[1].age(), 0) # 2020-04-03
+            self.assertEqual(self.dogs[2].age(), 5) # 2015-04-04
+            self.assertEqual(self.dogs[3].age(), 10) # 2010-02-14
+            self.assertEqual(self.cats[0].age(), 8) # 2011-11-11
+            self.assertEqual(self.cats[1].age(), 4) # 2016-02-29
+            self.assertEqual(self.cats[2].age(), 0) # None
 
 if __name__ == '__main__':
     unittest.main()
