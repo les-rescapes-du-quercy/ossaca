@@ -988,35 +988,56 @@ class TestOssacaDBAPI(unittest.TestCase):
                       state = TestOssacaDBAPI.states[2],
                       location = TestOssacaDBAPI.locations[0]))
 
+        TestOssacaDBAPI.dogs[0].arrival_sheet = TestOssacaDBAPI.sheets[0]
+        TestOssacaDBAPI.dogs[0].latest_sheet = TestOssacaDBAPI.sheets[2]
+
         TestOssacaDBAPI.sheets.append(
                 Sheet(animal = TestOssacaDBAPI.dogs[1],
                       state = TestOssacaDBAPI.states[0],
                       location = TestOssacaDBAPI.locations[2]))
+
+        TestOssacaDBAPI.dogs[1].arrival_sheet = TestOssacaDBAPI.sheets[3]
+        TestOssacaDBAPI.dogs[1].latest_sheet = TestOssacaDBAPI.sheets[3]
 
         TestOssacaDBAPI.sheets.append(
                 Sheet(animal = TestOssacaDBAPI.dogs[2],
                       state = TestOssacaDBAPI.states[3],
                       location = TestOssacaDBAPI.locations[1]))
 
+        TestOssacaDBAPI.dogs[2].arrival_sheet = TestOssacaDBAPI.sheets[4]
+        TestOssacaDBAPI.dogs[2].latest_sheet = TestOssacaDBAPI.sheets[4]
+
         TestOssacaDBAPI.sheets.append(
                 Sheet(animal = TestOssacaDBAPI.dogs[3],
                       state = TestOssacaDBAPI.states[1],
                       location = TestOssacaDBAPI.locations[3]))
+
+        TestOssacaDBAPI.dogs[3].arrival_sheet = TestOssacaDBAPI.sheets[5]
+        TestOssacaDBAPI.dogs[3].latest_sheet = TestOssacaDBAPI.sheets[5]
 
         TestOssacaDBAPI.sheets.append(
                 Sheet(animal = TestOssacaDBAPI.cats[0],
                       state = TestOssacaDBAPI.states[4],
                       location = TestOssacaDBAPI.locations[4]))
 
+        TestOssacaDBAPI.cats[0].arrival_sheet = TestOssacaDBAPI.sheets[6]
+        TestOssacaDBAPI.cats[0].latest_sheet = TestOssacaDBAPI.sheets[6]
+
         TestOssacaDBAPI.sheets.append(
                 Sheet(animal = TestOssacaDBAPI.cats[1],
                       state = TestOssacaDBAPI.states[1],
                       location = TestOssacaDBAPI.locations[4]))
 
+        TestOssacaDBAPI.cats[1].arrival_sheet = TestOssacaDBAPI.sheets[7]
+        TestOssacaDBAPI.cats[1].latest_sheet = TestOssacaDBAPI.sheets[7]
+
         TestOssacaDBAPI.sheets.append(
                 Sheet(animal = TestOssacaDBAPI.cats[2],
                       state = TestOssacaDBAPI.states[0],
                       location = TestOssacaDBAPI.locations[1]))
+
+        TestOssacaDBAPI.cats[2].arrival_sheet = TestOssacaDBAPI.sheets[8]
+        TestOssacaDBAPI.cats[2].latest_sheet = TestOssacaDBAPI.sheets[8]
 
         for sheet in TestOssacaDBAPI.sheets:
             s.add(sheet)
@@ -1119,7 +1140,18 @@ class TestOssacaDBAPI(unittest.TestCase):
 
         s.close()
 
+    def check_none(self, obj_a, obj_b):
+        if obj_a is None:
+            self.assertIsNone(obj_b)
+        else:
+            self.assertIsNotNone(obj_b)
+
+        return obj_a is None or obj_b is None
+
     def compare_care(self, care_a, care_b):
+        if self.check_none(care_a, care_b):
+            return
+
         self.assertEqual(care_a.type, care_b.type)
         self.assertEqual(care_a.dose, care_b.dose)
         self.assertEqual(care_a.way, care_b.way)
@@ -1127,29 +1159,117 @@ class TestOssacaDBAPI(unittest.TestCase):
         self.assertEqual(care_a.description, care_b.description)
 
     def compare_box(self, box_a, box_b):
-        return
+        if self.check_none(box_a, box_b):
+            return
+
+        self.assertEqual(box_a.label, box_b.label)
+        self.assertEqual(box_a.description, box_b.description)
+        self.assertEqual(box_a.surface_area, box_b.surface_area)
 
     def compare_location(self, location_a, location_b):
-        return
+        if self.check_none(location_a, location_b):
+            return
+
+        self.assertEqual(location_a.location_type, location_b.location_type)
+
+        if location_a.location_type == LocationType.BOX:
+            self.compare_type(location_a.box, location_b.box)
+
+        # TODO person
 
     def compare_caresheet(self, caresheet_a, caresheet_b):
-        return
+        if self.check_none(caresheet_a, caresheet_b):
+            return
+
+        self.compare_animal(caresheet_a.animal, caresheet_b.animal)
+        self.compare_care(caresheet_a.care, caresheet_b.care)
+
+        self.assertEqual(caresheet_a.date, caresheet_b.date)
+        self.assertEqual(caresheet_a.time, caresheet_b.time)
+
+        self.assertEqual(caresheet_a.frequency, caresheet_b.frequency)
+        # TODO given_by
+        self.assertEqual(caresheet_a.prescription_number, caresheet_b.prescription_number)
+        self.assertEqual(caresheet_a.dosage, caresheet_b.dosage)
+
+    def __compare_sheet_simple(self, sheet_a, sheet_b):
+        if self.check_none(sheet_a, sheet_b):
+            return
+
+        self.assertEqual(sheet_a.date, sheet_b.date)
+
+        self.compare_type(sheet_a.state, sheet_b.state)
+        self.compare_location(sheet_a.location, sheet_b.location)
 
     def compare_sheet(self, sheet_a, sheet_b):
-        return
+        if self.check_none(sheet_a, sheet_b):
+            return
 
-    def compare_animal(self, animal_a, sheet_b):
-        return
+        self.__compare_sheet_simple(sheet_a, sheet_b)
+        self.__compare_animal_simple(sheet_a.animal, sheet_b.animal)
 
-    def compare_dog(self, dog_a, dog_b):
-        return
+    def __compare_animal_simple(self, animal_a, animal_b):
+        if self.check_none(animal_a, animal_b):
+            return
 
-    def compare_cat(self, cat_a, cat_b):
-        return
+        self.assertEqual(type(animal_a), type(animal_b))
+
+        self.assertEqual(animal_a.name, animal_b.name)
+        self.assertEqual(animal_a.birth_date, animal_b.birth_date)
+        self.assertEqual(animal_a.arrival_date, animal_b.arrival_date)
+
+        self.assertEqual(animal_a.gender, animal_b.gender)
+        self.assertEqual(animal_a.breed, animal_b.breed)
+        self.assertEqual(animal_a.character, animal_b.character)
+        self.assertEqual(animal_a.color, animal_b.color)
+        self.assertEqual(animal_a.pictures, animal_b.pictures)
+        #TODO sponsors
+        self.assertEqual(animal_a.implant, animal_b.implant)
+        self.assertEqual(animal_a.neutered, animal_b.neutered)
+        self.assertEqual(animal_a.history, animal_b.history)
+
+        self.compare_foodhabit(animal_a.food_habits, animal_b.food_habits)
+
+        if isinstance(animal_a, Cat):
+            self.__compare_cat(animal_a, animal_b)
+        elif isinstance(animal_a, Dog):
+            self.__compare_dog(animal_a, animal_b)
+
+    def compare_animal(self, animal_a, animal_b):
+        if self.check_none(animal_a, animal_b):
+            return
+
+        self.__compare_animal_simple(animal_a, animal_b)
+        self.__compare_sheet_simple(animal_a.arrival_sheet, animal_b.arrival_sheet)
+        self.__compare_sheet_simple(animal_a.latest_sheet, animal_b.latest_sheet)
+
+    def __compare_dog(self, dog_a, dog_b):
+        if self.check_none(dog_a, dog_b):
+            return
+
+        self.assertEqual(dog_a.ok_cats, dog_b.ok_cats)
+        self.assertEqual(dog_a.category, dog_b.category)
+
+    def __compare_cat(self, cat_a, cat_b):
+        if self.check_none(cat_a, cat_b):
+            return
+
+        self.assertEqual(cat_a.has_fiv, cat_b.has_fiv)
+        self.assertEqual(cat_a.has_felv, cat_b.has_felv)
 
     def compare_type(self, type_a, type_b):
+        if self.check_none(type_a, type_b):
+            return
+
         self.assertEqual(type_a.label, type_b.label)
         self.assertEqual(type_a.description, type_b.description)
+
+    def compare_foodhabit(self, foodhabit_a, foodhabit_b):
+        if self.check_none(foodhabit_a, foodhabit_b):
+            return
+
+        self.compare_type(foodhabit_a.food, foodhabit_b.food)
+        self.compare_type(foodhabit_a.bowl, foodhabit_b.bowl)
 
     @classmethod
     def setUpClass(cls):
@@ -1184,20 +1304,23 @@ class TestOssacaDBAPI(unittest.TestCase):
 
         s.close()
 
-    def check_get_all_items_by_id(self, known_items, query_func, compare_func):
+    def check_get_all_items_by_id(self, known_items, query_func, compare_func, ids = []):
         s = SQLiteStorage()
         s.connect("example.db")
 
         query = getattr(s, query_func)
         cmp = getattr(self, compare_func)
 
-        for i in range(len(known_items)) :
-            with self.subTest(i = i):
-                item = query(i + 1)
-                self.assertIsNotNone(item)
-                cmp(item, known_items[i])
+        if ids == []:
+            ids = [ id + 1 for id in range(len(known_items))]
 
-        invalid_item = query(len(known_items) + 2)
+        for i in ids :
+            with self.subTest(i = i):
+                item = query(i)
+                self.assertIsNotNone(item)
+                cmp(item, known_items[ids.index(i)])
+
+        invalid_item = query(666)
         self.assertIsNone(invalid_item)
 
         s.close()
@@ -1220,66 +1343,64 @@ class TestOssacaDBAPI(unittest.TestCase):
     def test_get_bowl_by_id(self):
         self.check_get_all_items_by_id(self.bowls, "get_bowl_by_id", "compare_type")
 
-    def test_get_all_animals(self):
-        return
-
     def test_get_animal_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.dogs + self.cats, "get_animal_by_id", "compare_animal")
 
     def test_get_all_dogs(self):
-        return
+        self.check_get_all_items(self.dogs, "get_all_dogs", "compare_animal")
 
     def test_get_dog_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.dogs, "get_dog_by_id", "compare_animal")
 
     def test_get_all_cats(self):
-        return
+        self.check_get_all_items(self.cats, "get_all_cats", "compare_animal")
 
     def test_get_cat_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.cats, "get_cat_by_id", "compare_animal", ids = [5, 6, 7])
 
     def test_get_all_cares(self):
         self.check_get_all_items(self.cares, "get_all_cares", "compare_care")
-        return
 
     def test_get_care_by_id(self):
         self.check_get_all_items_by_id(self.cares, "get_care_by_id", "compare_care")
-        return
 
     def test_get_all_caresheets(self):
-        return
+        self.check_get_all_items(self.caresheets, "get_all_caresheets", "compare_caresheet")
 
     def test_get_caresheet_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.caresheets, "get_caresheet_by_id", "compare_caresheet")
 
+    # TODO
     def test_get_all_caresheets_by_animal_id(self):
-        return
+        self.assertEqual(0, 1)
 
     def test_get_all_foodhabits(self):
-        return
+        self.check_get_all_items(self.foodhabits, "get_all_foodhabits", "compare_foodhabit")
 
     def test_get_foodhabit_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.foodhabits, "get_foodhabit_by_id", "compare_foodhabit")
 
     def test_get_all_locations(self):
-        return
+        self.check_get_all_items(self.locations, "get_all_locations", "compare_location")
 
     def test_get_location_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.locations, "get_location_by_id", "compare_location")
 
     def test_get_all_sheets(self):
-        return
+        self.check_get_all_items(self.sheets, "get_all_sheets", "compare_sheet")
 
     def test_get_sheet_by_id(self):
-        return
+        self.check_get_all_items_by_id(self.sheets, "get_sheet_by_id", "compare_sheet")
 
+    # TODO
     def test_get_all_sheets_by_animal_id(self):
-        return
+        self.assertEqual(0, 1)
 
     def test_get_all_boxes(self):
-        return
+        self.check_get_all_items(self.boxes, "get_all_boxes", "compare_box")
 
     def test_get_box_by_id(self):
+        self.check_get_all_items_by_id(self.boxes, "get_box_by_id", "compare_box")
         return
 
 if __name__ == '__main__':
