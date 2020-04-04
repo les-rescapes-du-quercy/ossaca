@@ -29,7 +29,7 @@ def add_new_dog(form):
     dog.name = form['name']
     dog.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
     dog.arrival_date = date.fromisoformat(form['adate'])
-    dog.gender = form['gender']
+    dog.gender = form['gender'] if 'gender' in form else Gender.UNKNOWN
     dog.breed = form['breed']
     dog.color = form['color']
     dog.implant = form['implant']
@@ -45,7 +45,7 @@ def update_dog(form):
     dog.name = form['name']
     dog.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
     dog.arrival_date = date.fromisoformat(form['adate'])
-    dog.gender = form['gender']
+    dog.gender = form['gender'] if 'gender' in form else Gender.UNKNOWN
     dog.breed = form['breed']
     dog.color = form['color']
     dog.implant = form['implant']
@@ -66,7 +66,7 @@ def add_new_cat(form):
     cat.name = form['name']
     cat.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
     cat.arrival_date = date.fromisoformat(form['adate'])
-    cat.gender = form['gender']
+    cat.gender = form['gender'] if 'gender' in form else Gender.UNKNOWN
     cat.breed = form['breed']
     cat.color = form['color']
     cat.implant = form['implant']
@@ -82,7 +82,7 @@ def update_cat(form):
     cat.name = form['name']
     cat.birth_date = date.fromisoformat(form['bdate']) if form['bdate'] is not '' else None
     cat.arrival_date = date.fromisoformat(form['adate'])
-    cat.gender = form['gender']
+    cat.gender = form['gender'] if 'gender' in form else Gender.UNKNOWN
     cat.breed = form['breed']
     cat.color = form['color']
     cat.implant = form['implant']
