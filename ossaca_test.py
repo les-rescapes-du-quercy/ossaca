@@ -1354,13 +1354,15 @@ class TestOssacaDBAPI(unittest.TestCase):
         self.check_get_all_items(self.dogs, "get_all_dogs", "compare_animal")
 
     def test_get_dog_by_id(self):
-        self.check_get_all_items_by_id(self.dogs, "get_dog_by_id", "compare_animal")
+        self.check_get_all_items_by_id(self.dogs, "get_dog_by_id", "compare_animal",
+                                    ids = [dog.id for dog in self.dogs])
 
     def test_get_all_cats(self):
         self.check_get_all_items(self.cats, "get_all_cats", "compare_animal")
 
     def test_get_cat_by_id(self):
-        self.check_get_all_items_by_id(self.cats, "get_cat_by_id", "compare_animal", ids = [5, 6, 7])
+        self.check_get_all_items_by_id(self.cats, "get_cat_by_id", "compare_animal",
+                                       ids = [cat.id for cat in self.cats])
 
     def test_get_all_cares(self):
         self.check_get_all_items(self.cares, "get_all_cares", "compare_care")
