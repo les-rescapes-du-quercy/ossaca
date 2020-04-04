@@ -261,12 +261,12 @@ class SQLiteStorage:
 
     def __get_animal_by_id_simple(self, id):
         # Try to get a dog
-        animal = self.get_dog_by_id(id)
+        animal = self.__get_dog_by_id_simple(id)
         if animal is not None:
             return animal
 
         # Try to get a cat
-        animal = self.get_cat_by_id(id)
+        animal = self.__get_cat_by_id_simple(id)
         if animal is not None:
             return animal
 
@@ -291,14 +291,14 @@ class SQLiteStorage:
                 breed = row[7],
                 character = row[8],
                 color = row[9],
-                pictures = row[10].split(','),
+                pictures = row[10].split(',') if row[10] is not '' else [],
                 implant = row[11],
                 neutered = row[12],
                 history = row[13],
                 food_habits = self.get_foodhabit_by_id(row[14]) if row[14] is not '' else None,
          )
 
-    def __link_animal(self, animal, arrival_sheet = None, latest_sheet = None, food_habit = None):
+    def __link_animal(self, animal):
 
         if animal is None:
             return None
@@ -313,14 +313,10 @@ class SQLiteStorage:
         cursor.execute(query, [animal.id])
         [arrival_sheet_id, latest_sheet_id, food_habit_id] = cursor.fetchone()
 
-        if arrival_sheet is not None:
-            animal.arrival_sheet = arrival_sheet
-        elif arrival_sheet_id is not None and arrival_sheet_id > 0:
+        if arrival_sheet_id is not None and arrival_sheet_id > 0:
             animal.arrival_sheet = self.__get_sheet_by_id_simple(arrival_sheet_id)
             animal.arrival_sheet.animal = animal
 
-        if latest_sheet is not None:
-            animal.latest_sheet = latest_sheet
         if latest_sheet_id is not None and latest_sheet_id > 0:
             animal.latest_sheet = self.__get_sheet_by_id_simple(latest_sheet_id)
             animal.latest_sheet.animal = animal
@@ -336,18 +332,9 @@ class SQLiteStorage:
         if animal is not None:
             return animal
 
-        # This is not a dog nor a cat, so build a generic animal
-        query = "SELECT * FROM animal WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
         animal = self.__get_animal_by_id_simple(id)
-        self.__link_animal(animal)
+        if animal is not None:
+            self.__link_animal(animal)
 
         return animal
 
@@ -380,11 +367,11 @@ class SQLiteStorage:
                         breed = row[11],
                         character = row[12],
                         color = row[13],
-                        pictures = row[14].split(','),
+                        pictures = row[14].split(',') if row[14] is not '' else [],
                         implant = row[15],
                         neutered = row[16],
                         history = row[17],
-                        food_habits = None,
+                        food_habits = self.get_foodhabit_by_id(row[18]) if row[18] is not '' else None,
                     )
             self.__link_animal(dog)
             dogs.append(dog)
@@ -418,16 +405,18 @@ class SQLiteStorage:
                 breed = row[11],
                 character = row[12],
                 color = row[13],
-                pictures = row[14].split(','),
+                pictures = row[14].split(',') if row[14] is not '' else [],
                 implant = row[15],
                 neutered = row[16],
                 history = row[17],
-                food_habits = None,
+                food_habits = self.get_foodhabit_by_id(row[18]) if row[18] is not '' else None,
          )
 
     def get_dog_by_id(self, id):
         dog = self.__get_dog_by_id_simple(id)
-        self.__link_animal(dog)
+
+        if dog is not None:
+            self.__link_animal(dog)
 
         return dog
 
@@ -460,11 +449,11 @@ class SQLiteStorage:
                         breed = row[11],
                         character = row[12],
                         color = row[13],
-                        pictures = row[14].split(','),
+                        pictures = row[14].split(',') if row[14] is not '' else [],
                         implant = row[15],
                         neutered = row[16],
                         history = row[17],
-                        food_habits = None,
+                        food_habits = self.get_foodhabit_by_id(row[18]) if row[18] is not '' else None,
                     )
             self.__link_animal(cat)
             cats.append(cat)
@@ -496,16 +485,18 @@ class SQLiteStorage:
                 breed = row[11],
                 character = row[12],
                 color = row[13],
-                pictures = row[14].split(','),
+                pictures = row[14].split(',') if row[14] is not '' else [],
                 implant = row[15],
                 neutered = row[16],
                 history = row[17],
-                food_habits = None,
+                food_habits = self.get_foodhabit_by_id(row[18]) if row[18] is not '' else None,
         )
 
     def get_cat_by_id(self, id):
         cat = self.__get_cat_by_id_simple(id)
-        self.__link_animal(cat)
+
+        if cat is not None:
+            self.__link_animal(cat)
 
         return cat
 
@@ -657,11 +648,11 @@ class SQLiteStorage:
                 FoodHabit(
                     id = row[0],
                     food = self.get_food_by_id(row[1]) if row[1] > 0 else None,
-                    bowl = self.get_else_by_id(row[2]) if row[2] > 0 else None,
+                    bowl = self.get_bowl_by_id(row[2]) if row[2] > 0 else None,
                 )
             )
 
-        return foodhabit
+        return foodhabits
 
     def get_foodhabit_by_id(self, id):
         query = "SELECT * FROM foodhabit WHERE id = ?"
@@ -670,10 +661,13 @@ class SQLiteStorage:
         cursor.execute(query, [id])
         row = cursor.fetchone()
 
+        if row is None:
+            return None
+
         return FoodHabit(
                     id = row[0],
                     food = self.get_food_by_id(row[1]) if row[1] > 0 else None,
-                    bowl = self.get_else_by_id(row[2]) if row[2] > 0 else None,
+                    bowl = self.get_bowl_by_id(row[2]) if row[2] > 0 else None,
         )
 
     @classmethod
@@ -735,15 +729,15 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query):
-            sheets.append(
-                Sheet(
+            sheet = Sheet(
                     id = row[0],
                     date = date.fromisoformat(row[1]) if row[1] is not '' else None,
-                    animal = self.get_animal_by_id(row[2]) if row[2] > 0 else None,
+                    animal = None,
                     state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
                     location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
-                )
             )
+            self.__link_sheet(sheet)
+            sheets.append(sheet)
 
         return sheets
 
@@ -754,10 +748,11 @@ class SQLiteStorage:
         cursor.execute(query, [sheet.id])
         [animal_id] = cursor.fetchone()
 
-        animal = self.__get_animal_by_id_simple(self, animal_id)
+        animal = self.__get_animal_by_id_simple(animal_id)
         sheet.animal = animal
 
-        self.__link_animal(animal)
+        if animal is not None:
+            self.__link_animal(animal)
 
     def __get_sheet_by_id_simple(self, id):
         query = "SELECT * FROM sheet WHERE id = ?"
@@ -779,7 +774,11 @@ class SQLiteStorage:
 
     def get_sheet_by_id(self, id):
         sheet = self.__get_sheet_by_id_simple(id)
-        self.__link_sheet(sheet.animal)
+
+        if sheet is not None:
+            self.__link_sheet(sheet)
+
+        return sheet
 
     def get_all_sheets_by_animal_id(self, animal_id):
         query = "SELECT * FROM sheet where animal_od = ?"
@@ -788,15 +787,15 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query, [animal_id]):
-            sheets.append(
-                Sheet(
+            sheet = Sheet(
                     id = row[0],
                     date = date.fromisoformat(row[1]) if row[1] is not '' else None,
-                    animal = self.get_animal_by_id(row[2]) if row[2] > 0 else None,
+                    animal = None,
                     state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
                     location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
-                )
             )
+            self.__link_sheet(sheet)
+            sheets.append(sheet)
 
         return sheets
 
