@@ -30,22 +30,26 @@ table tr:hover {background-color: #ddd;}
 }
 
 .btn-emoji {
+    margin: 0px;
     border-radius: 1em;
     padding: 10px;
-    text-align: center;
-}
-
-.fa-trash {
-    color: rgb(200,30,30);
-}
-
-.fa-plus {
-    color: rgb(30,200,0);
 }
 
 .btn-emoji:hover {
     background-color: #ddd;
     box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
+}
+
+.fa-trash {
+    color: rgb(200,0,0);
+}
+
+.fa-plus {
+    color: rgb(0,200,0);
+}
+
+.fa-pencil {
+    color: rgb(10,100,255);
 }
 
 input[type="submit"]{
