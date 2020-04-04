@@ -18,6 +18,14 @@ class Gender(IntEnum):
     FEMALE = 1
     MALE = 2
 
+class CatCompatibility(IntEnum):
+    '''
+    IntEnum reresenting wether or not a dog is OK with cats
+    '''
+    NO = 0
+    YES = 1
+    UNKNOWN = 2
+
 class Type:
     '''
     Generic class describing an eumerable entity with a label, a description and
@@ -136,14 +144,14 @@ class Dog(Animal):
     Class describing a dog
 
     :param ok_cats: Indicated if this dog can live with cats
-    :type ok_cats: bool
+    :type ok_cats: CatCompatibility
     '''
     def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
                  neutered = False, history = "", food_habits = None,
-                 ok_cats = False, category = 0):
+                 ok_cats = CatCompatibility.UNKNOWN, category = 0):
         Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
                         latest_sheet, gender, breed, character, color, pictures,
                         sponsors, implant, neutered, history, food_habits)
