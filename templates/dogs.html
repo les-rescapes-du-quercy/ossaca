@@ -26,13 +26,15 @@
 	{% else %} <i class="fa fa-times" aria-hidden="true"></i>
 	{% endif %}
       </td>
-      <td>{{ dog.latest_sheet.state.label }}</td>
+      <td>{{ dog.latest_sheet.state.label if dog.latest_sheet != None }}</td>
       <td class="emoji">
 	{% if dog.ok_cats %} <i class="fa fa-paw" aria-hidden="true"></i>
 	{% else %} <i class="fa fa-times" aria-hidden="true"></i>
 	{% endif %}
       </td>
-      <td>{% if dog.latest_sheet.location.location_type == 0 %}
+      <td>
+	{% if dog.latest_sheet == None %}
+	{% elif dog.latest_sheet.location.location_type == 0 %}
 	{{dog.latest_sheet.location.box.label}}
 	{% elif dog.latest_sheet.location.location_type == 1 %} Vétérinaire
 	{% elif dog.latest_sheet.location.location_type == 2 %} FA
