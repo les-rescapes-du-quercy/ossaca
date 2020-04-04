@@ -59,7 +59,7 @@ def cat(species='cat', name=None):
 @app.route('/cares', methods=['GET', 'POST'])
 def cares(cares=None):
     if request.method == 'POST':
-        if 'id_del_care' in request.form:
+        if request.form['id_del_care'] != "None":
             del_care(request.form['id_del_care'])
 
     cares = get_cares()

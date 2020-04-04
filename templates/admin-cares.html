@@ -22,9 +22,9 @@
       <td contenteditable="true">{{ care.description }}</td>
       <td>
 	<form id="form_del_care" action="/cares" method="post">
-	  <input type="hidden" id="id_del_care" name="id_del_care" value=""/>
+	  <input type="hidden" id="id_del_care" name="id_del_care" value="None"/>
 	  <button id="del_care" type="submit">
-	    <i class="fa fa-trash" aria-hidden="true"></i></button>
+	    <i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
 	</form>
       </td>
     </tr>
@@ -35,7 +35,7 @@
 
 <script>
   $('#table').on('click', '#del_care', function () {
-      if ( confirm("Etes-vous sûr de vouloir supprimer cette ligne?") ) {
+      if ( confirm("Etes-vous sûr de vouloir supprimer cette ligne?") == true ) {
 	  $(this).parents('tr').detach();
 	  id_to_del = $(this).parents('tr').find('td:first').text();
 	  document.getElementById("id_del_care").setAttribute('value', id_to_del);
