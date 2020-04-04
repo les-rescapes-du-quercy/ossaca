@@ -19,9 +19,9 @@
 <title>Soins</title>
 
 <!-- The Modal -->
-<div id="modal" class="modal">
+<div id="add_modal" class="modal">
   <div class="modal-content">
-    <span class="close">&times;</span>
+    <span class="add_close">&times;</span>
     <h2>Création d'un nouveau soin</h2>
     <form class="form-style" action="/cares" method="post">
       <fieldset>
@@ -29,11 +29,11 @@
 	<label for="type">Type</label>
 	<input type="text" name="type" required>
 	<label for="name">Nom</label>
-	<input type="text" name="name" required>
+	<input type="text" name="name">
 	<label for="dose">Dose</label>
-	<input name="dose" type="text" required>
+	<input name="dose" type="text">
 	<label for="way">Administration</label>
-	<input type="text" name="way" required>
+	<input type="text" name="way">
 	<label for="desc">Description</label>
 	<textarea name="desc"></textarea>
 	<button class="submit" type="submit" value="submit">Valider</button>
@@ -49,21 +49,23 @@
     <tr><th>Nom du médicament</th><th>Type</th><th>Dose</th>
       <th>Administration</th><th>Description</th>
       <th>
-	<button class="btn-emoji" id="modal-btn" type="button">
+	<button class="btn-emoji" id="add_btn" type="button">
 	  <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
 	</button>
       </th>
     </tr>
 
     {% for care in cares %}
-    <tr>
+    <tr id="tr-{{ care.id }}">
       <td style="display:none;">{{ care.id }}</td>
-      <td>{{ care.medecine_name }}</td>
-      <td>{{ care.type }}</td>
-      <td>{{ care.dose }}</td>
-      <td>{{ care.way }}</td>
-      <td>{{ care.description }}</td>
+      <td id="td-name">{{ care.medecine_name }}</td>
+      <td id="td-type">{{ care.type }}</td>
+      <td id="td-dose">{{ care.dose }}</td>
+      <td id="td-way">{{ care.way }}</td>
+      <td id="td-desc">{{ care.description }}</td>
       <td>
+	<button class="btn-emoji" id="edit_btn{{ care.id }}" type="button" onclick="edit_popup()" value={{care.id}}>
+	  <i class="fa fa-pencil fa-2x" aria-hidden="true"></i></button>
 	<form id="form_del" action="/cares" method="post">
 	  <input type="hidden" id="id_del" name="id_del" value="None"/>
 	  <button class="btn-emoji" id="del_btn" type="submit">
@@ -78,10 +80,19 @@
 
 <script>
 
+  $('#table').on('click', '#add_btn', function() {
+      var amodal = document.getElementById("add_modal");
+      var aspan = document.getElementsByClassName("add_close")[0];
+      amodal.style.display = "block";
+      aspan.onclick = function() {
+	  amodal.style.display = "none";
+      }
+  });
+
   $('#table').on('click', '#del_btn', function() {
       if ( confirm("Etes-vous sûr de vouloir supprimer cette ligne?") == true ) {
 	  $(this).parents('tr').detach();
-	  id_to_del = $(this).parents('tr').find('td:first').text();
+	  var id_to_del = $(this).parents('tr').find('td:first').text();
 	  document.getElementById("id_del").setAttribute('value', id_to_del);
 	  document.getElementById("form_del").submit();
       }
