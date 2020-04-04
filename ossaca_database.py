@@ -781,7 +781,7 @@ class SQLiteStorage:
         return sheet
 
     def get_all_sheets_by_animal_id(self, animal_id):
-        query = "SELECT * FROM sheet where animal_od = ?"
+        query = "SELECT * FROM sheet where animal_id = ?"
         sheets = []
 
         cursor = self.con.cursor()
