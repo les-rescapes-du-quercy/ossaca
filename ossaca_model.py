@@ -119,6 +119,18 @@ class Animal:
         self.history = history
         self.food_habits = food_habits
 
+    def age(self):
+        '''
+        Returns the age of the animal, in years.
+        Code taken from https://stackoverflow.com/a/9754466
+        '''
+        if self.birth_date is None:
+            return -1
+
+        today = date.today()
+        return today.year - self.birth_date.year - \
+               ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+
 class Dog(Animal):
     '''
     Class describing a dog
