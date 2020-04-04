@@ -46,8 +46,8 @@
 <p>
   <table id="table">
 
-    <tr><th>Type</th><th>Dose</th><th>Administration</th>
-      <th>Nom du médicament</th><th>Description</th>
+    <tr><th>Nom du médicament</th><th>Type</th><th>Dose</th>
+      <th>Administration</th><th>Description</th>
       <th>
 	<button class="btn-emoji" id="modal-btn" type="button">
 	  <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
@@ -58,10 +58,10 @@
     {% for care in cares %}
     <tr>
       <td style="display:none;">{{ care.id }}</td>
+      <td>{{ care.medecine_name }}</td>
       <td>{{ care.type }}</td>
       <td>{{ care.dose }}</td>
       <td>{{ care.way }}</td>
-      <td>{{ care.medecine_name }}</td>
       <td>{{ care.description }}</td>
       <td>
 	<form id="form_del" action="/cares" method="post">
