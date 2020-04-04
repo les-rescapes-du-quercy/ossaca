@@ -96,3 +96,8 @@ def update_cat(form):
 def get_cares():
     cares = getdb().get_all_cares()
     return cares
+
+def del_care(id):
+    db = getdb()
+    care = db.get_care_by_id(id)
+    db.delete(care)
