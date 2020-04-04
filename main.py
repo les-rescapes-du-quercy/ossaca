@@ -58,6 +58,10 @@ def cat(species='cat', name=None):
 
 @app.route('/cares', methods=['GET', 'POST'])
 def cares(cares=None):
+    if request.method == 'POST':
+        if 'id_del_care' in request.form:
+            del_care(request.form['id_del_care'])
+
     cares = get_cares()
     return render_template('admin-cares.html', cares=cares)
 
