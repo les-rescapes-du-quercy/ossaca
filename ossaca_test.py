@@ -670,7 +670,7 @@ class TestOssacaDBAPI(unittest.TestCase):
                      medecine_name = "",
                      description = "Nettoyage des oreilles avec compresse eet antiseptique" )
                     )
-                    
+
         for care in TestOssacaDBAPI.cares:
             s.add(care)
 
@@ -1288,14 +1288,18 @@ class TestOssacaDBAPI(unittest.TestCase):
 
         os.remove("example.db")
 
-    def check_get_all_items(self, known_items, query_func, compare_func):
+    def check_get_all_items(self, known_items, query_func, compare_func, param = None):
         s = SQLiteStorage()
         s.connect("example.db")
 
         query = getattr(s, query_func)
         cmp = getattr(self, compare_func)
 
-        items = query()
+        if param is None:
+            items = query()
+        else:
+            items = query(param)
+
         self.assertEqual(len(items), len(known_items))
 
         for i in range(len(items)) :
@@ -1370,9 +1374,11 @@ class TestOssacaDBAPI(unittest.TestCase):
     def test_get_caresheet_by_id(self):
         self.check_get_all_items_by_id(self.caresheets, "get_caresheet_by_id", "compare_caresheet")
 
-    # TODO
     def test_get_all_caresheets_by_animal_id(self):
-        self.assertEqual(0, 1)
+        for animal in self.dogs + self.cats:
+            caresheets = [cs for cs in self.caresheets if cs.animal.id == animal.id]
+            self.check_get_all_items(caresheets, "get_all_caresheets_by_animal_id",
+                                     "compare_caresheet", animal.id)
 
     def test_get_all_foodhabits(self):
         self.check_get_all_items(self.foodhabits, "get_all_foodhabits", "compare_foodhabit")
@@ -1392,16 +1398,17 @@ class TestOssacaDBAPI(unittest.TestCase):
     def test_get_sheet_by_id(self):
         self.check_get_all_items_by_id(self.sheets, "get_sheet_by_id", "compare_sheet")
 
-    # TODO
     def test_get_all_sheets_by_animal_id(self):
-        self.assertEqual(0, 1)
+        for animal in self.dogs + self.cats:
+            sheets = [s for s in self.sheets if s.animal.id == animal.id]
+            self.check_get_all_items(sheets, "get_all_sheets_by_animal_id",
+                                     "compare_sheet", animal.id)
 
     def test_get_all_boxes(self):
         self.check_get_all_items(self.boxes, "get_all_boxes", "compare_box")
 
     def test_get_box_by_id(self):
         self.check_get_all_items_by_id(self.boxes, "get_box_by_id", "compare_box")
-        return
 
 if __name__ == '__main__':
     unittest.main()
