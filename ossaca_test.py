@@ -121,7 +121,7 @@ class TestOssacaDB(unittest.TestCase):
         [1, "", date.today().isoformat(), date.today().isoformat(), -1, -1, 0,
          "", "", "", "", "", 0, "", -1])
 
-        self.check_table_row("dog", 1, [1, 1, 0, 0])
+        self.check_table_row("dog", 1, [1, 1, CatCompatibility.UNKNOWN, 0])
 
     def test_add_dog(self):
         # arbitrary values
@@ -142,14 +142,14 @@ class TestOssacaDB(unittest.TestCase):
                 neutered = False,
                 history = "Née au refuge",
                 food_habits = None,
-                ok_cats = True,
+                ok_cats = CatCompatibility.YES,
                 category = 1),
                 [1, "Louloute", "2004-12-25", "2016-06-17", -1, -1, 1,
                  "Malinois croisé sharpei", "gentille avec du poil au nez",
                  "verte", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  -1])
 
-        self.check_table_row("dog", 1, [1, 1, 1, 1])
+        self.check_table_row("dog", 1, [1, 1, CatCompatibility.YES, 1])
 
     def test_add_dog_full(self):
         self.insertion_and_check_test("animal",
@@ -169,14 +169,14 @@ class TestOssacaDB(unittest.TestCase):
                 neutered = False,
                 history = "Née au refuge",
                 food_habits = FoodHabit(id = 6),
-                ok_cats = True,
+                ok_cats = CatCompatibility.NO,
                 category = 2),
                 [1, "Louloute", "2004-12-25", "2016-06-17", 2, 4, 1,
                  "Malinois croisé sharpei", "gentille avec du poil au nez",
                  "verte", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  6])
 
-        self.check_table_row("dog", 1, [1, 1, 1, 2])
+        self.check_table_row("dog", 1, [1, 1, CatCompatibility.NO, 2])
 
     def test_add_empty_cat(self):
         self.insertion_test(Cat(), "cat")
@@ -450,7 +450,7 @@ class TestOssacaDB(unittest.TestCase):
                 neutered = False,
                 history = "Née au refuge",
                 food_habits = FoodHabit(id = 6),
-                ok_cats = True,
+                ok_cats = CatCompatibility.YES,
                 category = 2),
                 [1, "Louloute", "2004-12-25", "2016-06-17", 2, 4, 1,
                  "Malinois croisé sharpei", "gentille avec du poil au nez",
@@ -852,7 +852,7 @@ class TestOssacaDBAPI(unittest.TestCase):
                 neutered = True,
                 history = "Maltraité dans une cage pendant l'enfance",
                 food_habits = TestOssacaDBAPI.foodhabits[1],
-                ok_cats = False,
+                ok_cats = CatCompatibility.NO,
                 category = 0
                 ))
 
@@ -870,7 +870,7 @@ class TestOssacaDBAPI(unittest.TestCase):
                 neutered = True,
                 history = "A tué ses parents",
                 food_habits = TestOssacaDBAPI.foodhabits[3],
-                ok_cats = False,
+                ok_cats = CatCompatibility.YES,
                 category = 2
                 ))
 
@@ -887,7 +887,7 @@ class TestOssacaDBAPI(unittest.TestCase):
                 neutered = False,
                 history = "Abandonné dans un fossé",
                 food_habits = None,
-                ok_cats = True,
+                ok_cats = CatCompatibility.UNKNOWN,
                 category = 1
                 ))
 
@@ -905,7 +905,7 @@ class TestOssacaDBAPI(unittest.TestCase):
                 neutered = True,
                 history = "Propriétaire décédé",
                 food_habits = TestOssacaDBAPI.foodhabits[4],
-                ok_cats = True,
+                ok_cats = CatCompatibility.YES,
                 category = 0
                 ))
 
