@@ -62,9 +62,11 @@ def cares(cares=None):
         if 'id_del' in request.form:
             if request.form['id_del'] != "None":
                 del_care(request.form['id_del'])
+        elif 'id_edit' in request.form:
+            if request.form['id_edit'] != "None":
+                update_care(request.form)
         else:
             add_new_care(request.form);
-
     cares = get_cares()
     return render_template('admin-cares.html', cares=cares)
 

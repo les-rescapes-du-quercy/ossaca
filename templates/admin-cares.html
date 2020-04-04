@@ -42,6 +42,31 @@
   </div>
 </div>
 
+<!-- The Modal -->
+<div id="edit_modal" class="modal">
+  <div class="modal-content">
+    <span class="edit_close">&times;</span>
+    <h2>Edition d'un soin</h2>
+    <form class="form-style" action="/cares" method="post">
+      <fieldset>
+	<legend>Soin à modifier</legend>
+	<input type="hidden" id="id_edit" name="id_edit" value="None">
+	<label for="type">Type</label>
+	<input type="text" id="etype" name="type" required>
+	<label for="name">Nom</label>
+	<input type="text" id="ename" name="name">
+	<label for="dose">Dose</label>
+	<input id="edose" name="dose" type="text">
+	<label for="way">Administration</label>
+	<input id="eway" type="text" name="way">
+	<label for="desc">Description</label>
+	<textarea id="edesc" name="desc" value=""></textarea>
+	<button class="submit" type="submit" value="submit">Valider</button>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
 <h1>Liste des soins</h1>
 <p>
   <table id="table">
@@ -98,24 +123,26 @@
       }
   });
 
-  // Get the modal
-  var modal = document.getElementById("modal");
-  // Get the button that opens the modal
-  var btn = document.getElementById("modal-btn");
-  // Get the <span> element that closes the modal
-  var span = document.getElementsByClassName("close")[0];
-  // When the user clicks the button, open the modal
-  btn.onclick = function() {
-      modal.style.display = "block";
-  }
-  // When the user clicks on <span> (x), close the modal
-  span.onclick = function() {
-      modal.style.display = "none";
-  }
-  // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
-      if (event.target == modal) {
-	  modal.style.display = "none";
+  function edit_popup() {
+      var id, cells, name, type, dose, way, desc, emodal, espan;
+      id = this.document.activeElement.value;
+      cells = document.getElementById('tr-'+id).cells;
+      name = cells.namedItem("td-name").innerHTML;
+      type = cells.namedItem("td-type").innerHTML;
+      dose = cells.namedItem("td-dose").innerHTML;
+      way = cells.namedItem("td-way").innerHTML;
+      desc = cells.namedItem("td-desc").innerHTML;
+      document.getElementById("id_edit").value = id;
+      document.getElementById("etype").value = type;
+      document.getElementById("ename").value = name;
+      document.getElementById("edose").value = dose;
+      document.getElementById("eway").value = way;
+      document.getElementById("edesc").value = desc;
+      emodal = document.getElementById("edit_modal");
+      emodal.style.display = "block";
+      espan = document.getElementsByClassName("edit_close")[0];
+      espan.onclick = function() {
+	  emodal.style.display = "none";
       }
   }
 

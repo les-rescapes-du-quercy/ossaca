@@ -107,6 +107,16 @@ def add_new_care(form):
     care.description = form['desc']
     db.add(care)
 
+def update_care(form):
+    db = getdb()
+    care = db.get_care_by_id(form['id_edit'])
+    care.type = form['type']
+    care.way = form['way']
+    care.dose = form['dose']
+    care.medecine_name = form['name']
+    care.description = form['desc']
+    db.update(care)
+
 def del_care(id):
     db = getdb()
     care = db.get_care_by_id(id)
