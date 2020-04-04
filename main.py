@@ -59,8 +59,11 @@ def cat(species='cat', name=None):
 @app.route('/cares', methods=['GET', 'POST'])
 def cares(cares=None):
     if request.method == 'POST':
-        if request.form['id_del_care'] != "None":
-            del_care(request.form['id_del_care'])
+        if 'id_del' in request.form:
+            if request.form['id_del'] != "None":
+                del_care(request.form['id_del'])
+        else:
+            add_new_care(request.form);
 
     cares = get_cares()
     return render_template('admin-cares.html', cares=cares)

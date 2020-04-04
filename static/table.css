@@ -28,3 +28,26 @@ table tr:hover {background-color: #ddd;}
 .emoji {
     font-size: 25px
 }
+
+.btn-emoji {
+    border-radius: 1em;
+    padding: 10px;
+    text-align: center;
+}
+
+.fa-trash {
+    color: rgb(200,30,30);
+}
+
+.fa-plus {
+    color: rgb(30,200,0);
+}
+
+.btn-emoji:hover {
+    background-color: #ddd;
+    box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
+}
+
+input[type="submit"]{
+    cursor:pointer;
+}
