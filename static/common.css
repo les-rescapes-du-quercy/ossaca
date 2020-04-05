@@ -91,6 +91,7 @@ header {
     position:relative;
     top:45%;
     left:45%;
+    float: left;
 }
 
 .submit:hover {

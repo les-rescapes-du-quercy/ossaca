@@ -72,3 +72,20 @@ select:focus
     background: #8cd9bf;
     color: black;
 }
+
+#add_cancel {
+    background-color: lightsalmon;
+}
+
+#edit_cancel {
+    background-color: lightsalmon;
+}
+
+.cancel {
+    float: right;
+    margin-right: 20%;
+}
+
+.validate {
+    margin-right: 80%;
+}

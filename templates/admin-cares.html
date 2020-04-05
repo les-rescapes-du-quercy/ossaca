@@ -21,7 +21,6 @@
 <!-- The Modal -->
 <div id="add_modal" class="modal">
   <div class="modal-content">
-    <span class="add_close">&times;</span>
     <h2>Création d'un nouveau soin</h2>
     <form class="form-style" action="/cares" method="post">
       <fieldset>
@@ -36,7 +35,12 @@
 	<input type="text" name="way">
 	<label for="desc">Description</label>
 	<textarea name="desc"></textarea>
-	<button class="submit" type="submit" value="submit">Valider</button>
+	<div class="validate">
+	  <button class="submit" type="submit">Valider</button>
+	</div>
+	<div class="cancel">
+	  <button class="submit" type="button" id="add_cancel">Annuler</button>
+	</div>
       </fieldset>
     </form>
   </div>
@@ -45,7 +49,6 @@
 <!-- The Modal -->
 <div id="edit_modal" class="modal">
   <div class="modal-content">
-    <span class="edit_close">&times;</span>
     <h2>Edition d'un soin</h2>
     <form class="form-style" action="/cares" method="post">
       <fieldset>
@@ -61,7 +64,12 @@
 	<input id="eway" type="text" name="way">
 	<label for="desc">Description</label>
 	<textarea id="edesc" name="desc" value=""></textarea>
-	<button class="submit" type="submit" value="submit">Valider</button>
+	<div class="validate">
+	  <button class="submit" type="submit">Valider</button>
+	</div>
+	<div class="cancel">
+	  <button class="submit" type="button" id="edit_cancel">Annuler</button>
+	</div>
       </fieldset>
     </form>
   </div>
@@ -70,10 +78,13 @@
 <h1>Liste des soins</h1>
 <p>
   <table id="table">
+    <form id="form_del" action="/cares" method="post">
+      <input type="hidden" id="id_del" name="id_del" value="None"/>
+    </form>
 
     <tr><th>Nom du médicament</th><th>Type</th><th>Dose</th>
       <th>Administration</th><th>Description</th>
-      <th>
+      <th colspan="2">
 	<button class="btn-emoji" id="add_btn" type="button">
 	  <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
 	</button>
@@ -88,14 +99,13 @@
       <td id="td-dose">{{ care.dose }}</td>
       <td id="td-way">{{ care.way }}</td>
       <td id="td-desc">{{ care.description }}</td>
-      <td>
+      <td class="edit_btn">
 	<button class="btn-emoji" id="edit_btn{{ care.id }}" type="button" onclick="edit_popup()" value={{care.id}}>
 	  <i class="fa fa-pencil fa-2x" aria-hidden="true"></i></button>
-	<form id="form_del" action="/cares" method="post">
-	  <input type="hidden" id="id_del" name="id_del" value="None"/>
-	  <button class="btn-emoji" id="del_btn" type="submit">
-	    <i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
-	</form>
+      </td>
+      <td class="del_btn">
+	<button class="btn-emoji" id="del_btn" type="submit">
+	  <i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
       </td>
     </tr>
     {% endfor %}
@@ -106,10 +116,11 @@
 <script>
 
   $('#table').on('click', '#add_btn', function() {
-      var amodal = document.getElementById("add_modal");
-      var aspan = document.getElementsByClassName("add_close")[0];
+      var amodal, acancel;
+      amodal = document.getElementById("add_modal");
       amodal.style.display = "block";
-      aspan.onclick = function() {
+      acancel = document.getElementById("add_cancel");
+      acancel.onclick = function() {
 	  amodal.style.display = "none";
       }
   });
@@ -124,7 +135,7 @@
   });
 
   function edit_popup() {
-      var id, cells, name, type, dose, way, desc, emodal, espan;
+      var id, cells, name, type, dose, way, desc, emodal, ecancel;
       id = this.document.activeElement.value;
       cells = document.getElementById('tr-'+id).cells;
       name = cells.namedItem("td-name").innerHTML;
@@ -140,8 +151,8 @@
       document.getElementById("edesc").value = desc;
       emodal = document.getElementById("edit_modal");
       emodal.style.display = "block";
-      espan = document.getElementsByClassName("edit_close")[0];
-      espan.onclick = function() {
+      ecancel = document.getElementById("edit_cancel");
+      ecancel.onclick = function() {
 	  emodal.style.display = "none";
       }
   }
