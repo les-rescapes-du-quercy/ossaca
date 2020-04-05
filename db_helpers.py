@@ -136,6 +136,25 @@ def get_bowls():
     bowls = getdb().get_all_bowls()
     return bowls
 
+def add_new_bowl(form):
+    db = getdb()
+    bowl = Bowl()
+    bowl.label = form['type']
+    bowl.description = form['desc']
+    db.add(bowl)
+
+def update_bowl(form):
+    db = getdb()
+    bowl = db.get_bowl_by_id(form['id_edit_bowl'])
+    bowl.label = form['type']
+    bowl.description = form['desc']
+    db.update(bowl)
+
+def del_bowl(id):
+    db = getdb()
+    bowl = db.get_bowl_by_id(id)
+    db.delete(bowl)
+
 def get_foods():
     foods = getdb().get_all_foods()
     return foods

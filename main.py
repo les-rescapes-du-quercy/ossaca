@@ -72,9 +72,23 @@ def cares(cares=None):
 
 @app.route('/foods', methods=['GET', 'POST'])
 def food():
+    if request.method == 'POST':
+        handle_bowl(request.form)
+
     bowls = get_bowls()
     foods = get_foods()
     return render_template('admin-foods.html', bowls=bowls, foods=foods)
+
+def handle_bowl(form):
+    if 'id_add_bowl' in form:
+        if form['id_add_bowl'] != "None":
+            add_new_bowl(form);
+    elif 'id_edit_bowl' in form:
+        if form['id_edit_bowl'] != "None":
+            update_bowl(form)
+    elif 'id_del_bowl' in form:
+        if form['id_del_bowl'] != "None":
+            del_bowl(form['id_del_bowl'])
 
 if __name__ == '__main__':
     app.run(debug=True)
