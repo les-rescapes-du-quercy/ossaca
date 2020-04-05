@@ -1,0 +1,23 @@
+<link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet" type="text/css" />
+
+{% include 'header.html' %}
+
+<style>
+  input[type=text],
+  input[type=date],
+  input[type=checkbox],
+  textarea,
+  select
+  {
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+  }
+</style>
+
+<title>Alimentation</title>
+
+<h1>Liste des gamelles + croquettes</h1>
+
+{% include 'admin-bowl.html' %}

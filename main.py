@@ -70,5 +70,11 @@ def cares(cares=None):
     cares = get_cares()
     return render_template('admin-cares.html', cares=cares)
 
+@app.route('/foods', methods=['GET', 'POST'])
+def food():
+    bowls = get_bowls()
+    foods = get_foods()
+    return render_template('admin-foods.html', bowls=bowls, foods=foods)
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,111 @@
+<!-- The Modal -->
+<div id="add_modal_bowl" class="modal">
+  <div class="modal-content">
+    <form class="form-style" action="/foods" method="post">
+      <fieldset>
+	<legend>Nouvelle gamelle</legend>
+	<label for="type">Type</label>
+	<input type="text" name="type" required>
+	<label for="desc">Description</label>
+	<textarea name="desc"></textarea>
+	<div class="validate">
+	  <button class="submit" type="submit">Valider</button>
+	</div>
+	<div class="cancel">
+	  <button class="submit" type="button" id="add_cancel_bowl">Annuler</button>
+	</div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div id="edit_modal_bowl" class="modal">
+  <div class="modal-content">
+    <form class="form-style" action="/foods" method="post">
+      <fieldset>
+	<legend>Gamelle à modifier</legend>
+	<input type="hidden" id="id_edit_bowl" name="id_edit" value="None">
+	<label for="type">Type</label>
+	<input type="text" id="etype_bowl" name="bowl_type" required>
+	<label for="desc">Description</label>
+	<textarea id="edesc_bowl" name="bowl_desc" value=""></textarea>
+	<div class="validate">
+	  <button class="submit" type="submit">Valider</button>
+	</div>
+	<div class="cancel">
+	  <button class="submit" type="button" id="edit_cancel_bowl">Annuler</button>
+	</div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<p>
+  <table id="table">
+    <form id="form_del" action="/foods" method="post">
+      <input type="hidden" id="id_del_bowl" name="id_del" value="None"/>
+    </form>
+    <tr><th>Type de gamelles</th><th>Description</th>
+      <th colspan="2">
+	<button class="btn-emoji" id="add_btn_bowl" type="button" value="Nouvelle gamelle">
+	  <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
+	</button>
+      </th>
+    </tr>
+    {% for bowl in bowls %}
+    <tr id="tr-{{ bowl.id }}">
+      <td style="display:none;">{{ bowl.id }}</td>
+      <td id="td-type">{{ bowl.label }}</td>
+      <td id="td-desc">{{ bowl.description }}</td>
+      <td class="edit_btn">
+	<button class="btn-emoji" id="edit_btn_bowl{{ bowl.id }}" type="button" onclick="edit_popup()" value={{bowl.id}}>
+	  <i class="fa fa-pencil fa-2x" aria-hidden="true"></i></button>
+      </td>
+      <td class="del_btn">
+	<button class="btn-emoji" id="del_btn_bowl" type="submit">
+	  <i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+      </td>
+    </tr>
+    {% endfor %}
+</p>
+
+<script>
+
+  $('#table').on('click', '#add_btn_bowl', function() {
+      var amodal, acancel;
+      amodal = document.getElementById("add_modal_bowl");
+      amodal.style.display = "block";
+      acancel = document.getElementById("add_cancel_bowl");
+      acancel.onclick = function() {
+	  amodal.style.display = "none";
+      }
+  });
+
+  $('#table').on('click', '#del_btn_bowl', function() {
+      if ( confirm("Etes-vous sûr de vouloir supprimer cette ligne?") == true ) {
+	  $(this).parents('tr').detach();
+	  var id_to_del = $(this).parents('tr').find('td:first').text();
+	  document.getElementById("id_del_bowl").setAttribute('value', id_to_del);
+	  document.getElementById("form_del").submit();
+      }
+  });
+
+  function edit_popup() {
+      var id, cells, type, desc, emodal, ecancel;
+      id = this.document.activeElement.value;
+      cells = document.getElementById('tr-'+id).cells;
+      type = cells.namedItem("td-type").innerHTML;
+      desc = cells.namedItem("td-desc").innerHTML;
+      document.getElementById("id_edit_bowl").value = id;
+      document.getElementById("etype_bowl").value = type;
+      document.getElementById("edesc_bowl").value = desc;
+      emodal = document.getElementById("edit_modal_bowl");
+      emodal.style.display = "block";
+      ecancel = document.getElementById("edit_cancel_bowl");
+      ecancel.onclick = function() {
+	  emodal.style.display = "none";
+      }
+  }
+
+</script>

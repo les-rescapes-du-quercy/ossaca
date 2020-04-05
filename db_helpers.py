@@ -129,3 +129,13 @@ def del_care(id):
     db = getdb()
     care = db.get_care_by_id(id)
     db.delete(care)
+
+# ----------- FOOD ----------- #
+
+def get_bowls():
+    bowls = getdb().get_all_bowls()
+    return bowls
+
+def get_foods():
+    foods = getdb().get_all_foods()
+    return foods
