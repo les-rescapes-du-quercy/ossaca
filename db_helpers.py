@@ -6,6 +6,8 @@ from ossaca_database import *
 
 app = Flask(__name__)
 
+# ----------- GENERAL ----------- #
+
 def getdb():
     db = getattr(g, '_database', None)
     if db is None:
@@ -18,6 +20,8 @@ def closedb(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
+# ----------- DOG ----------- #
 
 def get_dogs():
     dogs = getdb().get_all_dogs()
@@ -56,6 +60,8 @@ def update_dog(form):
     dog.history = form['history']
     db.update(dog)
 
+# ----------- CAT ----------- #
+
 def get_cats():
     cats = getdb().get_all_cats()
     return cats
@@ -92,6 +98,8 @@ def update_cat(form):
     cat.character = form['char']
     cat.history = form['history']
     db.update(cat)
+
+# ----------- CARE ----------- #
 
 def get_cares():
     cares = getdb().get_all_cares()
