@@ -85,6 +85,7 @@ def cares(cares=None):
 def food():
     if request.method == 'POST':
         handle_bowl(request.form)
+        handle_food(request.form)
 
     bowls = get_bowls()
     foods = get_foods()
@@ -100,6 +101,17 @@ def handle_bowl(form):
     elif 'id_del_bowl' in form:
         if form['id_del_bowl'] != "None":
             del_bowl(form['id_del_bowl'])
+
+def handle_food(form):
+    if 'id_add_food' in form:
+        if form['id_add_food'] != "None":
+            add_new_food(form);
+    elif 'id_edit_food' in form:
+        if form['id_edit_food'] != "None":
+            update_food(form)
+    elif 'id_del_food' in form:
+        if form['id_del_food'] != "None":
+            del_food(form['id_del_food'])
 
 # ----------- MAIN ----------- #
 

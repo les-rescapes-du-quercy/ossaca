@@ -158,3 +158,22 @@ def del_bowl(id):
 def get_foods():
     foods = getdb().get_all_foods()
     return foods
+
+def add_new_food(form):
+    db = getdb()
+    food = Food()
+    food.label = form['type']
+    food.description = form['desc']
+    db.add(food)
+
+def update_food(form):
+    db = getdb()
+    food = db.get_food_by_id(form['id_edit_food'])
+    food.label = form['type']
+    food.description = form['desc']
+    db.update(food)
+
+def del_food(id):
+    db = getdb()
+    food = db.get_food_by_id(id)
+    db.delete(food)
