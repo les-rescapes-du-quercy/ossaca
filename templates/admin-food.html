@@ -43,7 +43,7 @@
 </div>
 
 <!-- Content of table -->
-<form id="form_del" action="/foods" method="post">
+<form id="form_del_food" action="/foods" method="post">
   <input type="hidden" id="id_del_food" name="id_del_food" value="None"/>
 </form>
 <tr><th>Type d'alimentation</th><th>Description</th>
@@ -87,7 +87,7 @@
 	  $(this).parents('tr').detach();
 	  var id_to_del = $(this).parents('tr').find('td:first').text();
 	  document.getElementById("id_del_food").setAttribute('value', id_to_del);
-	  document.getElementById("form_del").submit();
+	  document.getElementById("form_del_food").submit();
       }
   });
 
