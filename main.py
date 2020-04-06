@@ -5,6 +5,8 @@ from flask import Flask, render_template, request, g
 from flask_images import Images, ImageSize, resized_img_src
 from db_helpers import *
 
+# ----------- GENERAL ----------- #
+
 app = Flask(__name__)
 
 app.config['IMAGES_PATH'] = ['images']
@@ -14,6 +16,9 @@ app.secret_key = 'prouttrucmuche'
 images = Images(app)
 
 @app.route('/')
+
+# ----------- DOGS ----------- #
+
 @app.route('/dogs', methods=['GET', 'POST'])
 def dogs():
     if request.method == 'POST':
@@ -34,6 +39,8 @@ def dog(species='dog', name=None):
     id = request.args.get('id', '')
     dog = getdb().get_dog_by_id(id)
     return render_template('animal.html', species=species, animal=dog)
+
+# ----------- CATS ----------- #
 
 @app.route('/cats', methods=['GET', 'POST'])
 def cats():
@@ -56,6 +63,8 @@ def cat(species='cat', name=None):
     cat = getdb().get_cat_by_id(id)
     return render_template('animal.html', species=species, animal=cat)
 
+# ----------- CARES ----------- #
+
 @app.route('/cares', methods=['GET', 'POST'])
 def cares(cares=None):
     if request.method == 'POST':
@@ -69,6 +78,8 @@ def cares(cares=None):
             add_new_care(request.form);
     cares = get_cares()
     return render_template('admin-cares.html', cares=cares)
+
+# ----------- FOODS ----------- #
 
 @app.route('/foods', methods=['GET', 'POST'])
 def food():
@@ -89,6 +100,8 @@ def handle_bowl(form):
     elif 'id_del_bowl' in form:
         if form['id_del_bowl'] != "None":
             del_bowl(form['id_del_bowl'])
+
+# ----------- MAIN ----------- #
 
 if __name__ == '__main__':
     app.run(debug=True)

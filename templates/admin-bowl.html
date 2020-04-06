@@ -1,4 +1,4 @@
-<!-- The Modal -->
+<!-- Add Modal -->
 <div id="add_modal_bowl" class="modal">
   <div class="modal-content">
     <form class="form-style" action="/foods" method="post">
@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<!-- The Modal -->
+<!-- Edit Modal -->
 <div id="edit_modal_bowl" class="modal">
   <div class="modal-content">
     <form class="form-style" action="/foods" method="post">
@@ -42,37 +42,35 @@
   </div>
 </div>
 
-<p>
-  <table id="table">
-    <form id="form_del" action="/foods" method="post">
-      <input type="hidden" id="id_del_bowl" name="id_del_bowl" value="None"/>
-    </form>
-    <tr><th>Type de gamelles</th><th>Description</th>
-      <th colspan="2">
-	<button class="btn-emoji" id="add_btn_bowl" type="button">
-	  <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
-	</button>
-      </th>
-    </tr>
-    {% for bowl in bowls %}
-    <tr id="tr-bowl-{{ bowl.id }}">
-      <td style="display:none;">{{ bowl.id }}</td>
-      <td id="td-bowl-type">{{ bowl.label }}</td>
-      <td id="td-bowl-desc">{{ bowl.description }}</td>
-      <td class="edit_btn">
-	<button class="btn-emoji" id="edit_btn_bowl{{ bowl.id }}" type="button" onclick="edit_popup()" value={{bowl.id}}>
-	  <i class="fa fa-pencil fa-2x" aria-hidden="true"></i></button>
-      </td>
-      <td class="del_btn">
-	<button class="btn-emoji" id="del_btn_bowl" type="submit">
-	  <i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
-      </td>
-    </tr>
-    {% endfor %}
-</p>
+<!-- Table's content -->
+<form id="form_del" action="/foods" method="post">
+  <input type="hidden" id="id_del_bowl" name="id_del_bowl" value="None"/>
+</form>
+<tr><th>Type de gamelles</th><th>Description</th>
+  <th colspan="2">
+    <button class="btn-emoji" id="add_btn_bowl" type="button">
+      <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
+    </button>
+  </th>
+</tr>
+{% for bowl in bowls %}
+<tr id="tr-bowl-{{ bowl.id }}">
+  <td style="display:none;">{{ bowl.id }}</td>
+  <td id="td-bowl-type">{{ bowl.label }}</td>
+  <td id="td-bowl-desc">{{ bowl.description }}</td>
+  <td class="edit_btn">
+    <button class="btn-emoji" id="edit_btn_bowl{{ bowl.id }}" type="button" onclick="edit_popup_bowl()" value={{bowl.id}}>
+      <i class="fa fa-pencil fa-2x" aria-hidden="true"></i></button>
+  </td>
+  <td class="del_btn">
+    <button class="btn-emoji" id="del_btn_bowl" type="submit">
+      <i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+  </td>
+</tr>
+{% endfor %}
 
+<!-- Scripts -->
 <script>
-
   $('#table').on('click', '#add_btn_bowl', function() {
       var amodal, acancel;
       amodal = document.getElementById("add_modal_bowl");
@@ -93,7 +91,7 @@
       }
   });
 
-  function edit_popup() {
+  function edit_popup_bowl() {
       var id, cells, type, desc, emodal, ecancel;
       id = this.document.activeElement.value;
       cells = document.getElementById('tr-bowl-'+id).cells;
