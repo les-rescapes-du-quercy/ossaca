@@ -113,6 +113,20 @@ def handle_food(form):
         if form['id_del_food'] != "None":
             del_food(form['id_del_food'])
 
+# ----------- BOXES ----------- #
+
+@app.route('/boxes', methods=['GET', 'POST'])
+def box():
+    boxes = get_boxes()
+    return render_template('admin-boxes.html', boxes=boxes)
+
+# ----------- STATES ----------- #
+
+@app.route('/states', methods=['GET', 'POST'])
+def states():
+    states = get_states()
+    return render_template('admin-states.html', states=states)
+
 # ----------- MAIN ----------- #
 
 if __name__ == '__main__':

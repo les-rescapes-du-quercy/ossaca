@@ -177,3 +177,15 @@ def del_food(id):
     db = getdb()
     food = db.get_food_by_id(id)
     db.delete(food)
+
+# ----------- BOXES ----------- #
+
+def get_boxes():
+    boxes = getdb().get_all_boxes()
+    return boxes
+
+# ----------- STATES ----------- #
+
+def get_states():
+    states = getdb().get_all_states()
+    return states

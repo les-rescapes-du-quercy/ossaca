@@ -1,0 +1,138 @@
+<link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet" type="text/css" />
+
+{% include 'header.html' %}
+
+<style>
+  input[type=text],
+  input[type=date],
+  input[type=checkbox],
+  textarea,
+  select
+  {
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+  }
+</style>
+
+<title>États</title>
+
+<!-- The Modal -->
+<div id="add_modal" class="modal">
+  <div class="modal-content">
+    <h2>Création d'un nouvel état</h2>
+    <form class="form-style" action="/states" method="post">
+      <fieldset>
+	<legend>Nouveau état</legend>
+	<label for="name">Nom</label>
+	<input type="text" name="name">
+	<label for="desc">Description</label>
+	<textarea name="desc"></textarea>
+	<div class="validate">
+	  <button class="submit" type="submit">Valider</button>
+	</div>
+	<div class="cancel">
+	  <button class="submit" type="button" id="add_cancel">Annuler</button>
+	</div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div id="edit_modal" class="modal">
+  <div class="modal-content">
+    <h2>Edition d'un état</h2>
+    <form class="form-style" action="/states" method="post">
+      <fieldset>
+	<legend>État à modifier</legend>
+	<input type="hidden" id="id_edit" name="id_edit" value="None">
+	<label for="name">Nom</label>
+	<input type="text" id="ename" name="name" required>
+	<label for="desc">Description</label>
+	<textarea id="edesc" name="desc" value=""></textarea>
+	<div class="validate">
+	  <button class="submit" type="submit">Valider</button>
+	</div>
+	<div class="cancel">
+	  <button class="submit" type="button" id="edit_cancel">Annuler</button>
+	</div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<h1>Liste des états</h1>
+<p>
+  <table id="table">
+    <form id="form_del" action="/states" method="post">
+      <input type="hidden" id="id_del" name="id_del" value="None"/>
+    </form>
+
+    <tr><th>Nom de l'état</th><th>Description</th>
+      <th colspan="2">
+	<button class="btn-emoji" id="add_btn" type="button">
+	  <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
+	</button>
+      </th>
+    </tr>
+
+    {% for state in states %}
+    <tr id="tr-{{ state.id }}">
+      <td style="display:none;">{{ state.id }}</td>
+      <td id="td-name">{{ state.label }}</td>
+      <td id="td-desc">{{ state.description }}</td>
+      <td class="edit_btn">
+	<button class="btn-emoji" id="edit_btn{{ state.id }}" type="button" onclick="edit_popup()" value={{state.id}}>
+	  <i class="fa fa-pencil fa-2x" aria-hidden="true"></i></button>
+      </td>
+      <td class="del_btn">
+	<button class="btn-emoji" id="del_btn" type="submit">
+	  <i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+</p>
+
+<script>
+
+  $('#table').on('click', '#add_btn', function() {
+      var amodal, acancel;
+      amodal = document.getElementById("add_modal");
+      amodal.style.display = "block";
+      acancel = document.getElementById("add_cancel");
+      acancel.onclick = function() {
+	  amodal.style.display = "none";
+      }
+  });
+
+  $('#table').on('click', '#del_btn', function() {
+      if ( confirm("Etes-vous sûr de vouloir supprimer cette ligne?") == true ) {
+	  $(this).parents('tr').detach();
+	  var id_to_del = $(this).parents('tr').find('td:first').text();
+	  document.getElementById("id_del").setAttribute('value', id_to_del);
+	  document.getElementById("form_del").submit();
+      }
+  });
+
+  function edit_popup() {
+      var id, cells, name, desc, emodal, ecancel;
+      id = this.document.activeElement.value;
+      cells = document.getElementById('tr-'+id).cells;
+      name = cells.namedItem("td-name").innerHTML;
+      desc = cells.namedItem("td-desc").innerHTML;
+      document.getElementById("id_edit").value = id;
+      document.getElementById("ename").value = name;
+      document.getElementById("edesc").value = desc;
+      emodal = document.getElementById("edit_modal");
+      emodal.style.display = "block";
+      ecancel = document.getElementById("edit_cancel");
+      ecancel.onclick = function() {
+	  emodal.style.display = "none";
+      }
+  }
+
+</script>
