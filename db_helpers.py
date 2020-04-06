@@ -189,3 +189,22 @@ def get_boxes():
 def get_states():
     states = getdb().get_all_states()
     return states
+
+def add_new_state(form):
+    db = getdb()
+    state = State()
+    state.label = form['name']
+    state.description = form['desc']
+    db.add(state)
+
+def update_state(form):
+    db = getdb()
+    state = db.get_state_by_id(form['id_edit'])
+    state.label = form['name']
+    state.description = form['desc']
+    db.update(state)
+
+def del_state(id):
+    db = getdb()
+    state = db.get_state_by_id(id)
+    db.delete(state)

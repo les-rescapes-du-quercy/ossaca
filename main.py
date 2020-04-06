@@ -124,6 +124,15 @@ def box():
 
 @app.route('/states', methods=['GET', 'POST'])
 def states():
+    if request.method == 'POST':
+        if 'id_del' in request.form:
+            if request.form['id_del'] != "None":
+                del_state(request.form['id_del'])
+        elif 'id_edit' in request.form:
+            if request.form['id_edit'] != "None":
+                update_state(request.form)
+        else:
+            add_new_state(request.form);
     states = get_states()
     return render_template('admin-states.html', states=states)
 
