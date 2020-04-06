@@ -73,11 +73,15 @@ select:focus
     color: black;
 }
 
-#add_cancel {
+#add_cancel,
+#add_cancel_bowl,
+#add_cancel_food {
     background-color: lightsalmon;
 }
 
-#edit_cancel {
+#edit_cancel,
+#edit_cancel_bowl,
+#edit_cancel_food {
     background-color: lightsalmon;
 }
 
