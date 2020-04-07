@@ -400,13 +400,14 @@ class TestOssacaDB(unittest.TestCase):
         self.insertion_test(Box(), "box")
 
     def test_add_default_box(self):
-        self.insertion_and_check_test("box", Box(), [1, "", "", 0])
+        self.insertion_and_check_test("box", Box(), [1, "", "", 0, "", "", ""])
 
     def test_add_box(self):
         self.insertion_and_check_test("box",
                 Box(label = "Box 1", description = "Box 1 de l'allée centrale",
-                    surface_area = 2),
-                [1, "Box 1", "Box 1 de l'allée centrale", 2])
+                    surface_area = 2, position = "Allée centrale",
+                    condition = "good condition", particularity = "dark"),
+                [1, "Box 1", "Box 1 de l'allée centrale", 2, "Allée centrale", "good condition", "dark"])
 
     def check_update(self, table, obj, new_obj, values):
         self.insertion_test(obj, table)
@@ -559,8 +560,9 @@ class TestOssacaDB(unittest.TestCase):
         self.check_update("box", Box(),
                 Box(id = 1,
                     label = "Box 1", description = "Box 1 de l'allée centrale",
-                    surface_area = 2),
-                [1, "Box 1", "Box 1 de l'allée centrale", 2]
+                    surface_area = 2, position = "Allée centrale",
+                    condition = "good condition", particularity = "dark"),
+                [1, "Box 1", "Box 1 de l'allée centrale", 2, "Allée centrale", "good condition", "dark"]
         )
 
 ############################## Delete ##########################################
@@ -769,27 +771,34 @@ class TestOssacaDBAPI(unittest.TestCase):
         TestOssacaDBAPI.boxes = []
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Box 1", description = "Box 1, allée 1, ensoleillé", surface_area = 3)
+                        Box(label = "Box 1", description = "", surface_area = 3,
+                            position = "Allée 1", condition = "", particularity = "ensoleillé")
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Box 2", description = "Box 2, allée 1, ombragé", surface_area = 3)
+                        Box(label = "Box 2", description = "", surface_area = 3,
+                            position = "Allée 1", condition = "", particularity = "ombragé")
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Box 3", description = "Box 3, allée 2, porte abimée", surface_area = 3)
+                        Box(label = "Box 3", description = "", surface_area = 3,
+                            position = "Allée 2", condition = "porte abimée", particularity = "")
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Box 4", description = "Box 4, allée 2, ensoleillé", surface_area = 4)
+                        Box(label = "Box 4", description = "Box du fond", surface_area = 4,
+                            position = "Allée 2", condition = "", particularity = "ensoleillé")
+
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Chatterie", description = "Chatterie", surface_area = 20)
+                        Box(label = "Chatterie", description = "Pour 20 chats max", surface_area = 20,
+                            position = "A droite à l'entrée", condition = "", particularity = "")
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Pouponnière", description = "La ou on met les chiots", surface_area = 5)
+                        Box(label = "Pouponnière", description = "La ou on met les chiots", surface_area = 5,
+                            position = "Derrière la Chatterie", condition = "", particularity = "")
                         )
 
         for box in TestOssacaDBAPI.boxes:
