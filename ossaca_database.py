@@ -137,7 +137,10 @@ class SQLiteStorage:
                    id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    label text,
                    description text,
-                   surface_area integer
+                   surface_area integer,
+                   position text,
+                   condition text,
+                   particularity text
                    )''')
 
         con.commit()
@@ -804,7 +807,10 @@ class SQLiteStorage:
         return {
                 "label" : box.label,
                 "description" : box.description,
-                "surface_area" : box.surface_area
+                "surface_area" : box.surface_area,
+                "position" : box.position,
+                "condition" : box.condition,
+                "particularity" : box.particularity
         }
 
     def get_all_boxes(self):
@@ -819,7 +825,10 @@ class SQLiteStorage:
                     id = row[0],
                     label = row[1],
                     description = row[2],
-                    surface_area = row[3]
+                    surface_area = row[3],
+                    position = row[4],
+                    condition = row[5],
+                    particularity = row[6],
                 )
             )
 
@@ -839,7 +848,10 @@ class SQLiteStorage:
             id = row[0],
             label = row[1],
             description = row[2],
-            surface_area = row[3]
+            surface_area = row[3],
+            position = row[4],
+            condition = row[5],
+            particularity = row[6],
         )
 
     @classmethod
