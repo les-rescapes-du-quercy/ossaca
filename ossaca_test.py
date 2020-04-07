@@ -1289,15 +1289,6 @@ class TestOssacaDBAPI(unittest.TestCase):
     def setUp(self):
         self.populate_database("example.db")
 
-    def test_populate_database(self):
-
-        if os.path.exists("example.db"):
-            os.remove("example.db")
-
-        self.populate_database("example.db")
-
-        os.remove("example.db")
-
     def check_get_all_items(self, known_items, query_func, compare_func, param = None):
         s = SQLiteStorage()
         s.connect("example.db")
