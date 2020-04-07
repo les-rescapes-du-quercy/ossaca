@@ -368,11 +368,23 @@ class Box:
 
     :param surface_area: Surface area of the box, in squared meters
     :type surface_area: int
+
+    :param position: The box's position inside the shelter
+    :type potision: str
+
+    :param condition: The box's condition
+    :type condition: str
+
+    :param particularity: Any specific feature of this box
+    :type particularity: str
     '''
-    def __init__(self, id = -1, label = "", description = "", surface_area = 0):
+    def __init__(self, id = -1, label = "", description = "", surface_area = 0,
+                 position = "", condition = "", particularity = ""):
         self.id = id
         self.label = label
         self.description = description
         self.surface_area = surface_area
-
+        self.position = position
+        self.condition = condition
+        self.particularity = particularity
 
