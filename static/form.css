@@ -27,6 +27,7 @@ legend {
 
 label {
     display:inline-block;
+    margin-top: 5px;
     margin-bottom: 20px;
     margin-left: 8%;
     padding: 5px;
@@ -46,6 +47,7 @@ textarea,
 select
 {
     margin-left: 10px;
+    margin-top: 5px;
     border: none;
     width: 50%;
     outline: none;
@@ -53,6 +55,7 @@ select
     color: #434343;
     letter-spacing: 1px;
     text-align: center;
+    vertical-align: top;
     padding: 5px;
     -webkit-transition: background-color 0.3s ease-out;
 }
