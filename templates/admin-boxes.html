@@ -29,6 +29,12 @@
 	<input type="text" name="name">
 	<label for="surface">Surface au sol</label>
 	<input type="text" name="surface">
+	<label for="pos">Emplacement</label>
+	<input type="text" name="pos">
+	<label for="cond">État du box</label>
+	<input type="text" name="cond">
+	<label for="part">Particularité</label>
+	<input type="text" name="part">
 	<label for="desc">Description</label>
 	<textarea name="desc"></textarea>
 	<div class="validate">
@@ -54,6 +60,12 @@
 	<input type="text" id="ename" name="name" required>
 	<label for="surface">Surface</label>
 	<input id="esurface" name="surface" type="text">
+	<label for="pos">Emplacement</label>
+	<input type="text" id="epos" name="pos">
+	<label for="cond">État du box</label>
+	<input type="text" id="econd" name="cond">
+	<label for="part">Particularité</label>
+	<input type="text" id="epart" name="part">
 	<label for="desc">Description</label>
 	<textarea id="edesc" name="desc" value=""></textarea>
 	<div class="validate">
@@ -74,7 +86,8 @@
       <input type="hidden" id="id_del" name="id_del" value="None"/>
     </form>
 
-    <tr><th>Nom du box</th><th>Surface</th><th>Description</th>
+    <tr><th>Nom</th><th>Surface</th><th>Emplacement</th>
+      <th>État</th><th>Particularité</th><th>Description</th>
       <th colspan="2">
 	<button class="btn-emoji" id="add_btn" type="button">
 	  <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
@@ -87,6 +100,9 @@
       <td style="display:none;">{{ box.id }}</td>
       <td id="td-name">{{ box.label }}</td>
       <td id="td-surface">{{ box.surface_area }}</td>
+      <td id="td-pos">{{ box.position }}</td>
+      <td id="td-cond">{{ box.condition }}</td>
+      <td id="td-part">{{ box.particularity }}</td>
       <td id="td-desc">{{ box.description }}</td>
       <td class="edit_btn">
 	<button class="btn-emoji" id="edit_btn{{ box.id }}" type="button" onclick="edit_popup()" value={{box.id}}>
@@ -124,16 +140,22 @@
   });
 
   function edit_popup() {
-      var id, cells, name, surface, desc, emodal, ecancel;
+      var id, cells, name, surface, desc, pos, cond, part, emodal, ecancel;
       id = this.document.activeElement.value;
       cells = document.getElementById('tr-'+id).cells;
       name = cells.namedItem("td-name").innerHTML;
       surface = cells.namedItem("td-surface").innerHTML;
       desc = cells.namedItem("td-desc").innerHTML;
+      pos = cells.namedItem("td-pos").innerHTML;
+      cond = cells.namedItem("td-cond").innerHTML;
+      part = cells.namedItem("td-part").innerHTML;
       document.getElementById("id_edit").value = id;
       document.getElementById("ename").value = name;
       document.getElementById("esurface").value = surface;
       document.getElementById("edesc").value = desc;
+      document.getElementById("epos").value = pos;
+      document.getElementById("epart").value = part;
+      document.getElementById("econd").value = cond;
       emodal = document.getElementById("edit_modal");
       emodal.style.display = "block";
       ecancel = document.getElementById("edit_cancel");

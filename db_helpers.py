@@ -184,6 +184,33 @@ def get_boxes():
     boxes = getdb().get_all_boxes()
     return boxes
 
+def add_new_box(form):
+    db = getdb()
+    box = Box()
+    box.label = form['name']
+    box.surface_area = form['surface']
+    box.position = form['pos']
+    box.condition = form['cond']
+    box.particularity = form['part']
+    box.description = form['desc']
+    db.add(box)
+
+def update_box(form):
+    db = getdb()
+    box = db.get_box_by_id(form['id_edit'])
+    box.label = form['name']
+    box.surface_area = form['surface']
+    box.position = form['pos']
+    box.condition = form['cond']
+    box.particularity = form['part']
+    box.description = form['desc']
+    db.update(box)
+
+def del_box(id):
+    db = getdb()
+    box = db.get_box_by_id(id)
+    db.delete(box)
+
 # ----------- STATES ----------- #
 
 def get_states():

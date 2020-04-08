@@ -117,6 +117,15 @@ def handle_food(form):
 
 @app.route('/boxes', methods=['GET', 'POST'])
 def box():
+    if request.method == 'POST':
+        if 'id_del' in request.form:
+            if request.form['id_del'] != "None":
+                del_box(request.form['id_del'])
+        elif 'id_edit' in request.form:
+            if request.form['id_edit'] != "None":
+                update_box(request.form)
+        else:
+            add_new_box(request.form);
     boxes = get_boxes()
     return render_template('admin-boxes.html', boxes=boxes)
 
