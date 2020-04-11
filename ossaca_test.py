@@ -980,6 +980,27 @@ class TestOssacaDBAPI(unittest.TestCase):
         for cat in TestOssacaDBAPI.cats:
             s.add(cat)
 
+        TestOssacaDBAPI.nacs = []
+
+        TestOssacaDBAPI.nacs.append(
+                Animal(
+                species = Species.NAC,
+                name = "hebi",
+                birth_date = None,
+                arrival_date = date.fromisoformat("2019-09-07"),
+                gender = Gender.MALE,
+                breed = "Python",
+                character = "ssssssneaky",
+                color = "noir",
+                pictures = ["/ssss/sss.png"],
+                neutered = False,
+                history = "Ssssssauvé d'un zoo",
+                food_habits = TestOssacaDBAPI.foodhabits[3],
+                ))
+
+        for nac in TestOssacaDBAPI.nacs:
+            s.add(nac)
+
         # Create sheets
         TestOssacaDBAPI.sheets = []
 
@@ -1349,8 +1370,32 @@ class TestOssacaDBAPI(unittest.TestCase):
     def test_get_bowl_by_id(self):
         self.check_get_all_items_by_id(self.bowls, "get_bowl_by_id", "compare_type")
 
+    def test_get_all_animals(self):
+        self.check_get_all_items(self.dogs + self.cats + self.nacs, "get_all_animals", "compare_animal")
+
     def test_get_animal_by_id(self):
-        self.check_get_all_items_by_id(self.dogs + self.cats, "get_animal_by_id", "compare_animal")
+        self.check_get_all_items_by_id(self.dogs + self.cats + self.nacs, "get_animal_by_id", "compare_animal")
+
+    def test_get_all_animals_by_species(self):
+        with self.subTest(species = Species.DOG):
+            self.check_get_all_items(self.dogs, "get_all_animals_by_species",
+                                     "compare_animal", Species.DOG)
+
+        with self.subTest(species = Species.CAT):
+            self.check_get_all_items(self.cats, "get_all_animals_by_species",
+                                     "compare_animal", Species.CAT)
+
+        with self.subTest(species = Species.NAC):
+            self.check_get_all_items(self.nacs, "get_all_animals_by_species",
+                                     "compare_animal", Species.NAC)
+
+        with self.subTest(species = Species.WILD):
+            self.check_get_all_items([], "get_all_animals_by_species",
+                                     "compare_animal", Species.WILD)
+
+        with self.subTest(species = Species.UNKNOWN):
+            self.check_get_all_items([], "get_all_animals_by_species",
+                                     "compare_animal", Species.UNKNOWN)
 
     def test_get_all_dogs(self):
         self.check_get_all_items(self.dogs, "get_all_dogs", "compare_animal")

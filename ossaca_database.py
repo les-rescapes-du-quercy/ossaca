@@ -274,6 +274,34 @@ class SQLiteStorage:
             food_habits = self.get_foodhabit_by_id(row['food_habit_id']) if row['food_habit_id'] is not '' else None,
         )
 
+    def get_all_animals_by_species(self, species):
+
+        #Dogs and Cats have a specific treatment
+        if species == Species.DOG:
+            return self.get_all_dogs()
+
+        if species == Species.CAT:
+            return self.get_all_cats()
+
+        query = "SELECT * FROM animal WHERE species_id = ?"
+        animals = []
+
+        cursor = self.con.cursor()
+
+        for row in cursor.execute(query, [species]):
+            animal = self.animal_from_row(row)
+            self.__link_animal(animal)
+            animals.append(animal)
+
+        return animals
+
+    def get_all_animals(self):
+        animals = []
+        for species in Species:
+            animals.extend(self.get_all_animals_by_species(species))
+
+        return animals
+
     def get_all_animals_by_box_id(self, id):
         animals = []
         query = '''
@@ -315,7 +343,7 @@ class SQLiteStorage:
         if row is None:
             return None
 
-        return SQLiteStorage.animal_from_row(row)
+        return self.animal_from_row(row)
 
     def __link_animal(self, animal):
 
