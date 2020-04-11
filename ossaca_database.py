@@ -153,6 +153,7 @@ class SQLiteStorage:
             self.create(db_path)
 
         self.con = sqlite3.connect(db_path)
+        self.con.row_factory = sqlite3.Row
 
     def close(self):
         self.con.commit()
@@ -173,76 +174,65 @@ class SQLiteStorage:
                 "description" : t.description
         }
 
-    def get_all_states(self):
-        query = "SELECT * FROM state"
-        states = []
+    def __type_from_row(self, type_cls, row):
+        return type_cls(
+                    id = row['id'],
+                    label = row['label'],
+                    description = row['description']
+               )
+
+    def state_from_row(self, row):
+        return self.__type_from_row(State, row)
+
+    def bowl_from_row(self, row):
+        return self.__type_from_row(Bowl, row)
+
+    def food_from_row(self, row):
+        return self.__type_from_row(Food, row)
+
+    def __get_all(self, cls, get_from_row):
+        table = SQLiteStorage.tables[cls]
+        query = "SELECT * FROM " + table
+        from_row = getattr(self, get_from_row)
+        elems = []
 
         cursor = self.con.cursor()
-
         for row in cursor.execute(query):
-            states.append(State(row[0], row[1], row[2]))
+            elems.append(from_row(row))
 
-        return states
+        return elems
+
+    def __get_by_id(self, cls, get_from_row, id):
+        table = SQLiteStorage.tables[cls]
+        query = "SELECT * FROM " + table + " WHERE id = ?"
+        from_row = getattr(self, get_from_row)
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return from_row(row)
+
+    def get_all_states(self):
+        return self.__get_all(State, "state_from_row")
 
     def get_state_by_id(self, id):
-        query = "SELECT * FROM state WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return State(row[0], row[1], row[2])
+        return self.__get_by_id(State, "state_from_row", id)
 
     def get_all_foods(self):
-        query = "SELECT * FROM food"
-        foods = []
-
-        cursor = self.con.cursor()
-
-        for row in cursor.execute(query):
-            foods.append(Food(row[0], row[1], row[2]))
-
-        return foods
+        return self.__get_all(Food, "food_from_row")
 
     def get_food_by_id(self, id):
-        query = "SELECT * FROM food WHERE id = ?"
-
-        cursor = self.con.cursor()
-
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return Food(row[0], row[1], row[2])
+        return self.__get_by_id(Food, "food_from_row", id)
 
     def get_all_bowls(self):
-        query = "SELECT * FROM bowl"
-        bowls = []
-
-        cursor = self.con.cursor()
-
-        for row in cursor.execute(query):
-            bowls.append(Bowl(row[0], row[1], row[2]))
-
-        return bowls
+        return self.__get_all(Bowl, "bowl_from_row")
 
     def get_bowl_by_id(self, id):
-        query = "SELECT * FROM bowl WHERE id = ?"
-
-        cursor = self.con.cursor()
-
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return Bowl(row[0], row[1], row[2])
+        return self.__get_by_id(Bowl, "bowl_from_row", id)
 
     @classmethod
     def params_animal(cls, animal):
@@ -263,6 +253,26 @@ class SQLiteStorage:
                 "history" : animal.history,
                 "food_habit_id" : animal.food_habits.id if animal.food_habits is not None else -1,
         }
+
+    def animal_from_row(self, row):
+        return Animal(
+            id = row['id'],
+            species = row['species_id'],
+            name = row['name'],
+            birth_date = date.fromisoformat(row['birth_date']) if row['birth_date'] is not '' else None,
+            arrival_date = date.fromisoformat(row['arrival_date']) if row['arrival_date'] is not '' else None,
+            arrival_sheet = None,
+            latest_sheet = None,
+            gender = row['gender'],
+            breed = row['breed'],
+            character = row['character'],
+            color = row['color'],
+            pictures = row['pictures'].split(',') if row['pictures'] is not '' else [],
+            implant = row['implant'],
+            neutered = row['neutered'],
+            history = row['history'],
+            food_habits = self.get_foodhabit_by_id(row['food_habit_id']) if row['food_habit_id'] is not '' else None,
+        )
 
     def __get_animal_by_id_simple(self, id):
         # Try to get a dog
@@ -285,24 +295,7 @@ class SQLiteStorage:
         if row is None:
             return None
 
-        return  Animal(
-                id = row[0],
-                species = row[1],
-                name = row[2],
-                birth_date = date.fromisoformat(row[3]) if row[3] is not '' else None,
-                arrival_date = date.fromisoformat(row[4]) if row[4] is not '' else None,
-                arrival_sheet = None,
-                latest_sheet = None,
-                gender = row[7],
-                breed = row[8],
-                character = row[9],
-                color = row[10],
-                pictures = row[11].split(',') if row[11] is not '' else [],
-                implant = row[12],
-                neutered = row[13],
-                history = row[14],
-                food_habits = self.get_foodhabit_by_id(row[15]) if row[15] is not '' else None,
-         )
+        return SQLiteStorage.animal_from_row(row)
 
     def __link_animal(self, animal):
 
@@ -351,8 +344,30 @@ class SQLiteStorage:
                 "category" : dog.category
         }
 
+    def dog_from_row(self, row):
+        return Dog(
+            id = row['id'],
+            species = row['species_id'],
+            name = row['name'],
+            birth_date = date.fromisoformat(row['birth_date']) if row['birth_date'] is not '' else None,
+            arrival_date = date.fromisoformat(row['arrival_date']) if row['arrival_date'] is not '' else None,
+            arrival_sheet = None,
+            latest_sheet = None,
+            gender = row['gender'],
+            breed = row['breed'],
+            character = row['character'],
+            color = row['color'],
+            pictures = row['pictures'].split(',') if row['pictures'] is not '' else [],
+            implant = row['implant'],
+            neutered = row['neutered'],
+            history = row['history'],
+            food_habits = self.get_foodhabit_by_id(row['food_habit_id']) if row['food_habit_id'] is not '' else None,
+            ok_cats = row['ok_cats'],
+            category = row['category']
+        )
+
     def get_all_dogs(self):
-        query = ''' SELECT * FROM dog
+        query = ''' SELECT animal.*, dog.category, dog.ok_cats FROM dog
                     LEFT JOIN animal ON dog.animal_id = animal.id
                     '''
         dogs = []
@@ -360,35 +375,15 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query):
-            dog = Dog(
-                        ok_cats = row[2],
-                        category = row[3],
-                        id = row[4],
-                        species = row[5],
-                        name = row[6],
-                        birth_date = date.fromisoformat(row[7]) if row[7] is not '' else None,
-                        arrival_date = date.fromisoformat(row[8]) if row[8] is not '' else None,
-                        arrival_sheet = None,
-                        latest_sheet = None,
-                        gender = row[11],
-                        breed = row[12],
-                        character = row[13],
-                        color = row[14],
-                        pictures = row[15].split(',') if row[15] is not '' else [],
-                        implant = row[16],
-                        neutered = row[17],
-                        history = row[18],
-                        food_habits = self.get_foodhabit_by_id(row[19]) if row[19] is not '' else None,
-                    )
+            dog = self.dog_from_row(row)
             self.__link_animal(dog)
             dogs.append(dog)
 
             # Todo : Build care list
-
         return dogs
 
     def __get_dog_by_id_simple(self, id):
-        query = ''' SELECT * FROM dog
+        query = ''' SELECT animal.*, dog.category, dog.ok_cats FROM dog
                     LEFT JOIN animal ON dog.animal_id = animal.id
                     WHERE animal.id = ?'''
 
@@ -399,26 +394,7 @@ class SQLiteStorage:
         if row is None:
             return None
 
-        return  Dog(
-                ok_cats = row[2],
-                category = row[3],
-                id = row[4],
-                species = row[5],
-                name = row[6],
-                birth_date = date.fromisoformat(row[7]) if row[7] is not '' else None,
-                arrival_date = date.fromisoformat(row[8]) if row[8] is not '' else None,
-                arrival_sheet = None,
-                latest_sheet = None,
-                gender = row[11],
-                breed = row[12],
-                character = row[13],
-                color = row[14],
-                pictures = row[15].split(',') if row[15] is not '' else [],
-                implant = row[16],
-                neutered = row[17],
-                history = row[18],
-                food_habits = self.get_foodhabit_by_id(row[19]) if row[19] is not '' else None,
-         )
+        return self.dog_from_row(row)
 
     def get_dog_by_id(self, id):
         dog = self.__get_dog_by_id_simple(id)
@@ -435,8 +411,30 @@ class SQLiteStorage:
                 "has_felv" : cat.has_felv
         }
 
+    def cat_from_row(self, row):
+        return Cat(
+            id = row['id'],
+            species = row['species_id'],
+            name = row['name'],
+            birth_date = date.fromisoformat(row['birth_date']) if row['birth_date'] is not '' else None,
+            arrival_date = date.fromisoformat(row['arrival_date']) if row['arrival_date'] is not '' else None,
+            arrival_sheet = None,
+            latest_sheet = None,
+            gender = row['gender'],
+            breed = row['breed'],
+            character = row['character'],
+            color = row['color'],
+            pictures = row['pictures'].split(',') if row['pictures'] is not '' else [],
+            implant = row['implant'],
+            neutered = row['neutered'],
+            history = row['history'],
+            food_habits = self.get_foodhabit_by_id(row['food_habit_id']) if row['food_habit_id'] is not '' else None,
+            has_fiv = row['has_fiv'],
+            has_felv = row['has_felv']
+        )
+
     def get_all_cats(self):
-        query = ''' SELECT * FROM cat
+        query = ''' SELECT animal.*, cat.has_fiv, cat.has_felv FROM cat
                     LEFT JOIN animal ON cat.animal_id = animal.id
                 '''
         cats = []
@@ -444,33 +442,14 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query):
-            cat = Cat(
-                        has_fiv = row[2],
-                        has_felv = row[3],
-                        id = row[4],
-                        species = row[5],
-                        name = row[6],
-                        birth_date = date.fromisoformat(row[7]) if row[7] is not '' else None,
-                        arrival_date = date.fromisoformat(row[8]) if row[8] is not '' else None,
-                        arrival_sheet = None,
-                        latest_sheet = None,
-                        gender = row[11],
-                        breed = row[12],
-                        character = row[13],
-                        color = row[14],
-                        pictures = row[15].split(',') if row[15] is not '' else [],
-                        implant = row[16],
-                        neutered = row[17],
-                        history = row[18],
-                        food_habits = self.get_foodhabit_by_id(row[19]) if row[19] is not '' else None,
-                    )
+            cat = self.cat_from_row(row)
             self.__link_animal(cat)
             cats.append(cat)
 
         return cats
 
     def __get_cat_by_id_simple(self, id):
-        query = ''' SELECT * FROM cat
+        query = ''' SELECT animal.*, cat.has_fiv, cat.has_felv FROM cat
                     LEFT JOIN animal ON cat.animal_id = animal.id
                     WHERE animal.id = ?'''
 
@@ -481,26 +460,7 @@ class SQLiteStorage:
         if row is None:
             return None
 
-        return  Cat(
-                has_fiv = row[2],
-                has_felv = row[3],
-                id = row[4],
-                species = row[5],
-                name = row[6],
-                birth_date = date.fromisoformat(row[7]) if row[7] is not '' else None,
-                arrival_date = date.fromisoformat(row[8]) if row[8] is not '' else None,
-                arrival_sheet = None,
-                latest_sheet = None,
-                gender = row[11],
-                breed = row[12],
-                character = row[13],
-                color = row[14],
-                pictures = row[15].split(',') if row[15] is not '' else [],
-                implant = row[16],
-                neutered = row[17],
-                history = row[18],
-                food_habits = self.get_foodhabit_by_id(row[19]) if row[19] is not '' else None,
-        )
+        return self.cat_from_row(row)
 
     def get_cat_by_id(self, id):
         cat = self.__get_cat_by_id_simple(id)
@@ -509,6 +469,9 @@ class SQLiteStorage:
             self.__link_animal(cat)
 
         return cat
+
+    def get_animals_by_box_id(self, box_id):
+        return []
 
     @classmethod
     def params_care(cls, care):
@@ -520,44 +483,21 @@ class SQLiteStorage:
             "description" : care.description
         }
 
+    def care_from_row(self, row):
+        return Care(
+                id = row['id'],
+                type = row['type'],
+                dose = row['dose'],
+                way = row['way'],
+                medecine_name = row['medecine_name'],
+                description = row['description']
+        )
+
     def get_all_cares(self):
-        query = "SELECT * FROM care"
-        cares = []
-
-        cursor = self.con.cursor()
-
-        for row in cursor.execute(query):
-            cares.append(
-                    Care(
-                        id = row[0],
-                        type = row[1],
-                        dose = row[2],
-                        way = row[3],
-                        medecine_name = row[4],
-                        description = row[5]
-                    )
-            )
-
-        return cares
+        return self.__get_all(Care, "care_from_row")
 
     def get_care_by_id(self, id):
-        query = "SELECT * FROM care WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return Care(
-            id = row[0],
-            type = row[1],
-            dose = row[2],
-            way = row[3],
-            medecine_name = row[4],
-            description = row[5]
-        )
+        return self.__get_by_id(Care, "care_from_row", id)
 
     @classmethod
     def params_caresheet(cls, caresheet):
@@ -572,50 +512,23 @@ class SQLiteStorage:
                 "dosage" : caresheet.dosage
         }
 
+    def caresheet_from_row(self, row):
+        return CareSheet(
+                    id = row['id'],
+                    animal = self.get_animal_by_id(row['animal_id']) if row['animal_id'] > 0 else None,
+                    care = self.get_care_by_id(row['care_id']) if row['care_id'] > 0 else None,
+                    date = date.fromisoformat(row['date']) if row['date'] is not '' else None,
+                    time = time.fromisoformat(row['time']) if row['time'] is not '' else None,
+                    frequency = row['frequency'],
+                    given_by = None, #TODO
+                    prescription_number = row['prescription_number'],
+                    dosage = row['dosage']
+                )
     def get_all_caresheets(self):
-        query = "SELECT * FROM caresheet"
-        caresheets = []
-
-        cursor = self.con.cursor()
-
-        for row in cursor.execute(query):
-            caresheets.append(
-                    CareSheet(
-                        id = row[0],
-                        animal = self.get_animal_by_id(row[1]) if row[1] > 0 else None,
-                        care = self.get_care_by_id(row[2]) if row[2] > 0 else None,
-                        date = date.fromisoformat(row[3]) if row[3] is not '' else None,
-                        time = time.fromisoformat(row[4]) if row[4] is not '' else None,
-                        frequency = row[5],
-                        given_by = None, #TODO
-                        prescription_number = row[7],
-                        dosage = row[8]
-                    )
-            )
-
-        return caresheets
+        return self.__get_all(CareSheet, "caresheet_from_row")
 
     def get_caresheet_by_id(self, id):
-        query = "SELECT * FROM caresheet WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return CareSheet(
-            id = row[0],
-            animal = self.get_animal_by_id(row[1]) if row[1] > 0 else None,
-            care = self.get_care_by_id(row[2]) if row[2] > 0 else None,
-            date = date.fromisoformat(row[3]) if row[3] is not '' else None,
-            time = time.fromisoformat(row[4]) if row[4] is not '' else None,
-            frequency = row[5],
-            given_by = None, #TODO
-            prescription_number = row[7],
-            dosage = row[8]
-        )
+        return self.__get_by_id(CareSheet, "caresheet_from_row", id)
 
     def get_all_caresheets_by_animal_id(self, animal_id):
         query = "SELECT * FROM caresheet WHERE animal_id = ?"
@@ -624,19 +537,7 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query, [animal_id]):
-            caresheets.append(
-                    CareSheet(
-                        id = row[0],
-                        animal = self.get_animal_by_id(row[1]) if row[1] > 0 else None,
-                        care = self.get_care_by_id(row[2]) if row[2] > 0 else None,
-                        date = date.fromisoformat(row[3]) if row[3] is not '' else None,
-                        time = time.fromisoformat(row[4]) if row[4] is not '' else None,
-                        frequency = row[5],
-                        given_by = None, #TODO
-                        prescription_number = row[7],
-                        dosage = row[8]
-                    )
-            )
+            caresheets.append(self.caresheet_from_row(row))
 
         return caresheets
 
@@ -647,38 +548,18 @@ class SQLiteStorage:
             "bowl_id" : foodhabit.bowl.id if foodhabit.bowl is not None else -1,
         }
 
-    def get_all_foodhabits(self):
-        query = "SELECT * FROM foodhabit"
-        foodhabits = []
-
-        cursor = self.con.cursor()
-
-        for row in cursor.execute(query):
-            foodhabits.append(
-                FoodHabit(
-                    id = row[0],
-                    food = self.get_food_by_id(row[1]) if row[1] > 0 else None,
-                    bowl = self.get_bowl_by_id(row[2]) if row[2] > 0 else None,
+    def foodhabit_from_row(self, row):
+        return FoodHabit(
+                    id = row['id'],
+                    food = self.get_food_by_id(row['food_id']) if row['food_id'] > 0 else None,
+                    bowl = self.get_bowl_by_id(row['bowl_id']) if row['bowl_id'] > 0 else None,
                 )
-            )
 
-        return foodhabits
+    def get_all_foodhabits(self):
+        return self.__get_all(FoodHabit, "foodhabit_from_row")
 
     def get_foodhabit_by_id(self, id):
-        query = "SELECT * FROM foodhabit WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return FoodHabit(
-                    id = row[0],
-                    food = self.get_food_by_id(row[1]) if row[1] > 0 else None,
-                    bowl = self.get_bowl_by_id(row[2]) if row[2] > 0 else None,
-        )
+        return self.__get_by_id(FoodHabit, "foodhabit_from_row", id)
 
     @classmethod
     def params_location(cls, location):
@@ -688,40 +569,19 @@ class SQLiteStorage:
             "person_id" : location.person.id if location.person is not None else -1
         }
 
-    def get_all_locations(self):
-        query = "SELECT * FROM location"
-        locations = []
-
-        cursor = self.con.cursor()
-
-        for row in cursor.execute(query):
-            locations.append(
-                Location(
-                    id = row[0],
-                    location_type = row[1],
-                    box = self.get_box_by_id(row[2]) if row[2] > 0 else None,
+    def location_from_row(self, row):
+        return Location(
+                    id = row['id'],
+                    location_type = row['location_type'],
+                    box = self.get_box_by_id(row['box_id']) if row['box_id'] > 0 else None,
                     person = None
                 )
-            )
 
-        return locations
+    def get_all_locations(self):
+        return self.__get_all(Location, "location_from_row")
 
     def get_location_by_id(self, id):
-        query = "SELECT * FROM location WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return Location(
-                    id = row[0],
-                    location_type = row[1],
-                    box = self.get_box_by_id(row[2]) if row[2] > 0 else None,
-                    person = None
-        )
+        return self.__get_by_id(Location, "location_from_row", id)
 
     @classmethod
     def params_sheet(cls, sheet):
@@ -732,6 +592,15 @@ class SQLiteStorage:
                 "location_id" : sheet.location.id if sheet.location is not None else -1
         }
 
+    def sheet_from_row(self, row):
+        return Sheet(
+                    id = row['id'],
+                    date = date.fromisoformat(row['date']) if row['date'] is not '' else None,
+                    animal = None,
+                    state = self.get_state_by_id(row['state_id']) if row['state_id'] > 0 else None,
+                    location = self.get_location_by_id(row['location_id']) if row['location_id'] > 0 else None,
+                )
+
     def get_all_sheets(self):
         query = "SELECT * FROM sheet"
         sheets = []
@@ -739,13 +608,7 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query):
-            sheet = Sheet(
-                    id = row[0],
-                    date = date.fromisoformat(row[1]) if row[1] is not '' else None,
-                    animal = None,
-                    state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
-                    location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
-            )
+            sheet = self.sheet_from_row(row)
             self.__link_sheet(sheet)
             sheets.append(sheet)
 
@@ -765,22 +628,7 @@ class SQLiteStorage:
             self.__link_animal(animal)
 
     def __get_sheet_by_id_simple(self, id):
-        query = "SELECT * FROM sheet WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return Sheet(
-            id = row[0],
-            date = date.fromisoformat(row[1]) if row[1] is not '' else None,
-            animal = None,
-            state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
-            location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
-        )
+        return self.__get_by_id(Sheet, "sheet_from_row", id)
 
     def get_sheet_by_id(self, id):
         sheet = self.__get_sheet_by_id_simple(id)
@@ -797,13 +645,7 @@ class SQLiteStorage:
         cursor = self.con.cursor()
 
         for row in cursor.execute(query, [animal_id]):
-            sheet = Sheet(
-                    id = row[0],
-                    date = date.fromisoformat(row[1]) if row[1] is not '' else None,
-                    animal = None,
-                    state = self.get_state_by_id(row[3]) if row[3] > 0 else None,
-                    location = self.get_location_by_id(row[4]) if row[4] > 0 else None,
-            )
+            sheet = self.sheet_from_row(row)
             self.__link_sheet(sheet)
             sheets.append(sheet)
 
@@ -820,46 +662,22 @@ class SQLiteStorage:
                 "particularity" : box.particularity
         }
 
-    def get_all_boxes(self):
-        query = "SELECT * FROM box"
-        boxes = []
-
-        cursor = self.con.cursor()
-
-        for row in cursor.execute(query):
-            boxes.append(
-                Box(
-                    id = row[0],
-                    label = row[1],
-                    description = row[2],
-                    surface_area = row[3],
-                    position = row[4],
-                    condition = row[5],
-                    particularity = row[6],
+    def box_from_row(self, row):
+        return Box(
+                    id = row['id'],
+                    label = row['label'],
+                    description = row['description'],
+                    surface_area = row['surface_area'],
+                    position = row['position'],
+                    condition = row['condition'],
+                    particularity = row['particularity'],
                 )
-            )
 
-        return boxes
+    def get_all_boxes(self):
+        return self.__get_all(Box, "box_from_row")
 
     def get_box_by_id(self, id):
-        query = "SELECT * FROM box WHERE id = ?"
-
-        cursor = self.con.cursor()
-        cursor.execute(query, [id])
-        row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return Box(
-            id = row[0],
-            label = row[1],
-            description = row[2],
-            surface_area = row[3],
-            position = row[4],
-            condition = row[5],
-            particularity = row[6],
-        )
+        return self.__get_by_id(Box, "box_from_row", id)
 
     @classmethod
     def forge_query_insert(cls, table, params):
