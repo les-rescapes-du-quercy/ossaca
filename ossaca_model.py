@@ -10,6 +10,16 @@ from datetime import date
 from datetime import time
 from enum import IntEnum
 
+class Species(IntEnum):
+    '''
+    Enum representing animal species
+    '''
+    UNKNOWN = 0
+    DOG = 1
+    CAT = 2
+    NAC = 3
+    WILD = 4
+
 class Gender(IntEnum):
     '''
     IntEnum representing a gender
@@ -387,4 +397,19 @@ class Box:
         self.position = position
         self.condition = condition
         self.particularity = particularity
+
+    def capacity(self, species = Species.DOG):
+        '''
+        Returns the number of animals that can be in that box
+        '''
+
+        # According to French Law
+        if species == Species.DOG:
+            # This doesn't take into account big dogs. They must have at least
+            # 10 m² but two dogs can share this space
+            return int(self.surface_area / 5)
+        elif species == Species.CAT:
+            return int(self.surface_area / 2)
+        else:
+            return -1
 

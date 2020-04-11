@@ -776,28 +776,28 @@ class TestOssacaDBAPI(unittest.TestCase):
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Box 2", description = "", surface_area = 3,
+                        Box(label = "Box 2", description = "", surface_area = 7,
                             position = "Allée 1", condition = "", particularity = "ombragé")
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Box 3", description = "", surface_area = 3,
+                        Box(label = "Box 3", description = "", surface_area = 12,
                             position = "Allée 2", condition = "porte abimée", particularity = "")
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Box 4", description = "Box du fond", surface_area = 4,
+                        Box(label = "Box 4", description = "Box du fond", surface_area = 10,
                             position = "Allée 2", condition = "", particularity = "ensoleillé")
 
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Chatterie", description = "Pour 20 chats max", surface_area = 20,
+                        Box(label = "Chatterie", description = "Pour 20 chats max", surface_area = 41,
                             position = "A droite à l'entrée", condition = "", particularity = "")
                         )
 
         TestOssacaDBAPI.boxes.append(
-                        Box(label = "Pouponnière", description = "La ou on met les chiots", surface_area = 5,
+                        Box(label = "Pouponnière", description = "La ou on met les chiots", surface_area = 15,
                             position = "Derrière la Chatterie", condition = "", particularity = "")
                         )
 
@@ -1426,6 +1426,35 @@ class TestOssacaDBAPI(unittest.TestCase):
             self.assertEqual(self.cats[0].age(), 8) # 2011-11-11
             self.assertEqual(self.cats[1].age(), 4) # 2016-02-29
             self.assertEqual(self.cats[2].age(), 0) # None
+
+    def test_box_capacity(self):
+
+        with self.subTest(box = 0):
+            self.assertEqual(self.boxes[0].capacity(Species.DOG), 0)
+            self.assertEqual(self.boxes[0].capacity(Species.CAT), 1)
+            self.assertEqual(self.boxes[0].capacity(Species.UNKNOWN), -1)
+            self.assertEqual(self.boxes[0].capacity(Species.NAC), -1)
+            self.assertEqual(self.boxes[0].capacity(Species.WILD), -1)
+
+        with self.subTest(box = 1):
+            self.assertEqual(self.boxes[1].capacity(Species.DOG), 1)
+            self.assertEqual(self.boxes[1].capacity(Species.CAT), 3)
+
+        with self.subTest(box = 2):
+            self.assertEqual(self.boxes[2].capacity(Species.DOG), 2)
+            self.assertEqual(self.boxes[2].capacity(Species.CAT), 6)
+
+        with self.subTest(box = 3):
+            self.assertEqual(self.boxes[3].capacity(Species.DOG), 2)
+            self.assertEqual(self.boxes[3].capacity(Species.CAT), 5)
+
+        with self.subTest(box = 4):
+            self.assertEqual(self.boxes[4].capacity(Species.DOG), 8)
+            self.assertEqual(self.boxes[4].capacity(Species.CAT), 20)
+
+        with self.subTest(box = 5):
+            self.assertEqual(self.boxes[5].capacity(Species.DOG), 3)
+            self.assertEqual(self.boxes[5].capacity(Species.CAT), 7)
 
 if __name__ == '__main__':
     unittest.main()
