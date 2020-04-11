@@ -118,7 +118,7 @@ class TestOssacaDB(unittest.TestCase):
     def test_add_default_dog(self):
         # default values
         self.insertion_and_check_test("animal", Dog(),
-        [1, "", date.today().isoformat(), date.today().isoformat(), -1, -1, 0,
+        [1, Species.DOG, "", date.today().isoformat(), date.today().isoformat(), -1, -1, 0,
          "", "", "", "", "", 0, "", -1])
 
         self.check_table_row("dog", 1, [1, 1, CatCompatibility.UNKNOWN, 0])
@@ -144,7 +144,7 @@ class TestOssacaDB(unittest.TestCase):
                 food_habits = None,
                 ok_cats = CatCompatibility.YES,
                 category = 1),
-                [1, "Louloute", "2004-12-25", "2016-06-17", -1, -1, 1,
+                [1, Species.DOG, "Louloute", "2004-12-25", "2016-06-17", -1, -1, 1,
                  "Malinois croisé sharpei", "gentille avec du poil au nez",
                  "verte", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  -1])
@@ -171,7 +171,7 @@ class TestOssacaDB(unittest.TestCase):
                 food_habits = FoodHabit(id = 6),
                 ok_cats = CatCompatibility.NO,
                 category = 2),
-                [1, "Louloute", "2004-12-25", "2016-06-17", 2, 4, 1,
+                [1, Species.DOG, "Louloute", "2004-12-25", "2016-06-17", 2, 4, 1,
                  "Malinois croisé sharpei", "gentille avec du poil au nez",
                  "verte", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  6])
@@ -184,7 +184,7 @@ class TestOssacaDB(unittest.TestCase):
     def test_add_default_cat(self):
         # default values
         self.insertion_and_check_test("animal", Cat(),
-        [1, "", date.today().isoformat(), date.today().isoformat(), -1, -1, 0,
+        [1, Species.CAT, "", date.today().isoformat(), date.today().isoformat(), -1, -1, 0,
          "", "", "", "", "", 0, "", -1])
 
         self.check_table_row("cat", 1, [1, 1, 0, 0])
@@ -210,7 +210,7 @@ class TestOssacaDB(unittest.TestCase):
                 food_habits = None,
                 has_fiv = True,
                 has_felv = True),
-                [1, "Minette", "2004-12-25", "2016-06-17", -1, -1, 1,
+                [1, Species.CAT, "Minette", "2004-12-25", "2016-06-17", -1, -1, 1,
                  "Angora a poil ras", "gentille avec du poil au nez",
                  "violette", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  -1])
@@ -237,7 +237,7 @@ class TestOssacaDB(unittest.TestCase):
                 food_habits = FoodHabit(7),
                 has_fiv = True,
                 has_felv = False),
-                [1, "Minette", "2004-12-25", "2016-06-17", 3, 5, 1,
+                [1, Species.CAT, "Minette", "2004-12-25", "2016-06-17", 3, 5, 1,
                  "Angora a poil ras", "gentille avec du poil au nez",
                  "violette", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  7])
@@ -387,14 +387,14 @@ class TestOssacaDB(unittest.TestCase):
                 [1, "2017-11-11", 1, 2, 8])
 
         self.check_table_row("animal", 1,
-        [1, "", date.today().isoformat(), date.today().isoformat(), 1, 1, 0,
-         "", "", "", "", "", 0, "", -1])
+        [1, Species.CAT, "", date.today().isoformat(), date.today().isoformat(),
+         1, 1, 0, "", "", "", "", "", 0, "", -1])
 
         self.__insert(Sheet(animal = cat))
 
         self.check_table_row("animal", 1,
-        [1, "", date.today().isoformat(), date.today().isoformat(), 1, 2, 0,
-         "", "", "", "", "", 0, "", -1])
+        [1, Species.CAT, "", date.today().isoformat(), date.today().isoformat(),
+         1, 2, 0, "", "", "", "", "", 0, "", -1])
 
     def test_add_empty_box(self):
         self.insertion_test(Box(), "box")
@@ -453,7 +453,7 @@ class TestOssacaDB(unittest.TestCase):
                 food_habits = FoodHabit(id = 6),
                 ok_cats = CatCompatibility.YES,
                 category = 2),
-                [1, "Louloute", "2004-12-25", "2016-06-17", 2, 4, 1,
+                [1, Species.DOG, "Louloute", "2004-12-25", "2016-06-17", 2, 4, 1,
                  "Malinois croisé sharpei", "gentille avec du poil au nez",
                  "verte", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  6]
@@ -482,7 +482,7 @@ class TestOssacaDB(unittest.TestCase):
                 food_habits = FoodHabit(7),
                 has_fiv = True,
                 has_felv = False),
-                [1, "Minette", "2004-12-25", "2016-06-17", 3, 5, 1,
+                [1, Species.CAT, "Minette", "2004-12-25", "2016-06-17", 3, 5, 1,
                  "Angora a poil ras", "gentille avec du poil au nez",
                  "violette", "", "1223446035OJCOJSDC", 0, "Née au refuge",
                  7]
@@ -1223,6 +1223,7 @@ class TestOssacaDBAPI(unittest.TestCase):
             return
 
         self.assertEqual(type(animal_a), type(animal_b))
+        self.assertEqual(animal_a.species, animal_b.species)
 
         self.assertEqual(animal_a.name, animal_b.name)
         self.assertEqual(animal_a.birth_date, animal_b.birth_date)

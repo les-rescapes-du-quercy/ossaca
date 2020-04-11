@@ -69,6 +69,9 @@ class Animal:
     :param id: Unique animal identifier
     :type id: int
 
+    :param species: The animal species
+    :type species: Species
+
     :param name: The animal's name
     :type name: str
 
@@ -115,13 +118,15 @@ class Animal:
     :param food_habits: Indicates how the animal is used to being feed
     :type food_habits: FoodHabit
     '''
-    def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
+    def __init__(self, id = -1, species = Species.UNKNOWN, name = "",
+                 birth_date = None, arrival_date = None,
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
                  neutered = False, history = "", food_habits = None):
         self.id = id
         self.name = name
+        self.species = species
         self.birth_date = birth_date if birth_date is not None else date.today()
         self.arrival_date = arrival_date if arrival_date is not None else date.today()
         self.arrival_sheet = arrival_sheet
@@ -156,15 +161,17 @@ class Dog(Animal):
     :param ok_cats: Indicated if this dog can live with cats
     :type ok_cats: CatCompatibility
     '''
-    def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
+    def __init__(self, id = -1, species = Species.DOG, name = "",
+                 birth_date = None, arrival_date = None,
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
                  neutered = False, history = "", food_habits = None,
                  ok_cats = CatCompatibility.UNKNOWN, category = 0):
-        Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
-                        latest_sheet, gender, breed, character, color, pictures,
-                        sponsors, implant, neutered, history, food_habits)
+        Animal.__init__(self, id, species, name, birth_date, arrival_date,
+                        arrival_sheet, latest_sheet, gender, breed, character,
+                        color, pictures, sponsors, implant, neutered, history,
+                        food_habits)
         self.ok_cats = ok_cats
         self.category = category
 
@@ -181,15 +188,17 @@ class Cat(Animal):
     :type has_felv: bool
 
     '''
-    def __init__(self, id = -1, name = "", birth_date = None, arrival_date = None,
+    def __init__(self, id = -1, species = Species.CAT, name = "",
+                 birth_date = None, arrival_date = None,
                  arrival_sheet = None, latest_sheet = None,
                  gender = Gender.UNKNOWN, breed = "", character = "",
                  color = "", pictures = [], sponsors = [], implant = "",
                  neutered = False, history = "", food_habits = None,
                  has_fiv = False, has_felv = False):
-        Animal.__init__(self, id, name, birth_date, arrival_date, arrival_sheet,
-                        latest_sheet, gender, breed, character, color, pictures,
-                        sponsors, implant, neutered, history, food_habits)
+        Animal.__init__(self, id, species, name, birth_date, arrival_date,
+                        arrival_sheet, latest_sheet, gender, breed, character,
+                        color, pictures, sponsors, implant, neutered, history,
+                        food_habits)
         self.has_fiv = has_fiv
         self.has_felv = has_felv
 
