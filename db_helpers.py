@@ -42,6 +42,7 @@ def add_new_dog(form):
     dog.character = form['char']
     dog.history = form['history']
     db.add(dog)
+    return dog.id
 
 def update_dog(form):
     db = getdb()

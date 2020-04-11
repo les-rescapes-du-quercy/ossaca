@@ -1,9 +1,9 @@
 #! /usr/bin/python3
 # -*- coding:utf-8 -*-
-
-from flask import Flask, render_template, request, g
+from flask import Flask, flash, render_template, request, g
 from flask_images import Images, ImageSize, resized_img_src
 from db_helpers import *
+from upload import *
 
 # ----------- GENERAL ----------- #
 
@@ -25,14 +25,15 @@ def dogs():
         if 'id' in request.form:
             update_dog(request.form)
         else:
-            add_new_dog(request.form)
+            id = add_new_dog(request.form)
+            upload_image(request, id)
 
     dlist = get_dogs()
     return render_template('dogs.html', dogs = dlist)
 
-@app.route('/dogs/new_dog', methods=['GET', 'POST'])
+@app.route('/dogs/new_dog', methods=['GET'])
 def new_dog():
-        return render_template('new_dog.html')
+    return render_template('new_dog.html')
 
 @app.route('/dog', methods=['GET'])
 def dog(species='dog', name=None):
