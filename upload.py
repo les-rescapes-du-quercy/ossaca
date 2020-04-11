@@ -14,19 +14,24 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def upload_file(request, type, upload_dir):
+    pictures = []
     if type not in request.files:
         return redirect(request.url)
-    file = request.files[type]
-    if file.filename == '':
-        return redirect(request.url)
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(upload_dir, filename))
+    files = request.files.getlist(type)
+    for file in files:
+        if file.filename == '':
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            pic_path = os.path.join(upload_dir, filename)
+            file.save(os.path.join("static", pic_path))
+            pictures.append(pic_path)
+    return pictures
 
 def upload_image(request, id):
     if request.method == 'POST':
         dog_name = request.form['name'].replace(" ", "_")
         dog_dir = str(id) + "_" + dog_name.lower()
         upload_dir = os.path.join(app.config['UPLOAD_FOLDER'], "images", dog_dir)
-        os.mkdir(upload_dir)
-        upload_file(request, "img", upload_dir)
+        os.makedirs(os.path.join("static", upload_dir))
+        return upload_file(request, "img", upload_dir)

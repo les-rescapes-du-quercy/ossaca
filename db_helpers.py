@@ -44,6 +44,12 @@ def add_new_dog(form):
     db.add(dog)
     return dog.id
 
+def update_pictures_dog(id, pictures):
+    db = getdb()
+    dog = db.get_dog_by_id(id)
+    dog.pictures = pictures
+    db.update(dog)
+
 def update_dog(form):
     db = getdb()
     dog = db.get_dog_by_id(form['id'])

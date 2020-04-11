@@ -5,8 +5,6 @@ Dependencies
 ============
  - python3
  - flask
- - flask-image :
- `pip install flask-images`
  - sqlite
  - python3-sqlite
 

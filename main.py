@@ -1,7 +1,6 @@
 #! /usr/bin/python3
 # -*- coding:utf-8 -*-
 from flask import Flask, flash, render_template, request, g
-from flask_images import Images, ImageSize, resized_img_src
 from db_helpers import *
 from upload import *
 
@@ -9,11 +8,7 @@ from upload import *
 
 app = Flask(__name__)
 
-app.config['IMAGES_PATH'] = ['images']
-app.config['IMAGES_NAME'] = 'images'
-
 app.secret_key = 'prouttrucmuche'
-images = Images(app)
 
 @app.route('/')
 
@@ -26,7 +21,8 @@ def dogs():
             update_dog(request.form)
         else:
             id = add_new_dog(request.form)
-            upload_image(request, id)
+            pictures = upload_image(request, id)
+            update_pictures_dog(id, pictures)
 
     dlist = get_dogs()
     return render_template('dogs.html', dogs = dlist)
