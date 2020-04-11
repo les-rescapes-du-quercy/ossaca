@@ -352,13 +352,13 @@ class SQLiteStorage:
 
         cursor = self.con.cursor()
         query = '''
-                SELECT arrival_sheet_id, latest_sheet_id, food_habit_id
+                SELECT arrival_sheet_id, latest_sheet_id
                 FROM animal
                 WHERE animal.id = ?
                 '''
 
         cursor.execute(query, [animal.id])
-        [arrival_sheet_id, latest_sheet_id, food_habit_id] = cursor.fetchone()
+        [arrival_sheet_id, latest_sheet_id] = cursor.fetchone()
 
         if arrival_sheet_id is not None and arrival_sheet_id > 0:
             animal.arrival_sheet = self.__get_sheet_by_id_simple(arrival_sheet_id)
