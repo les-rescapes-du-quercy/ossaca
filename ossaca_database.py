@@ -274,6 +274,26 @@ class SQLiteStorage:
             food_habits = self.get_foodhabit_by_id(row['food_habit_id']) if row['food_habit_id'] is not '' else None,
         )
 
+    def get_all_animals_by_box_id(self, id):
+        animals = []
+        query = '''
+        SELECT animal.id FROM animal
+        LEFT JOIN sheet ON animal.latest_sheet_id = sheet.id
+        LEFT JOIN location ON sheet.location_id = location.id
+        LEFT JOIN box ON location.box_id = box.id
+        WHERE location.location_type = ? AND box.id = ?
+        '''
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [LocationType.BOX, id])
+
+        rows = cursor.fetchall()
+
+        for row in rows:
+            animals.append(self.get_animal_by_id(row['id']))
+
+        return animals
+
     def __get_animal_by_id_simple(self, id):
         # Try to get a dog
         animal = self.__get_dog_by_id_simple(id)

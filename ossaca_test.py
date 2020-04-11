@@ -1457,5 +1457,35 @@ class TestOssacaDBAPI(unittest.TestCase):
             self.assertEqual(self.boxes[5].capacity(Species.DOG), 3)
             self.assertEqual(self.boxes[5].capacity(Species.CAT), 7)
 
+    def check_animal_list(self, animals_expected, animals_got):
+        self.assertEqual(len(animals_expected), len(animals_got))
+
+        for animal_expected, animal_got in zip(animals_expected, animals_got):
+            self.compare_animal(animal_expected, animal_got)
+
+    def test_get_all_animals_by_box_id(self):
+        s = SQLiteStorage()
+        s.connect("example.db")
+
+        with self.subTest(box = 0):
+            self.check_animal_list([self.dogs[0]], s.get_all_animals_by_box_id(self.boxes[0].id))
+
+        with self.subTest(box = 1):
+            self.check_animal_list([self.dogs[2], self.cats[2]], s.get_all_animals_by_box_id(self.boxes[1].id))
+
+        with self.subTest(box = 2):
+            self.check_animal_list([], s.get_all_animals_by_box_id(self.boxes[2].id))
+
+        with self.subTest(box = 3):
+            self.check_animal_list([], s.get_all_animals_by_box_id(self.boxes[3].id))
+
+        with self.subTest(box = 4):
+            self.check_animal_list([self.dogs[1]], s.get_all_animals_by_box_id(self.boxes[4].id))
+
+        with self.subTest(box = 5):
+            self.check_animal_list([], s.get_all_animals_by_box_id(self.boxes[5].id))
+
+        s.close()
+
 if __name__ == '__main__':
     unittest.main()
