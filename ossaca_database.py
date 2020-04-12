@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import sqlite3
-from ossaca_model import *
+import sys, inspect, glob, sqlite3, os
 import os.path
 from enum import IntEnum
+from ossaca_model import *
+from ossaca_plugin import *
 
 class SQLiteStorage:
     '''
@@ -28,9 +29,14 @@ class SQLiteStorage:
 
     def __init__(self):
 
+        self.person_plugin = None
         self.con = None
 
-    def create(self, db_path):
+    def initialize(self):
+        self.set_config("plugin_path", "plugins")
+        # Set the default config values
+
+    def __create(self, db_path):
         # doing so will create the database file.
         con = sqlite3.connect(db_path)
 
@@ -144,20 +150,66 @@ class SQLiteStorage:
                    particularity text
                    )''')
 
+        c.execute('''CREATE TABLE config(
+                   key text NOT NULL PRIMARY KEY,
+                   value text
+                   )''')
+
+        c.execute('''CREATE TABLE plugin_config(
+                   plugin_name text,
+                   key text,
+                   value text,
+                   PRIMARY KEY (plugin_name, key)
+                   )''')
+
         con.commit()
         con.close()
 
+    def __load_plugin(self, cls):
+        plugin = cls()
+        plugin._register(self)
+
+    def __load_plugins_from_module(self, module_name):
+        module = __import__(module_name)
+
+        classes = inspect.getmembers(module,
+                    lambda member: inspect.isclass(member) and member.__module__ == module_name)
+
+        for [cls_name, cls] in classes:
+            if issubclass(cls, OssacaPlugin):
+                self.__load_plugin(cls)
+
+    def load_plugins(self):
+        plugin_paths = self.get_config("plugin_path")
+        #if plugin_paths is None:
+        #    return
+
+        for path in plugin_paths.split(","):
+            sys.path.append(path)
+            for module in [os.path.basename(file) for file in glob.glob(path + "/plugin_*.py")]:
+                self.__load_plugins_from_module(os.path.splitext(module)[0])
+
     def connect(self, db_path):
+        needs_init = False
 
         if not os.path.isfile(db_path):
-            self.create(db_path)
+            self.__create(db_path)
+            needs_init = True
 
         self.con = sqlite3.connect(db_path)
         self.con.row_factory = sqlite3.Row
 
+        if needs_init:
+            self.initialize()
+
+        self.load_plugins()
+
     def close(self):
         self.con.commit()
         self.con.close()
+
+        if self.person_plugin is not None:
+            self.person_plugin.destroy()
 
     def get_last_inserted_id(self, table):
             cursor = self.con.cursor()
@@ -727,6 +779,18 @@ class SQLiteStorage:
     def get_box_by_id(self, id):
         return self.__get_by_id(Box, "box_from_row", id)
 
+    def get_person_by_id(self, id):
+        if self.person_plugin is None:
+            return None
+
+        return self.person_plugin.get_person_by_id(id)
+
+    def get_all_persons(self, id):
+        if self.person_plugin is None:
+            return []
+
+        return self.person_plugin.get_all_persons()
+
     @classmethod
     def forge_query_insert(cls, table, params):
         placeholders = []
@@ -948,6 +1012,59 @@ class SQLiteStorage:
         cursor.execute(query, params)
 
         self.con.commit()
+
+    def set_config(self, key, value):
+        query = '''
+            INSERT INTO config (key, value) VALUES (?, ?)
+            ON CONFLICT (key) DO UPDATE SET value = ?
+        '''
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [key, value, value])
+
+        self.con.commit()
+
+    def get_config(self, key):
+        query = "SELECT value FROM config WHERE key = ?"
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [key])
+
+        row = cursor.fetchone()
+        if row is None:
+            return None
+
+        return row['value']
+
+    def set_plugin_config(self, plugin, key, value):
+        query = '''
+            INSERT INTO plugin_config (plugin_name, key, value) VALUES (?, ?, ?)
+            ON CONFLICT (plugin_name, key) DO UPDATE SET value = ?
+        '''
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [plugin.name, key, value, value])
+
+        self.con.commit()
+
+    def get_plugin_config(self, plugin, key):
+        query = '''
+            SELECT value FROM plugin_config
+            WHERE plugin_name = ? AND key = ?
+        '''
+
+        cursor = self.con.cursor()
+        cursor.execute(query, [plugin.name, key])
+
+        row = cursor.fetchone()
+        if row is None:
+            return None
+
+        return row['value']
+
+    def register_plugin(self, plugin):
+        if plugin.type == OssacaPluginType.PERSON and self.person_plugin is None:
+            self.person_plugin = plugin
 
 # Test code for ossaca_database
 if __name__ == '__main__':

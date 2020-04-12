@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import sqlite3
 import unittest
 import os
 import os.path
@@ -16,17 +17,8 @@ class TestOssacaDB(unittest.TestCase):
         if os.path.exists("test.db"):
             os.remove("test.db")
 
-    def test_create(self):
-        s = SQLiteStorage()
-        self.assertFalse(os.path.exists("test.db"))
-        s.create("test.db")
-        self.assertTrue(os.path.exists("test.db"))
-        os.remove("test.db")
-
     def test_connect(self):
         s = SQLiteStorage()
-        s.create("test.db")
-        self.assertIsNone(s.con)
         s.connect("test.db")
         self.assertIsNotNone(s.con)
         s.close()
@@ -99,6 +91,85 @@ class TestOssacaDB(unittest.TestCase):
         s.close()
 
         self.check_table_row(table, 1, values)
+
+    def check_config(self, configs):
+        # Test outside of the SQLiteStorage context, since it the connect()
+        # might alter the config table
+
+        con = sqlite3.connect("test.db")
+        con.row_factory = sqlite3.Row
+        cursor = con.cursor()
+
+        cursor.execute("SELECT COUNT(*) from config")
+        row = cursor.fetchone()
+        self.assertEqual(row[0], len(configs))
+
+        for row in cursor.execute("SELECT * FROM config"):
+            self.assertTrue(row['key'] in configs)
+            self.assertEqual(row['value'], configs[row['key']])
+
+        con.close()
+
+    def test_default_config(self):
+        s = SQLiteStorage()
+        s.connect("test.db")
+        s.close()
+
+        self.check_config({
+            "plugin_path" : "plugins"
+        })
+
+    def test_set_config(self):
+        s = SQLiteStorage()
+        s.connect("test.db")
+
+        s.set_config("opt_test", "test_value")
+        s.close()
+
+        self.check_config({
+            "plugin_path" : "plugins",
+            "opt_test" : "test_value"
+        })
+
+    def test_update_config(self):
+        s = SQLiteStorage()
+        s.connect("test.db")
+
+        s.set_config("opt_test", "test_value")
+
+        self.check_config({
+            "plugin_path" : "plugins",
+            "opt_test" : "test_value"
+        })
+
+        s.set_config("opt_test", "new_value")
+        self.check_config({
+            "plugin_path" : "plugins",
+            "opt_test" : "new_value"
+        })
+
+        s.close()
+
+    def test_get_config(self):
+        s = SQLiteStorage()
+        s.connect("test.db")
+
+        s.set_config("opt_test", "test_value")
+
+        value = s.get_config("opt_test")
+        self.assertIsNotNone(value)
+        self.assertEqual(value, "test_value")
+
+        s.set_config("opt_test", "new_value")
+
+        value = s.get_config("opt_test")
+        self.assertIsNotNone(value)
+        self.assertEqual(value, "new_value")
+
+        value = s.get_config("opt_that_does_not_exist")
+        self.assertIsNone(value)
+
+        s.close()
 
     def test_add_empty_state(self):
         self.insertion_test(State(), "state")
@@ -1531,6 +1602,214 @@ class TestOssacaDBAPI(unittest.TestCase):
             self.check_animal_list([], s.get_all_animals_by_box_id(self.boxes[5].id))
 
         s.close()
+
+class TestInvalidPlugin1(OssacaPlugin):
+
+    def __init__(self):
+        OssacaPlugin.__init__(self, name = "invalid_plugin_1")
+
+    def load(self):
+        pass
+
+class TestInvalidPlugin2(OssacaPlugin):
+
+    def __init__(self):
+        OssacaPlugin.__init__(self, "invalid_plugin_2")
+
+    def destroy(self):
+        pass
+
+class TestPlugin(OssacaPlugin):
+
+    def __init__(self):
+        OssacaPlugin.__init__(self, "test_plugin")
+
+    def load(self):
+        pass
+
+    def destroy(self):
+        pass
+
+class TestInvalidPersonPlugin(OssacaPersonProviderPlugin):
+
+    def __init__(self):
+        OssacaPersonProviderPlugin.__init__(self, "test_invalid_person_plugin")
+
+    def load(self):
+        pass
+
+    def destroy(self):
+        pass
+
+class TestPersonPlugin1(OssacaPersonProviderPlugin):
+
+    def __init__(self):
+        OssacaPersonProviderPlugin.__init__(self, "test_person_plugin1")
+
+    def load(self):
+        return False
+
+    def destroy(self):
+        pass
+
+    def get_person_by_id(self):
+        pass
+
+    def get_all_persons(self):
+        pass
+
+class TestPersonPlugin2(OssacaPersonProviderPlugin):
+
+    def __init__(self):
+        OssacaPersonProviderPlugin.__init__(self, "test_person_plugin2")
+
+    def load(self):
+        return True
+
+    def destroy(self):
+        pass
+
+    def get_person_by_id(self):
+        pass
+
+    def get_all_persons(self):
+        pass
+
+class TestOssacaPlugin(unittest.TestCase):
+
+    def setUp(self):
+        if os.path.exists("test_plugin.sqlite"):
+            os.remove("test_plugin.sqlite")
+
+    def test_plugin_create(self):
+        p = TestPlugin()
+        self.assertEqual(p.name, "test_plugin")
+        self.assertEqual(p.type, OssacaPluginType.GENERIC)
+
+        p = TestPersonPlugin1()
+        self.assertEqual(p.name, "test_person_plugin1")
+        self.assertEqual(p.type, OssacaPluginType.PERSON)
+
+    def test_register_plugin(self):
+        p = TestPlugin()
+
+        s = SQLiteStorage()
+        s.connect("test_plugin.sqlite")
+
+        p._register(s)
+
+        self.assertEqual(s, p.storage)
+
+        s.close()
+
+    def test_register_person_plugin(self):
+
+        s = SQLiteStorage()
+        s.connect("test_plugin.sqlite")
+
+        # for test purposes, verride garradin
+        s.person_plugin = None
+
+        p1 = TestPersonPlugin1()
+        p1._register(s)
+
+        self.assertEqual(s, p1.storage)
+
+        p2 = TestPersonPlugin2()
+        p2._register(s)
+
+        self.assertEqual(p2, s.person_plugin)
+        self.assertEqual(s, p2.storage)
+
+        s.close()
+
+    def test_invalid_plugin(self):
+
+        s = SQLiteStorage()
+        s.connect("test_plugin.sqlite")
+
+        p1 = TestInvalidPlugin1()
+        with self.assertRaises(NotImplementedError):
+            p1._register(s)
+
+        p2 = TestInvalidPlugin2()
+        with self.assertRaises(NotImplementedError):
+            p2._register(s)
+
+        p3 = TestInvalidPersonPlugin()
+        with self.assertRaises(NotImplementedError):
+            p3._register(s)
+
+        s.close()
+
+    def check_plugin_config(self, plugin_name, configs):
+        con = sqlite3.connect("test_plugin.sqlite")
+        con.row_factory = sqlite3.Row
+        cursor = con.cursor()
+
+        cursor.execute("SELECT COUNT(*) from plugin_config WHERE plugin_name = ?", [plugin_name])
+        row = cursor.fetchone()
+        self.assertEqual(row[0], len(configs))
+
+        for row in cursor.execute("SELECT * FROM plugin_config WHERE plugin_name = ?", [plugin_name]):
+            self.assertTrue(row['key'] in configs)
+            self.assertEqual(row['value'], configs[row['key']])
+
+        con.close()
+
+    def test_set_plugin_config(self):
+        s = SQLiteStorage()
+        s.connect("test_plugin.sqlite")
+
+        p = TestPersonPlugin2()
+        p._register(s)
+
+        self.check_plugin_config(p.name, {})
+
+        p.set_config("test_pl", "test_value_pl")
+        self.check_plugin_config(p.name, {"test_pl" : "test_value_pl"})
+
+        p.set_config("other_test_pl", "other_test_value_pl")
+        self.check_plugin_config(p.name, {
+            "test_pl" : "test_value_pl",
+            "other_test_pl" : "other_test_value_pl"
+            })
+
+        s.close()
+
+    def test_update_plugin_config(self):
+        s = SQLiteStorage()
+        s.connect("test_plugin.sqlite")
+
+        p = TestPersonPlugin2()
+        p._register(s)
+
+        p.set_config("test_pl", "test_value_pl")
+        self.check_plugin_config(p.name, {"test_pl" : "test_value_pl"})
+
+        p.set_config("test_pl", "new_value_pl")
+        self.check_plugin_config(p.name, {"test_pl" : "new_value_pl"})
+
+        s.close()
+
+    def test_get_plugin_config(self):
+        s = SQLiteStorage()
+        s.connect("test_plugin.sqlite")
+
+        p = TestPersonPlugin2()
+        p._register(s)
+        p.set_config("test_pl", "test_value_pl")
+
+        self.assertIsNone(p.get_config("non_existing_key"))
+        self.assertEqual(p.get_config("test_pl"), "test_value_pl")
+
+        s.close()
+
+    def test_set_plugin_config_multiple(self):
+        pass
+
+    def test_get_plugin_config_multiple(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
