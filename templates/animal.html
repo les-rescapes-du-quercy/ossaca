@@ -16,12 +16,23 @@
     {% endfor %}
   </ol>
   <div class="carousel-inner">
+    {% if animal.pictures|length %}
     {% for pic in animal.pictures %}
     <div {% if animal.pictures.index(pic) == 0 %} class="carousel-item active"
 	 {% else %} class="carousel-item" {% endif %}>
-      <img class="d-block w-100" src="{{ url_for('static', filename=pic) }}">
+      <img id="photo{{ animal.id }}" class="d-block w-100" \
+	   src="{{ url_for('static', filename=pic) }}" alt="{{ species }} image">
     </div>
     {% endfor %}
+    {% else %}
+    <div class="carousel-item active">
+      {% if species == 'dog' %}
+      <img class="d-block w-100" src="{{ url_for('static', filename='uploads/images/dog.png') }}">
+      {% elif species == 'cat' %}
+      <img class="d-block w-100" src="{{ url_for('static', filename='uploads/images/cat.png') }}">
+      {% endif %}
+    </div>
+    {% endif %}
   </div>
   <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
