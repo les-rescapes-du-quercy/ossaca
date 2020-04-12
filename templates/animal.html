@@ -10,10 +10,12 @@
 
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
   <ol class="carousel-indicators">
+    {% if animal.pictures|length > 1%}
     {% for i in range(animal.pictures | length) %}
     <li data-target="#carouselExampleIndicators" data-slide-to=i
 	{% if i == 0 %} class="active" {% endif %}></li>
     {% endfor %}
+    {% endif %}
   </ol>
   <div class="carousel-inner">
     {% if animal.pictures|length %}
@@ -21,7 +23,7 @@
     <div {% if animal.pictures.index(pic) == 0 %} class="carousel-item active"
 	 {% else %} class="carousel-item" {% endif %}>
       <img id="photo{{ animal.id }}" class="d-block w-100" \
-	   src="{{ url_for('static', filename=pic) }}" alt="{{ species }} image">
+	   src="{{ url_for('static', filename=pic) }}" alt="{{ species }} image" onerror="backup_{{species}}()">
     </div>
     {% endfor %}
     {% else %}
@@ -47,6 +49,16 @@
 <script>
 
   $('.carousel').carousel()
+
+  function backup_dog() {
+      document.getElementById('photo{{ animal.id }}').src = "{{ url_for('static', filename='uploads/images/dog.png') }}";
+      document.getElementById('photo{{ animal.id }}').onerror = "this.onerror=null";
+  }
+
+  function backup_cat() {
+      document.getElementById('photo{{ animal.id }}').src = "{{ url_for('static', filename='uploads/images/cat.png') }}";
+      document.getElementById('photo{{ animal.id }}').onerror = "this.onerror=null";
+  }
 
 </script>
 
