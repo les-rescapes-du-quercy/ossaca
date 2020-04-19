@@ -108,3 +108,16 @@ input[type=date] {
     font-family: Verdana, sans-serif;
     text-align: center;
 }
+
+
+.fa-trash {
+    color: rgb(200,0,0);
+}
+
+.fa-plus {
+    color: rgb(0,200,0);
+}
+
+.fa-pencil {
+    color: rgb(10,100,255);
+}
