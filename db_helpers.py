@@ -89,6 +89,12 @@ def add_new_cat(form):
     cat.history = form['history']
     db.add(cat)
 
+def update_pictures_cat(id, pictures):
+    db = getdb()
+    cat = db.get_cat_by_id(id)
+    cat.pictures = pictures
+    db.update(cat)
+
 def update_cat(form):
     db = getdb()
     cat = db.get_cat_by_id(form['id'])

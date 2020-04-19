@@ -62,8 +62,13 @@ def cats():
 def new_cat():
     return render_template('new_cat.html')
 
-@app.route('/cat/<id>', methods=['GET'])
+@app.route('/cat/<id>', methods=['GET', 'POST'])
 def cat(id, species='cat', name=None):
+    if request.method == 'POST':
+        pictures = upload_image(id, request)
+        if request.form['pictures']:
+            pictures.extend(request.form['pictures'].split(","))
+        update_pictures_cat(id, pictures)
     cat = getdb().get_cat_by_id(id)
     return render_template('animal.html', species=species, animal=cat)
 

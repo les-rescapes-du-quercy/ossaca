@@ -15,7 +15,7 @@ table, th, td {
 <!-- Edit Modal -->
 <div id="image_modal" class="modal">
   <div class="modal-content">
-    <form class="form-style" action="/dog/{{animal.id}}" method="post" enctype="multipart/form-data">
+    <form class="form-style" action="/{{species}}/{{animal.id}}" method="post" enctype="multipart/form-data">
       <fieldset>
 	<legend>Photos de {{ animal.name }}</legend>
 	<input type="hidden" id="pictures" name="pictures" value="None">
