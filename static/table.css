@@ -29,17 +29,6 @@ table tr:hover {background-color: #ddd;}
     font-size: 25px
 }
 
-.btn-emoji {
-    margin: 0px;
-    border-radius: 1em;
-    padding: 7px;
-}
-
-.btn-emoji:hover {
-    background-color: #ddd;
-    box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
-}
-
 input[type="submit"]{
     cursor:pointer;
 }

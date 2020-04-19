@@ -76,16 +76,24 @@ select:focus
     color: black;
 }
 
+#cancel,
 #add_cancel,
 #add_cancel_bowl,
-#add_cancel_food {
-    background-color: lightsalmon;
-}
-
+#add_cancel_food,
 #edit_cancel,
 #edit_cancel_bowl,
 #edit_cancel_food {
     background-color: lightsalmon;
+}
+
+#cancel:hover,
+#add_cancel:hover,
+#add_cancel_bowl:hover,
+#add_cancel_food:hover,
+#edit_cancel:hover,
+#edit_cancel_bowl:hover,
+#edit_cancel_food:hover {
+    background-color: indianred;
 }
 
 .cancel {
@@ -95,9 +103,4 @@ select:focus
 
 .validate {
     margin-right: 80%;
-}
-
-.btn-photos {
-    float: right;
-    margin-right: 20%;
 }

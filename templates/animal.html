@@ -27,7 +27,7 @@ table, th, td {
 	    <td id="td-url">
 	      <img class="img" src="{{ url_for('static', filename=pic) }}"></td>
 	    <td id="td-del">
-	      <button id="del_btn" type="button" onclick="del_image(this)" value="{{pic}}">
+	      <button id="del_btn" class="btn-modal" type="button" onclick="del_image(this)" value="{{pic}}">
 		<i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
 	    </td>
 	  </tr>
@@ -39,7 +39,7 @@ table, th, td {
 	  <button class="submit" type="submit" onclick="update_images(this)">Valider</button>
 	</div>
 	<div class="cancel">
-	  <button class="submit" type="button" id="cancel_image">Annuler</button>
+	  <button class="submit" type="button" id="cancel">Annuler</button>
 	</div>
       </fieldset>
     </form>
@@ -112,7 +112,7 @@ table, th, td {
       var id, url, modal, cancel;
       modal = document.getElementById("image_modal");
       modal.style.display = "block";
-      cancel = document.getElementById("cancel_image");
+      cancel = document.getElementById("cancel");
       cancel.onclick = function() {
 	  window.location.reload(false); 
 	  modal.style.display = "none";
@@ -196,6 +196,11 @@ table, th, td {
 
   </fieldset>
 
-  <input class="submit" type="submit" value="Valider"><br>
+  <div class="validate">
+    <input class="submit" type="submit" value="Valider">
+  </div>
+  <div class="cancel">
+    <button class="submit" type="button" id="cancel" onclick="window.location.href='/{{species}}s'">Annuler</button>
+  </div>
 
 </form>

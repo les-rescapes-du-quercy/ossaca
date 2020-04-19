@@ -28,6 +28,11 @@
     <label for="fiv">FiV</label>
     <input name="fiv" type="checkbox" value="1"/>
 
-    <button class="submit" type="submit" value="submit">Valider</button>
+    <div class="validate">
+      <input class="submit" type="submit" value="Valider">
+    </div>
+    <div class="cancel">
+      <button class="submit" type="button" id="cancel" onclick="window.location.href='/cats'">Annuler</button>
+    </div>
   </fieldset>
 </form>

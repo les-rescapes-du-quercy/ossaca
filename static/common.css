@@ -80,6 +80,7 @@ header {
 .submit {
     display: inline-block;
     padding: 15px 25px;
+    margin-bottom: 20px;
     font-size: 16px;
     cursor: pointer;
     text-align: center;
@@ -109,6 +110,26 @@ input[type=date] {
     text-align: center;
 }
 
+.btn-emoji {
+    margin: 0px;
+    border-radius: 7px;
+    padding: 5px;
+    border: 1px solid darkgray;
+    box-shadow: 1px 4px 2px grey;
+    align: center
+}
+
+.btn-emoji:hover {
+    background-color: #ddd;
+    box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
+}
+
+button,
+input[type="file"],
+input[type="button"],
+input[type="submit"]{
+    cursor:pointer;
+}
 
 .fa-trash {
     color: rgb(200,0,0);
@@ -120,4 +141,8 @@ input[type=date] {
 
 .fa-pencil {
     color: rgb(10,100,255);
+}
+
+.fa-camera {
+    color: black;
 }
