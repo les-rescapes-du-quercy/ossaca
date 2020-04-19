@@ -12,6 +12,10 @@ app.secret_key = 'prouttrucmuche'
 
 @app.route('/')
 
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
 # ----------- DOGS ----------- #
 
 @app.route('/dogs', methods=['GET', 'POST'])
