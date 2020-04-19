@@ -802,7 +802,7 @@ class SQLiteStorage:
 
         return self.person_plugin.get_person_by_id(id)
 
-    def get_all_persons(self, id):
+    def get_all_persons(self):
         if self.person_plugin is None:
             return []
 
@@ -1119,7 +1119,6 @@ if __name__ == '__main__':
 
     for cat in cats:
         print (cat.name)
-
 
 #    dog = s.get_dog_by_id(1)
 #    print (dog.name)
