@@ -15,19 +15,15 @@ def allowed_file(filename):
 
 def upload_file(request, type, upload_dir):
     pictures = []
-    if type not in request.files:
-        if type not in request.form:
-            return redirect(request.url)
-    files = request.files.getlist(type)
-    for file in files:
-        if file.filename == '':
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            pic_path = os.path.join(upload_dir, filename)
-            file.save(os.path.join("static", pic_path))
-            pictures.append(pic_path)
-    return pictures
+    if type in request.files or type in request.form:
+        files = request.files.getlist(type)
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                pic_path = os.path.join(upload_dir, filename)
+                file.save(os.path.join("static", pic_path))
+                pictures.append(pic_path)
+        return pictures
 
 def upload_image(id, request):
     if request.method == 'POST':

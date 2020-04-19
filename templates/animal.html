@@ -20,7 +20,7 @@ table, th, td {
 	<legend>Photos de {{ animal.name }}</legend>
 	<input type="hidden" id="pictures" name="pictures" value="None">
 	<input type="hidden" id="name" name="name" value="{{animal.name}}">
-	<table id="table">
+	<table class="images" align="center">
 	  {% for pic in animal.pictures %}
 	  <tr>
 	    <td style="display:none;">{{ animal.id }}</td>
@@ -28,11 +28,12 @@ table, th, td {
 	      <img class="img" src="{{ url_for('static', filename=pic) }}"></td>
 	    <td id="td-del">
 	      <button id="del_btn" type="button" onclick="del_image(this)" value="{{pic}}">
-		<i class="fa fa-trash fa-1x" aria-hidden="true"></i></button>
+		<i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
 	    </td>
 	  </tr>
 	  {% endfor %}
 	</table>
+	<br>
 	<input type="file" id="img" name="img" multiple accept="image/*">
 	<div class="validate">
 	  <button class="submit" type="submit" onclick="update_images(this)">Valider</button>

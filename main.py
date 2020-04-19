@@ -39,7 +39,6 @@ def new_dog():
 def dog(id, species='dog', name=None):
     if request.method == 'POST':
         pictures = upload_image(id, request)
-        print(pictures)
         if request.form['pictures']:
             pictures.extend(request.form['pictures'].split(","))
         update_pictures_dog(id, pictures)
