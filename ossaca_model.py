@@ -422,3 +422,40 @@ class Box:
         else:
             return -1
 
+class Address:
+    '''
+    Class representing a postal address
+    '''
+
+    def __init__(self, street = "", postcode = "", city = "", country = ""):
+        self.street = street
+        self.postcode = postcode
+        self.city = city
+        self.country = country
+
+class PersonType:
+    '''
+    Class representing a person type
+    '''
+    OTHER = 0
+    GODMOTHER = 1
+    FOSTER_FAMILY = 2
+    VOLUNTEER = 3
+    ADOPTER = 4
+    VET = 5
+
+class Person:
+    '''
+    Class representing a person. This can be a adopter, a foster family, a vet
+    and so on.
+    '''
+
+    def __init__(self, id = -1, name = "", email = "", address = Address(),
+                 phone = "", type = PersonType.OTHER):
+        self.id = id
+        self.name = name
+        self.email = email
+        self.address = address
+        self.phone = phone
+        self.type = type
+
