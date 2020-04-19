@@ -1696,7 +1696,8 @@ class TestOssacaPlugin(unittest.TestCase):
         s = SQLiteStorage()
         s.connect("test_plugin.sqlite")
 
-        p._register(s)
+        p._attach(s)
+        p._register()
 
         self.assertEqual(s, p.storage)
 
@@ -1711,12 +1712,14 @@ class TestOssacaPlugin(unittest.TestCase):
         s.person_plugin = None
 
         p1 = TestPersonPlugin1()
-        p1._register(s)
+        p1._attach(s)
+        p1._register()
 
         self.assertEqual(s, p1.storage)
 
         p2 = TestPersonPlugin2()
-        p2._register(s)
+        p2._attach(s)
+        p2._register()
 
         self.assertEqual(p2, s.person_plugin)
         self.assertEqual(s, p2.storage)
@@ -1730,15 +1733,18 @@ class TestOssacaPlugin(unittest.TestCase):
 
         p1 = TestInvalidPlugin1()
         with self.assertRaises(NotImplementedError):
-            p1._register(s)
+            p1._attach(s)
+            p1._register()
 
         p2 = TestInvalidPlugin2()
         with self.assertRaises(NotImplementedError):
-            p2._register(s)
+            p2._attach(s)
+            p2._register()
 
         p3 = TestInvalidPersonPlugin()
         with self.assertRaises(NotImplementedError):
-            p3._register(s)
+            p3._attach(s)
+            p3._register()
 
         s.close()
 
@@ -1762,7 +1768,8 @@ class TestOssacaPlugin(unittest.TestCase):
         s.connect("test_plugin.sqlite")
 
         p = TestPersonPlugin2()
-        p._register(s)
+        p._attach(s)
+        p._register()
 
         self.check_plugin_config(p.name, {})
 
@@ -1782,7 +1789,8 @@ class TestOssacaPlugin(unittest.TestCase):
         s.connect("test_plugin.sqlite")
 
         p = TestPersonPlugin2()
-        p._register(s)
+        p._attach(s)
+        p._register()
 
         p.set_config("test_pl", "test_value_pl")
         self.check_plugin_config(p.name, {"test_pl" : "test_value_pl"})
@@ -1797,7 +1805,8 @@ class TestOssacaPlugin(unittest.TestCase):
         s.connect("test_plugin.sqlite")
 
         p = TestPersonPlugin2()
-        p._register(s)
+        p._attach(s)
+        p._register()
         p.set_config("test_pl", "test_value_pl")
 
         self.assertIsNone(p.get_config("non_existing_key"))
