@@ -9,6 +9,12 @@ class OssacaPluginType(IntEnum):
     GENERIC = 0
     PERSON = 1
 
+class PluginState(IntEnum):
+    UNLOADED = 0
+    ATTACHED = 1
+    LOADED = 2
+    FAILED = 3
+
 class OssacaPlugin:
     '''
     Class describing a plugin, that will add features to Ossaca. A plugin can
@@ -27,6 +33,7 @@ class OssacaPlugin:
         self.name = name
         self.type = type
         self.storage = None
+        self.state = PluginState.UNLOADED
         self._mandatory_methods = ["load", "destroy"]
 
     def __self_check(self):
@@ -40,14 +47,23 @@ class OssacaPlugin:
 
         return True
 
-    def _register(self, storage):
+    def _attach(self, storage):
         if not self.__self_check():
-            return
+            self.state = PluginState.FAILED
+            return False
 
+        self.state = PluginState.ATTACHED
         self.storage = storage
+        return True
+
+    def _register(self):
 
         if self.load():
             self.storage.register_plugin(self)
+            self.state = PluginState.LOADED
+            return True
+        else:
+            return False
 
     def set_config(self, key, value):
         if self.storage is None:

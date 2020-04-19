@@ -29,6 +29,7 @@ class SQLiteStorage:
 
     def __init__(self):
 
+        self.plugins = []
         self.person_plugin = None
         self.con = None
 
@@ -167,7 +168,22 @@ class SQLiteStorage:
 
     def __load_plugin(self, cls):
         plugin = cls()
-        plugin._register(self)
+        if plugin._attach(self):
+            self.plugins.append(plugin)
+
+    def register_plugins(self):
+        for plugin in self.plugins:
+            plugin._register()
+
+    def get_plugins(self):
+        return self.plugins
+
+    def get_plugin_by_name(self, name):
+        for plugin in self.plugins:
+            if plugin.name == name:
+                return plugin
+
+        return None
 
     def __load_plugins_from_module(self, module_name):
         module = __import__(module_name)
@@ -203,6 +219,7 @@ class SQLiteStorage:
             self.initialize()
 
         self.load_plugins()
+        self.register_plugins()
 
     def close(self):
         self.con.commit()
