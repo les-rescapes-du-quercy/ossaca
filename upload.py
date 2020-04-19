@@ -16,7 +16,8 @@ def allowed_file(filename):
 def upload_file(request, type, upload_dir):
     pictures = []
     if type not in request.files:
-        return redirect(request.url)
+        if type not in request.form:
+            return redirect(request.url)
     files = request.files.getlist(type)
     for file in files:
         if file.filename == '':
@@ -28,10 +29,10 @@ def upload_file(request, type, upload_dir):
             pictures.append(pic_path)
     return pictures
 
-def upload_image(request, id):
+def upload_image(id, request):
     if request.method == 'POST':
-        dog_name = request.form['name'].replace(" ", "_")
-        dog_dir = str(id) + "_" + dog_name.lower()
-        upload_dir = os.path.join(app.config['UPLOAD_FOLDER'], "images", dog_dir)
-        os.makedirs(os.path.join("static", upload_dir))
+        name = request.form['name'].replace(" ", "_")
+        dir = str(id) + "_" + name.lower()
+        upload_dir = os.path.join(app.config['UPLOAD_FOLDER'], "images", dir)
+        os.makedirs(os.path.join("static", upload_dir), exist_ok=True)
         return upload_file(request, "img", upload_dir)

@@ -25,7 +25,7 @@ def dogs():
             update_dog(request.form)
         else:
             id = add_new_dog(request.form)
-            pictures = upload_image(request, id)
+            pictures = upload_image(id, request)
             update_pictures_dog(id, pictures)
 
     dlist = get_dogs()
@@ -35,9 +35,14 @@ def dogs():
 def new_dog():
     return render_template('new_dog.html')
 
-@app.route('/dog', methods=['GET'])
-def dog(species='dog', name=None):
-    id = request.args.get('id', '')
+@app.route('/dog/<id>', methods=['GET', 'POST'])
+def dog(id, species='dog', name=None):
+    if request.method == 'POST':
+        pictures = upload_image(id, request)
+        print(pictures)
+        if request.form['pictures']:
+            pictures.extend(request.form['pictures'].split(","))
+        update_pictures_dog(id, pictures)
     dog = getdb().get_dog_by_id(id)
     return render_template('animal.html', species=species, animal=dog)
 
@@ -58,9 +63,8 @@ def cats():
 def new_cat():
     return render_template('new_cat.html')
 
-@app.route('/cat', methods=['GET'])
-def cat(species='cat', name=None):
-    id = request.args.get('id', '')
+@app.route('/cat/<id>', methods=['GET'])
+def cat(id, species='cat', name=None):
     cat = getdb().get_cat_by_id(id)
     return render_template('animal.html', species=species, animal=cat)
 

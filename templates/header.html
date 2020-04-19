@@ -34,7 +34,7 @@
   $(document).ready(function($) {
       $(document.body).on("click", "tr[data-href]", function() {
 	  var row = $(this).find('td:first').text();
-	  window.location.href = this.dataset.href+"?id="+row;
+	  window.location.href = this.dataset.href+"/"+row;
       });
   });
 

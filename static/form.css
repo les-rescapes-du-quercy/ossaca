@@ -96,3 +96,8 @@ select:focus
 .validate {
     margin-right: 80%;
 }
+
+.btn-photos {
+    float: right;
+    margin-right: 20%;
+}

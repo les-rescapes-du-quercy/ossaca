@@ -1,9 +1,49 @@
 {% include 'header.html' %}
 
 <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ url_for('static', filename='carousel.css') }}" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+
+<!-- Edit Modal -->
+<div id="image_modal" class="modal">
+  <div class="modal-content">
+    <form class="form-style" action="/dog/{{animal.id}}" method="post" enctype="multipart/form-data">
+      <fieldset>
+	<legend>Photos de {{ animal.name }}</legend>
+	<input type="hidden" id="pictures" name="pictures" value="None">
+	<input type="hidden" id="name" name="name" value="{{animal.name}}">
+	<table id="table">
+	  {% for pic in animal.pictures %}
+	  <tr>
+	    <td style="display:none;">{{ animal.id }}</td>
+	    <td id="td-url">
+	      <img class="img" src="{{ url_for('static', filename=pic) }}"></td>
+	    <td id="td-del">
+	      <button id="del_btn" type="button" onclick="del_image(this)" value="{{pic}}">
+		<i class="fa fa-trash fa-1x" aria-hidden="true"></i></button>
+	    </td>
+	  </tr>
+	  {% endfor %}
+	</table>
+	<input type="file" id="img" name="img" multiple accept="image/*">
+	<div class="validate">
+	  <button class="submit" type="submit" onclick="update_images(this)">Valider</button>
+	</div>
+	<div class="cancel">
+	  <button class="submit" type="button" id="cancel_image">Annuler</button>
+	</div>
+      </fieldset>
+    </form>
+  </div>
+</div>
 
 <title>{{ species }} - {{ animal.name }}</title>
 <h1>{{ animal.name }}</h1>
@@ -47,6 +87,13 @@
 </div>
 
 <script>
+  init_array = [];
+  work_array = [];
+
+  {% for pic in animal.pictures %}
+  init_array.push("{{ pic }}")
+  work_array.push("{{ pic }}")
+  {% endfor %}
 
   $('.carousel').carousel()
 
@@ -60,12 +107,39 @@
       document.getElementById('photo{{ animal.id }}').onerror = "this.onerror=null";
   }
 
+  function edit_popup_images() {
+      var id, url, modal, cancel;
+      modal = document.getElementById("image_modal");
+      modal.style.display = "block";
+      cancel = document.getElementById("cancel_image");
+      cancel.onclick = function() {
+	  window.location.reload(false); 
+	  modal.style.display = "none";
+	  work_array = init_array
+      }
+  }
+
+  function del_image(btn) {
+      var id, index;
+      id = this.document.activeElement.value;
+      index = work_array.indexOf(id);
+      work_array.splice(index, 1);
+      $(btn).closest('tr').detach();
+  }
+
+  function update_images(btn) {
+      // Update the image array with the new one in case of delete
+      document.getElementById("pictures").value = work_array;
+  }
+
 </script>
 
 <form class="form-style" action={{species}}s method="post">
   <fieldset>
     <input name="id" type="hidden" value="{{ animal.id }}">
     <legend>Identité</legend>
+    <label for="image_modal">Photos</label>
+    <button class="btn-photos" id="image_modal" type="button" onclick="edit_popup_images()">Gestion des photos</button>
     <label for="name">Nom</label>
     <input name="name" type="text" value="{{ animal.name }}">
     <label for="bdate">Date de naissance</label>
