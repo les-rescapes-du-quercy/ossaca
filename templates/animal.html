@@ -135,12 +135,15 @@ table, th, td {
 
 </script>
 
-<form class="form-style" action={{species}}s method="post">
+<form class="form-style" action=/{{species}}s method="post">
+  <div align="right">
+    <button class="btn-emoji" id="image_modal" type="button" onclick="edit_popup_images()">
+      <i class="fa fa-camera fa-2x" aria-hidden="true"></i>
+    </button>
+  </div>
   <fieldset>
     <input name="id" type="hidden" value="{{ animal.id }}">
     <legend>Identité</legend>
-    <label for="image_modal">Photos</label>
-    <button class="btn-photos" id="image_modal" type="button" onclick="edit_popup_images()">Gestion des photos</button>
     <label for="name">Nom</label>
     <input name="name" type="text" value="{{ animal.name }}">
     <label for="bdate">Date de naissance</label>
