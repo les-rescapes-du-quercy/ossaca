@@ -53,7 +53,6 @@ class GarradinPlugin(OssacaPersonProviderPlugin):
     def __connect(self):
         path = self.get_config("database_path")
         if not os.path.isfile(path):
-            os.stderr.write("Cannot find garradin database at %s" % path)
             return False
 
         self.con = sqlite3.connect(path)
