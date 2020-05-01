@@ -1,0 +1,94 @@
+Doc for the SQLiteStorage class :
+
+SQLiteStorage provide all the above public methods that are used to interact
+with the SQLite database.
+
+# Plugin methods
+
+   register_plugins()
+   get_plugins() : Returns a Plugin
+   get_plugin_by_name(name) : Returns a Plugin
+   load_plugins()
+
+# Init and cleanup
+
+   connect(db_path)
+   close()
+
+# State
+
+   get_all_states() : Returns a list of State
+   get_state_by_id(id) : Returns a State
+
+# Food
+
+   get_all_foods() : Returns a list of Food
+   get_food_by_id(id) : Returns a Food
+
+# Bowl
+
+   get_all_bowls() : Returns a list of Bowl
+   get_bowl_by_id(id) : Returns a Bowl
+
+# Animal
+
+   get_all_animals_by_species(species) : Returns a list of Animal
+   get_all_animals() : Returns a list of Animal
+   get_all_animals_by_box_id(id) : Returns a list of Animal
+   get_animal_by_id(id) : Returns an Animal
+
+   get_all_dogs() : Returns a list of Dog
+   get_dog_by_id(id) : Returns a Dog
+
+   get_all_cats() : Returns a list of Cat
+   get_cat_by_id(id) : Returns a Cat
+
+# Care
+
+   get_all_cares() : Returns a list of Care
+   get_care_by_id(id) : Returns a Care
+
+# Caresheet
+
+   get_all_caresheets() : Returns a list of CareSheet
+   get_caresheet_by_id(id) : Returns a CareSheet
+   get_all_caresheets_by_animal_id(animal_id) : Returns a list of CareSheet
+
+# FoodHabit
+
+   get_all_foodhabits() : Returns a list of FoodHabit
+   get_foodhabit_by_id(id) : Returns a FoodHabit
+
+# Location
+
+   get_all_locations() : Returns a list of Location
+   get_location_by_id(id) : Returns a Location
+
+# Sheet
+
+   get_all_sheets() : Returns a list of Sheet
+   get_sheet_by_id(id) : Returns a Sheet
+   get_all_sheets_by_animal_id(animal_id) : Returns a list of Sheet
+
+# Box
+
+   get_all_boxes() : Returns a list of Box
+   get_box_by_id(id) : Returns a Box
+
+# Person (need Garradin plugin for now)
+
+   get_person_by_id(id) : Returns a Person
+   get_all_persons() : Returns a list of Person
+
+# DB Interaction
+
+   add(obj)
+   update(obj)
+   delete(obj)
+
+# Access configuration options
+
+   set_config(key, value)
+   get_config(key) : Returns a str
+   set_plugin_config(plugin, key, value)
+   get_plugin_config(plugin, key) : Returns a str
