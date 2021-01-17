@@ -143,60 +143,68 @@ table, th, td {
   </div>
   <fieldset>
     <input name="id" type="hidden" value="{{ animal.id }}">
-    <legend>Identité</legend>
-    <label for="name">Nom</label>
-    <input name="name" type="text" value="{{ animal.name }}">
-    <label for="bdate">Date de naissance</label>
-    <input name="bdate" type="date" value="{{ animal.birth_date.isoformat() }}"></br>
-    <label for="adate">Date d'arrivée</label>
-    <input name="adate" type="date" value="{{ animal.arrival_date.isoformat() }}"></br>
-    <label for="gender">Sexe</label>
-    <select name="gender">
-      <option value="1" {% if animal.gender == 1 %} selected {% endif %}>Femelle</option>
-      <option value="2" {% if animal.gender == 2 %} selected {% endif %}>Male</option>
-      <option value="0" {% if animal.gender == 0 %} selected {% endif %}>Non connu</option>
-    </select></br>
-    <label for="implant">Nº ICAD</label>
-    <input type="text" name="implant" value="{{ animal.implant }}">
+    <legend><label for="toggle_id" class="legend">Identité</label></legend>
+    <input type="checkbox" id="toggle_id" checked="" hidden=""/>
+    <div id="id">
+      <label for="name">Nom</label>
+      <input name="name" type="text" value="{{ animal.name }}">
+      <label for="bdate">Date de naissance</label>
+      <input name="bdate" type="date" value="{{ animal.birth_date.isoformat() }}"></br>
+      <label for="adate">Date d'arrivée</label>
+      <input name="adate" type="date" value="{{ animal.arrival_date.isoformat() }}"></br>
+      <label for="gender">Sexe</label>
+      <select name="gender">
+	<option value="1" {% if animal.gender == 1 %} selected {% endif %}>Femelle</option>
+	<option value="2" {% if animal.gender == 2 %} selected {% endif %}>Male</option>
+	<option value="0" {% if animal.gender == 0 %} selected {% endif %}>Non connu</option>
+      </select></br>
+      <label for="implant">Nº ICAD</label>
+      <input type="text" name="implant" value="{{ animal.implant }}">
+      <label for="neutered">Stérilisé</label>
+      <input name="neutered" type="checkbox" value="1"
+	     {% if animal.neutered == 1 %} checked {% endif %}/><br>
+    </div>
   </fieldset>
+
   <fieldset>
-    <legend>Caractéristiques</legend>
-    <label for="breed">Race</label>
-    <input type="text" name="breed" value="{{ animal.breed }}"><br>
-    <label for="color">Couleur</label>
-    <input type="text" name="color" value="{{ animal.color }}"><br>
-
-    {% if species == "dog" %}
-    <label for="ok_cats">OK Chats</label>
-    <input name="ok_cats" type="checkbox" value="1"
-	   {% if animal.ok_cats == 1 %} checked {% endif %}/><br>
-    <label for="category">Catégorie</label>
-    <select name="category">
-      <option value="0" {% if animal.category == 0 %} selected {% endif %}>Non catégorisé</option>
-      <option value="1" {% if animal.category == 1 %} selected {% endif %}>Catégorie nº1</option>
-      <option value="2" {% if animal.category == 2 %} selected {% endif %}>Catégorie nº2</option>
-    </select><br>
-    {% endif %}
-
-    <label for="char">Caractère</label>
-    <textarea name="char">{{ animal.character }}</textarea><br>
-    <label for="history">Historique</label>
-    <textarea name="history">{{ animal.history }}</textarea><br>
+    <legend><label for="toggle_car" class="legend">Caractéristiques</label></legend>
+    <input type="checkbox" id="toggle_car" checked="" hidden=""/>
+    <div id="carac">
+      <label for="breed">Race</label>
+      <input type="text" name="breed" value="{{ animal.breed }}"><br>
+      <label for="color">Couleur</label>
+      <input type="text" name="color" value="{{ animal.color }}"><br>
+      {% if species == "dog" %}
+      <label for="ok_cats">OK Chats</label>
+      <input name="ok_cats" type="checkbox" value="1"
+	     {% if animal.ok_cats == 1 %} checked {% endif %}/><br>
+      <label for="category">Catégorie</label>
+      <select name="category">
+	<option value="0" {% if animal.category == 0 %} selected {% endif %}>Non catégorisé</option>
+	<option value="1" {% if animal.category == 1 %} selected {% endif %}>Catégorie nº1</option>
+	<option value="2" {% if animal.category == 2 %} selected {% endif %}>Catégorie nº2</option>
+      </select><br>
+      {% endif %}
+      <label for="char">Caractère</label>
+      <textarea name="char">{{ animal.character }}</textarea><br>
+      <label for="history">Historique</label>
+      <textarea name="history">{{ animal.history }}</textarea><br>
+    </div>
   </fieldset>
-  <fieldset>
-    <legend>Santé</legend>
-    <label for="neutered">Stérilisé</label>
-    <input name="neutered" type="checkbox" value="1"
-	   {% if animal.neutered == 1 %} checked {% endif %}/><br>
-    {% if species == "cat" %}
-    <label for="fiv">FiV</label>
-    <input name="fiv" type="checkbox" value="1"
-	   {% if animal.has_fiv == 1 %} checked {% endif %}/><br>
-    <label for="felv">FelV</label>
-    <input name="felv" type="checkbox" value="1"
-	   {% if animal.has_felv == 1 %} checked {% endif %}/><br>
-    {% endif %}
 
+  <fieldset>
+    <legend><label for="toggle_care" class="legend">Santé</label></legend>
+    <input type="checkbox" id="toggle_care" checked="" hidden=""/>
+    <div id="care">
+      {% if species == "cat" %}
+      <label for="fiv">FiV</label>
+      <input name="fiv" type="checkbox" value="1"
+	     {% if animal.has_fiv == 1 %} checked {% endif %}/><br>
+      <label for="felv">FelV</label>
+      <input name="felv" type="checkbox" value="1"
+	     {% if animal.has_felv == 1 %} checked {% endif %}/><br>
+      {% endif %}
+    </div>
   </fieldset>
 
   <div class="validate">

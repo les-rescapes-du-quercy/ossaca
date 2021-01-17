@@ -25,6 +25,31 @@ legend {
     margin-bottom: 15px;
 }
 
+#toggle_id + #id,
+#toggle_car + #carac,
+#toggle_care + #care {
+    //    display: none;
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: height 5s, opacity 0.5s ease-in-out;
+}
+
+#toggle_id:checked + #id,
+#toggle_car:checked + #carac,
+#toggle_care:checked + #care {
+    //    display:block;
+    opacity: 1;
+    height: auto;
+    visibility: visible;
+}
+
+legend label::after {
+    content: "▼";
+    float: right;
+}
+
 label {
     display:inline-block;
     margin-top: 5px;
@@ -38,6 +63,15 @@ label {
     border-right: 5px solid #8cd9bf;
     border-bottom: 1px solid #8cd9bf;
     border-radius: 5px;
+}
+
+.legend {
+    display: inline;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    border: 0px;
+    font-size: 20px;
 }
 
 input[type=text],
