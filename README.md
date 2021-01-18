@@ -15,8 +15,12 @@ Running Ossaca
 
 export PYTHONPATH=$(pwd)
 
-# On debian
+On debian
+---------
+
 env FLASK_APP=main flask run
 
-# On fedora
+On fedora
+---------
+
 env FLASK_APP=main flask-3 run
