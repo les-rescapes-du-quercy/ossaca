@@ -1542,7 +1542,7 @@ class TestOssacaDBAPI(unittest.TestCase):
             self.assertEqual(self.dogs[3].age(), 10) # 2010-02-14
             self.assertEqual(self.cats[0].age(), 8) # 2011-11-11
             self.assertEqual(self.cats[1].age(), 4) # 2016-02-29
-            self.assertEqual(self.cats[2].age(), 0) # None
+            self.assertEqual(self.cats[2].age(), -1) # None
 
     def test_box_capacity(self):
 
