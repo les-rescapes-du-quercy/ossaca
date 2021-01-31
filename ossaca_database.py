@@ -62,7 +62,8 @@ class SQLiteStorage:
                    implant text,
                    neutered integer,
                    history text,
-                   food_habit_id integer
+                   food_habit_id integer,
+                   FOREIGN KEY(food_habit_id) REFERENCES foodhabit(id)
                    )''')
 
         c.execute('''CREATE TABLE dog (
@@ -117,20 +118,25 @@ class SQLiteStorage:
                    frequency text,
                    given_by integer,
                    prescription_number text,
-                   dosage text
+                   dosage text,
+                   FOREIGN KEY(animal_id) REFERENCES animal(id),
+                   FOREIGN KEY(care_id) REFERENCES care(id)
                    )''')
 
         c.execute('''CREATE TABLE foodhabit(
                    id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    food_id integer,
-                   bowl_id integer
+                   bowl_id integer,
+                   FOREIGN KEY(food_id) REFERENCES food(id),
+                   FOREIGN KEY(bowl_id) REFERENCES bowl(id)
                    )''')
 
         c.execute('''CREATE TABLE location(
                    id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                    location_type integer,
                    box_id integer,
-                   person_id integer
+                   person_id integer,
+                   FOREIGN KEY(box_id) REFERENCES box(id)
                    )''')
 
         c.execute('''CREATE TABLE sheet(
@@ -138,7 +144,10 @@ class SQLiteStorage:
                    date text,
                    animal_id integer,
                    state_id integer,
-                   location_id integer
+                   location_id integer,
+                   FOREIGN KEY(animal_id) REFERENCES animal(id),
+                   FOREIGN KEY(state_id) REFERENCES state(id),
+                   FOREIGN KEY(location_id) REFERENCES location(id)
                    )''')
 
         c.execute('''CREATE TABLE box(
