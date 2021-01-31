@@ -235,7 +235,8 @@ class Care:
 
 class CareSheet:
     '''
-    A Care Sheet describes a care given to a particular animal at a given date
+    A Care Sheet describes a care given to a particular animal at a given date,
+    to treat a given Disease.
 
     :param id: Unique id for the care sheet
     :type id: int
@@ -246,6 +247,9 @@ class CareSheet:
     :param care: The care given to the animal
     :type care: Care
 
+    :param disease: The disease this CareSheet treats
+    :type disease: Disease
+
     :param date: Date at which the care was given
     :type date: datetime.date
 
@@ -254,6 +258,11 @@ class CareSheet:
 
     :param frequency: frequency at which the care must be given
     :type frequency: str
+
+    :param duration: duration, in days, of the treatment. If the treatment is
+    a one-time treatment, the duration shall be 0. If this is a lifetime treatent,
+    the duration shall be -1.
+    :type duration: int
 
     :param given_by: Person who gives the care to the animal
     :type given_by: Person
@@ -264,18 +273,34 @@ class CareSheet:
     :param dosage: Dose admistrated to the animal
     :type dosage: str
     '''
-    def __init__(self, id = -1, animal = None, care = None, date = None,
-                 time = None, frequency = "", given_by = None,
-                 prescription_number = "", dosage = ""):
+    def __init__(self, id = -1, animal = None, care = None, disease = None,
+                 date = None, time = None, frequency = "", duration = 0,
+                 given_by = None, prescription_number = "", dosage = ""):
         self.id = id
         self.animal = animal
         self.care = care
+        self.disease = disease
         self.date = date if date is not None else datetime.date.today()
         self.time = time if time is not None else datetime.time.fromisoformat("00:00:00")
         self.frequency = frequency
+        self.duration = duration
         self.given_by = given_by
         self.prescription_number = prescription_number
         self.dosage = dosage
+
+class Disease(Type):
+    '''
+    :param id: Unique id for the disease
+    :type id: int
+
+    :param label: The name of the disease
+    :type label: str
+
+    :param description: A description for the disease
+    :type description: str
+    '''
+    def __init__(self, id = -1, label = "", description = ""):
+        Type.__init__(self, id, label, description)
 
 class FoodHabit:
     '''
